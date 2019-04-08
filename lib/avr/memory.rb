@@ -7,8 +7,7 @@ module AVR
     attr_reader :size
     attr_reader :memory
 
-    def initialize(cpu, name, size, value=0)
-      @cpu = cpu
+    def initialize(name, size, value=0)
       @name = name
       @size = size
       @memory = size.times.map { |address| MemoryByte.new(self, address, value) }

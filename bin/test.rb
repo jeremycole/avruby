@@ -1,3 +1,10 @@
-cpu = AVR::CPU.new(2048, 32768, 512)
-cpu.flash.load_from_intel_hex("/Users/jeremycole/git/asmvr/blink.hex")
-cpu.step
+device = AVR::Device::Atmel_ATmega328p.new
+device.flash.load_from_intel_hex("/Users/jeremycole/git/asmvr/blink.hex")
+
+device.cpu.trace { |i| puts i }
+
+device.oscillator.unshift_sink(AVR::Clock::Sink.new("status") {
+  device.cpu.print_status
+})
+
+device.oscillator.tick

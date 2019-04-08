@@ -15,7 +15,6 @@ module AVR
     end
 
     def execute(cpu, memory, offset, args)
-      puts "execute: #{mnemonic} #{args.join(", ")}"
       opcode_proc.call(cpu, memory, offset, args)
     end
 

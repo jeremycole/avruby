@@ -17,6 +17,12 @@ module AVR
       @register_list.map { |name| @registers[name].to_s }.join(", ")
     end
 
+    def print_status
+      @register_list.each_slice(8) do |slice|
+        puts slice.map { |name| "%10s" % [name + "=" + @registers[name].value_hex] }.join + "\n"
+      end
+    end
+
     def [](key)
       @registers[@register_list[key]] if key.is_a?(Fixnum)
     end

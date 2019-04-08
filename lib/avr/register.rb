@@ -9,12 +9,16 @@ module AVR
       @name = name
     end
 
+    def value_hex
+      "%02x" % value
+    end
+
     def to_i
       value.to_i
     end
 
     def to_s
-      name + "=" + value.to_s
+      name + "=" + value_hex
     end
 
     def inspect

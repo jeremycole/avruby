@@ -8,6 +8,10 @@ module AVR
       @h = h
     end
 
+    def value_hex
+      "%04x" % value
+    end
+
     def value
       (h.value << 8) | l.value
     end
