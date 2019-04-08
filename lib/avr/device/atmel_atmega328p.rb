@@ -87,7 +87,7 @@ module AVR
     end
 
     def ram_end
-      ram_start + sram_size
+      ram_start + sram_size - 1
     end
   end
 end
