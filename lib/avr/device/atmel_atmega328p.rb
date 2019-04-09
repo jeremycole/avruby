@@ -89,5 +89,25 @@ module AVR
     def ram_end
       ram_start + sram_size - 1
     end
+
+    def port_map
+      @port_map ||= {
+        B: {
+          pin: data_memory_map[:PINB],
+          ddr: data_memory_map[:DDRB],
+          port: data_memory_map[:PORTB],
+        },
+        C: {
+          pin: data_memory_map[:PINC],
+          ddr: data_memory_map[:DDRC],
+          port: data_memory_map[:PORTC],
+        },
+        D: {
+          pin: data_memory_map[:PIND],
+          ddr: data_memory_map[:DDRD],
+          port: data_memory_map[:PORTD],
+        },
+      }
+    end
   end
 end

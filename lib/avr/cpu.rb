@@ -10,6 +10,7 @@ module AVR
     attr_reader :sreg
     attr_reader :sp
     attr_reader :decoder
+    attr_reader :ports
     attr_reader :clock
     attr_reader :tracer
 
@@ -36,6 +37,11 @@ module AVR
       @sreg = SREG.new(self, @sram.memory[device.data_memory_map[:SREG]])
       @decoder = Decoder.new(self, device.flash)
 
+      @ports = {}
+      device.port_map.each do |name, addr|
+        @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port])
+      end
+
       @clock = Clock.new("cpu")
       @clock.push_sink(Clock::Sink.new("cpu") {
         self.step
@@ -61,6 +67,12 @@ module AVR
       puts
       puts "IO Registers:"
       io_registers.print_status
+      puts
+      puts "IO Ports:"
+      puts "%4s  %s" % ["", Port::PINS.join(" ")]
+      ports.each do |name, port|
+        puts "%4s: %s" % [name, port.pin_states.join(" ")]
+      end
       puts
       puts "Next instruction:"
       puts "  " + peek.to_s
