@@ -50,13 +50,21 @@ module AVR
     end
 
     def print_status
-      puts "PC = %i" % [pc]
-      puts "SP = %04x" % [sp.value]
+      puts "Status:"
+      puts "%8s = %d" % ["Ticks", clock.ticks]
+      puts "%8s = %04x" % ["PC", pc]
+      puts "%8s = %04x" % ["SP", sp.value]
+      puts "%8s = [%s]" % ["SREG", sreg.bit_values]
+      puts
       puts "Registers:"
       registers.print_status
+      puts
       puts "IO Registers:"
       io_registers.print_status
-      puts "Next: #{peek}"
+      puts
+      puts "Next instruction:"
+      puts "  " + peek.to_s
+      puts
     end
 
     def reset
@@ -74,9 +82,9 @@ module AVR
     end
 
     def peek
-      c = pc
+      save_pc = pc
       i = decode
-      @pc = c
+      @pc = save_pc
       i
     end
 
