@@ -58,10 +58,12 @@ module AVR
 
     def load_from_intel_hex(filename)
       ihex = IntelHex.new(filename)
+      sum = 0
       ihex.each_byte do |address, byte|
         memory[address].value = byte
+        sum += 1
       end
-      nil
+      sum
     end
   end
 end
