@@ -1,6 +1,7 @@
 module AVR
   class Port
     PINS = (0..7).to_a.freeze
+
     attr_reader :cpu
     attr_reader :name
 
@@ -12,7 +13,7 @@ module AVR
       @ddr_address = ddr_address
       @port_address = port_address
       @sram_watch = AVR::Memory::Watch.new do |memory_byte, old_value, new_value|
-        puts "Port watch fired"
+        #puts "Port watch fired"
       end
       @cpu.sram.push_watch([@ddr_address, @port_address], @sram_watch)
     end
