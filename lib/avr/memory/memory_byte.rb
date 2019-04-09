@@ -26,8 +26,9 @@ module AVR
     end
 
     def value=(new_value)
+      return if new_value == value
       raise "Value #{new_value} out of range" if new_value < 0 || new_value > 255
-      #puts "%s[0x%04x] = %02x" % [memory.name, address, new_value]
+      memory.notify(self, value, new_value)
       @value = new_value
     end
   end
