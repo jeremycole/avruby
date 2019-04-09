@@ -1,5 +1,5 @@
 device = AVR::Device::Atmel_ATmega328p.new
-device.flash.load_from_intel_hex("/Users/jeremycole/git/asmvr/blink.hex")
+device.flash.load_from_intel_hex("test/blink/blink.hex")
 
 device.cpu.trace do |instruction|
   puts "Executing instruction:"
