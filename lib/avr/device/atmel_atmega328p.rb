@@ -12,6 +12,14 @@ module AVR
       512
     end
 
+    def word_register_map
+      @word_register_map ||= {
+        "X" => { l: 26, h: 27 },
+        "Y" => { l: 28, h: 29 },
+        "Z" => { l: 30, h: 31 },
+      }
+    end
+
     def data_memory_map
       @data_memory_map ||= {
         # 32 registers, r0-r31

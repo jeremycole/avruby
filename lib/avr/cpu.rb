@@ -18,23 +18,28 @@ module AVR
       @device = device
       @pc = 0
       @sram = SRAM.new(device.ram_start + device.sram_size)
+
       @registers = RegisterFile.new(self)
-      (0  .. 15).each { |n| registers.add(LowerRegister.new(self, "r#{n}", @sram.memory[n])) }
-      (16 .. 31).each { |n| registers.add(UpperRegister.new(self, "r#{n}", @sram.memory[n])) }
-      registers.add(RegisterPair.new(self, "X", r26, r27))
-      registers.add(RegisterPair.new(self, "Y", r28, r29))
-      registers.add(RegisterPair.new(self, "Z", r30, r31))
+      device.register_count.times do |n|
+        registers.add(MemoryByteRegister.new(self, "r#{n}", @sram.memory[n]))
+      end
+      device.word_register_map.each do |name, map|
+        registers.add(RegisterPair.new(self, name, @registers[map[:l]], @registers[map[:h]]))
+      end
+
       @io_registers = RegisterFile.new(self)
       device.io_registers.each do |name|
         address = device.data_memory_map[name]
         io_registers.add(MemoryByteRegister.new(self, name.to_s, @sram.memory[address])) if address
       end
-      
+
+      @sreg = SREG.new(self, @sram.memory[device.data_memory_map[:SREG]])
+
       @sp = SP.new(self,
         @sram.memory[device.data_memory_map[:SPL]],
         @sram.memory[device.data_memory_map[:SPH]],
         device.ram_end)
-      @sreg = SREG.new(self, @sram.memory[device.data_memory_map[:SREG]])
+
       @decoder = Decoder.new(self, device.flash)
 
       @ports = {}

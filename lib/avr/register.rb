@@ -29,8 +29,6 @@ end
 
 require "avr/register/memory_byte_register"
 require "avr/register/register_pair"
-require "avr/register/lower_register"
-require "avr/register/upper_register"
 require "avr/register/register_file"
 require "avr/register/sreg"
 require "avr/register/sp"
