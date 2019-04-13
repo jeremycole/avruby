@@ -9,11 +9,11 @@ module AVR
       value = 0
 
       STATUS_BITS_BV.each do |name, bit_value|
-        self.class.send(:define_method, name, proc {
+        define_singleton_method(name, proc {
           (self.value & bit_value) == bit_value
         })
 
-        self.class.send(:define_method, (name.to_s + "=").to_sym, proc { |new_value|
+        define_singleton_method((name.to_s + "=").to_sym, proc { |new_value|
           if new_value == true || new_value == 1
             self.value |= bit_value
           elsif new_value == false || new_value == 0

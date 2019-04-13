@@ -2,8 +2,8 @@ module AVR
   class RegisterFile
     def add(register)
       @registers[register.name] = register
-      @cpu.class.send(:define_method, register.name.to_sym, proc { register })
-      @cpu.class.send(:define_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
+      @cpu.send(:define_singleton_method, register.name.to_sym, proc { register })
+      @cpu.send(:define_singleton_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
       @register_list << register.name
     end
 
