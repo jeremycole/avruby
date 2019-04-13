@@ -227,7 +227,7 @@ module AVR
 
       opcode = OPCODES_K[msb4]
       if opcode
-        k = extract_bits(word, 0, 12)
+        k = twos_complement(extract_bits(word, 0, 12), 12)
         return instruction(offset, opcode, k)
       end
 
