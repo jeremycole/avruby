@@ -84,8 +84,15 @@ module AVR
       puts
     end
 
+    def reset_to_clean_state
+      reset
+      registers.reset
+      io_registers.reset
+    end
+
     def reset
       @pc = 0
+      sreg.reset
     end
 
     def fetch

@@ -13,6 +13,12 @@ module AVR
       @register_list = []
     end
 
+    def reset
+      @registers.each_value do |register|
+        register.value = 0
+      end
+    end
+
     def register_values
       @register_list.map { |name| @registers[name].to_s }.join(", ")
     end

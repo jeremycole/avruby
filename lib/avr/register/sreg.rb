@@ -39,6 +39,10 @@ module AVR
       [mask, sum]
     end
 
+    def reset
+      self.value = 0
+    end
+
     def set_by_hash(hash)
       mask, sum = value_for_hash(hash)
       self.value = (value & ~mask) | sum
