@@ -41,6 +41,49 @@ module AVR
       @oscillator = Oscillator.new("oscillator")
       @oscillator.push_sink(system_clock)
     end
+
+    def trace_cpu
+      cpu.trace do |instruction|
+        puts "*** EXECUTING INSTRUCTION: #{instruction} ***"
+      end
+    end
+
+    def trace_sram
+      cpu.sram.watch do |memory_byte, old_value, new_value|
+        puts "*** MEMORY TRACE: %s[%04x]: %02x -> %02x ***" % [
+          memory_byte.memory.name,
+          memory_byte.address,
+          old_value,
+          new_value,
+        ]
+      end
+    end
+
+    def trace_status_pre_tick
+      oscillator.unshift_sink(AVR::Clock::Sink.new("pre-execution status") {
+        puts
+        puts
+        puts "PRE-EXECUTION STATUS"
+        puts "********************"
+        cpu.print_status
+      })
+    end
+
+    def trace_status_post_tick
+      oscillator.push_sink(AVR::Clock::Sink.new("post-execution status") {
+        puts
+        puts "POST-EXECUTION STATUS"
+        puts "*********************"
+        cpu.print_status
+      })
+    end
+
+    def trace_all
+      trace_cpu
+      trace_sram
+      trace_status_pre_tick
+      trace_status_post_tick
+    end
   end
 end
 
