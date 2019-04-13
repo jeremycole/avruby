@@ -31,7 +31,7 @@ module AVR
     end
 
     opcode(:adc, [:register, :register]) do |cpu, memory, offset, args|
-      result = (args[0].value + args[1].value + (cpu.sreg.C.value ? 1 : 0)) & 0xff
+      result = (args[0].value + args[1].value + (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
     end
@@ -39,8 +39,8 @@ module AVR
     def self.set_sreg_for_adiw(cpu, r, rd, k)
       b15  = (1<<15)
       b7   = (1<<7)
-      rdh7 = (rd & b7)
-      r15  = (r & b15)
+      rdh7 = (rd & b7) != 0
+      r15  = (r & b15) != 0
       v   = !rdh7 & r15
       n   = r15
       c   = !r15 & rdh7

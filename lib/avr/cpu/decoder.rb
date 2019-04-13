@@ -39,6 +39,13 @@ module AVR
       [cpu.registers[rd], k]
     end
 
+    def extract_rdw_k(word)
+      rdl = extract_bits(word, 4, 2) | 0b1100
+      rdh = rdl + 1
+      k = (extract_bits(word, 6, 2) << 4) | extract_bits(word, 0, 4)
+      [cpu.registers[rd], k]
+    end
+
     def twos_complement(value, bits)
       mask = 2**(bits-1)
       -(value & mask) + (value & ~mask)
@@ -74,6 +81,11 @@ module AVR
     OPCODES_A_B = {
       0b1001_1000 => :cbi,
       0b1001_1010 => :sbi,
+    }
+
+    OPCODES_RDw_K = {
+      0b1001_0110 => :adiw,
+      0b1001_0111 => :sbiw,
     }
 
     OPMODES_PC = {
@@ -177,6 +189,12 @@ module AVR
       if opcode
         a, b = extract_a_b(word)
         return instruction(offset, opcode, a, b)
+      end
+
+      opcode = OPCODES_RDw_K[msb8]
+      if opcode
+        rd, k = extract_rdw_k(word)
+        return instruction(offset, opcode, rd, k)
       end
 
       msb7 = extract_bits(word, 9, 7)
