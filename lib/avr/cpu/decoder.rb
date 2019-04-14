@@ -27,6 +27,15 @@ module AVR
       [a, b]
     end
 
+    def extract_rdw_rrw(word)
+      rdwl = extract_bits(word, 4, 4) << 1
+      rrwl = extract_bits(word, 0, 4) << 1
+      [
+        cpu.registers.associated_word_register(cpu.registers[rdwl]),
+        cpu.registers.associated_word_register(cpu.registers[rrwl]),
+      ]
+    end
+
     def extract_rd_n(word)
       rd = extract_bits(word, 4, 5)
       n = extract_bits(word, 0, 4) | (extract_bits(word, 9, 1) << 4)
@@ -75,6 +84,10 @@ module AVR
     OPCODES_SREG = {
       0b1001_0100_0 => :bset, # also sec, sez, sen, sev, ses, seh, set, sei
       0b1001_0100_1 => :bclr, # also clc, clz, cln, clv, cls, clh, clt, cli
+    }
+
+    OPCODES_RDw_RRw = {
+      0b0000_0001 => :movw,
     }
 
     OPCODES_A_B = {
@@ -198,6 +211,12 @@ module AVR
       if opcode
         rd, k = extract_rdw_k(word)
         return instruction(offset, opcode, rd, k)
+      end
+
+      opcode = OPCODES_RDw_RRw[msb8]
+      if opcode
+        rdw, rrw = extract_rdw_rrw(word)
+        return instruction(offset, opcode, rdw, rrw)
       end
 
       msb7 = extract_bits(word, 9, 7)
