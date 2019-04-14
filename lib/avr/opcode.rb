@@ -32,11 +32,13 @@ module AVR
 
     attr_reader :mnemonic
     attr_reader :arg_types
+    attr_reader :sreg_flags
     attr_reader :opcode_proc
 
-    def initialize(mnemonic, arg_types, opcode_proc)
+    def initialize(mnemonic, arg_types, sreg_flags, opcode_proc)
       @mnemonic = mnemonic
       @arg_types = arg_types
+      @sreg_flags = sreg_flags
       @opcode_proc = opcode_proc
       arg_types.each do |arg_type|
         raise "Unknown Opcode argument type: #{arg_type}" unless OPCODE_ARGUMENT_TYPES[arg_type]
@@ -118,9 +120,9 @@ module AVR
 
     OPCODES = {}
 
-    def self.opcode(mnemonic, arg_types=[], &block)
+    def self.opcode(mnemonic, arg_types=[], sreg_flags=[], &block)
       raise "No block given" unless block_given?
-      OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, block.to_proc)
+      OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end
   end
 end

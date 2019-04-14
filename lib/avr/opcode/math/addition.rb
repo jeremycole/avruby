@@ -24,13 +24,13 @@ module AVR
       })
     end
 
-    opcode(:add, [:register, :register]) do |cpu, memory, offset, args|
+    opcode(:add, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
       result = (args[0].value + args[1].value) & 0xff
       set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
     end
 
-    opcode(:adc, [:register, :register]) do |cpu, memory, offset, args|
+    opcode(:adc, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
       result = (args[0].value + args[1].value + (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
@@ -54,7 +54,7 @@ module AVR
       })
     end
 
-    opcode(:adiw, [:word_register, :word]) do |cpu, memory, offset, args|
+    opcode(:adiw, [:word_register, :word], %i[S V N Z C]) do |cpu, memory, offset, args|
       result = (args[0].value + args[1]) & 0xffff
       set_sreg_for_adiw(cpu, result, args[0].value, args[1])
       args[0].value = result
