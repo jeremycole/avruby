@@ -88,6 +88,7 @@ module AVR
       reset
       registers.reset
       io_registers.reset
+      sp.value = device.ram_end
     end
 
     def reset
