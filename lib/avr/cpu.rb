@@ -100,8 +100,8 @@ module AVR
     end
 
     def fetch
-      word = device.flash.word(pc)
-      @pc += 1
+      word = device.flash.word(next_pc)
+      @next_pc += 1
       word
     end
 
@@ -111,8 +111,10 @@ module AVR
 
     def peek
       save_pc = pc
+      save_next_pc = next_pc
       i = decode
       @pc = save_pc
+      @next_pc = save_next_pc
       i
     end
 
