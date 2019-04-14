@@ -36,7 +36,7 @@ module AVR
     end
 
     opcode(:ori, [:register, :byte], %i[S V N Z]) do |cpu, memory, offset, args|
-      result = (args[0].value | args[1].value)
+      result = (args[0].value | args[1])
       set_sreg_for_and_or(cpu, result, args[0].value, args[1])
       args[0].value = result
     end
