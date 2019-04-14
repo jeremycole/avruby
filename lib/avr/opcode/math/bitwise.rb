@@ -41,6 +41,14 @@ module AVR
       args[0].value = result
     end
 
+    opcode(:bset, [:sreg_flag], %i[I T H S V N Z C]) do |cpu, memory, offset, args|
+      cpu.sreg.set_by_hash({args[0] => true});
+    end
+
+    opcode(:bclr, [:sreg_flag], %i[I T H S V N Z C]) do |cpu, memory, offset, args|
+      cpu.sreg.set_by_hash({args[0] => false});
+    end
+
     opcode(:swap, [:register]) do |cpu, memory, offset, args|
       result = ((args[0].value & 0xf0) >> 4) | ((args[0].value & 0x0f) << 4)
       args[0].value = result
