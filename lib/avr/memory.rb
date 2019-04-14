@@ -29,6 +29,12 @@ module AVR
       "#<#{self.class.name} size=#{size}>"
     end
 
+    def reset
+      memory.each do |byte|
+        byte.value = 0
+      end
+    end
+
     def notify(memory_byte, old_value, new_value)
       watches.each do |watch|
         if watch[:filter] == true || watch[:filter].include?(memory_byte.address)
