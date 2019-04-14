@@ -16,9 +16,13 @@ module AVR
       @opcode = AVR::Opcode::OPCODES[mnemonic]
     end
 
+    def validate
+      opcode.validate(cpu, args)
+    end
+
     def valid?
       raise "No opcode available" unless opcode
-      raise "Wrong number of arguments" unless opcode.arg_types && opcode.arg_types.size == args.size
+      validate
       true
     end
 

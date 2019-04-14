@@ -115,7 +115,13 @@ module AVR
     def step
       i = decode
       @tracer.call(i) if @tracer
-      i.execute
+      begin
+        i.execute
+      rescue
+        puts "*** Caught exception while executing #{i}, CPU status:"
+        print_status
+        raise
+      end
     end
 
     def instruction(offset, mnemonic, *args)
