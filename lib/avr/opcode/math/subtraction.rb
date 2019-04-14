@@ -66,5 +66,29 @@ module AVR
       set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1])
       args[0].value = result
     end
+
+    def self.set_sreg_for_sbiw(cpu, r, rd, k)
+      b15  = (1<<15)
+      b7   = (1<<7)
+      rdh7 = (rd & b7) != 0
+      r15  = (r & b15) != 0
+      v   = r15 & !rdh7
+      n   = r15
+      c   = r15 & !rdh7
+
+      cpu.sreg.set_by_hash({
+        S: n ^ v,
+        V: v,
+        N: n,
+        Z: (r == 0),
+        C: c,
+      })
+    end
+
+    opcode(:sbiw, [:word_register, :byte], %i[S V N Z C]) do |cpu, memory, offset, args|
+      result = (args[0].value - args[1]) & 0xffff
+      set_sreg_for_sbiw(cpu, result, args[0].value, args[1])
+      args[0].value = result
+    end
   end
 end
