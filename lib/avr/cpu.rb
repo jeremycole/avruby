@@ -4,6 +4,7 @@ module AVR
   class CPU
     attr_reader :device
     attr_accessor :pc
+    attr_accessor :next_pc
     attr_reader :sram
     attr_reader :registers
     attr_reader :io_registers
@@ -17,6 +18,7 @@ module AVR
     def initialize(device)
       @device = device
       @pc = 0
+      @next_pc = 0
       @sram = SRAM.new(device.ram_start + device.sram_size)
 
       @registers = RegisterFile.new(self)

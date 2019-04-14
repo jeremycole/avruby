@@ -1,11 +1,11 @@
 module AVR
   class Opcode
     opcode(:jmp, [:absolute_pc]) do |cpu, memory, offset, args|
-      cpu.pc = args[0]
+      cpu.next_pc = args[0]
     end
 
     opcode(:rjmp, [:far_relative_pc]) do |cpu, memory, offset, args|
-      cpu.pc = cpu.pc + args[0] + 1
+      cpu.next_pc = cpu.pc + args[0] + 1
     end
 
     opcode(:call, [:absolute_pc]) do |cpu, memory, offset, args|
@@ -14,7 +14,7 @@ module AVR
       cpu.sp.decrement
       cpu.sram.memory[cpu.sp.value].value = (next_pc & 0x00ff)
       cpu.sp.decrement
-      cpu.pc = args[0]
+      cpu.next_pc = args[0]
     end
 
     opcode(:rcall, [:far_relative_pc]) do |cpu, memory, offset, args|
@@ -23,7 +23,7 @@ module AVR
       cpu.sp.decrement
       cpu.sram.memory[cpu.sp.value].value = (next_pc & 0x00ff)
       cpu.sp.decrement
-      cpu.pc = cpu.pc + args[0] + 1
+      cpu.next_pc = cpu.pc + args[0] + 1
     end
   end
 end

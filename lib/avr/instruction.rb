@@ -43,7 +43,11 @@ module AVR
 
     def execute
       raise "Invalid instruction" unless valid?
-      opcode.execute(cpu, memory, offset, args)
+
+      cpu.next_pc = offset + 1
+      result = opcode.execute(cpu, memory, offset, args)
+      cpu.pc = cpu.next_pc
+      result
     end
   end
 end
