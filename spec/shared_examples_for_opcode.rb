@@ -13,6 +13,6 @@ RSpec.shared_examples "opcode" do |opcode, *args|
 
   it "can be executed" do
     i = cpu.instruction(0, opcode, *args)
-    expect(i.execute).to_not be_nil
+    expect(i.execute)
   end
 end
