@@ -40,10 +40,9 @@ module AVR
     end
 
     def extract_rdw_k(word)
-      rdl = extract_bits(word, 4, 2) | 0b1100
-      rdh = rdl + 1
+      rdwl = extract_bits(word, 4, 2) | 0b11100
       k = (extract_bits(word, 6, 2) << 4) | extract_bits(word, 0, 4)
-      [cpu.registers[rd], k]
+      [cpu.registers.associated_word_register(cpu.registers[rdwl]), k]
     end
 
     def twos_complement(value, bits)

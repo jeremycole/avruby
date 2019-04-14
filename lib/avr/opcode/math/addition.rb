@@ -72,7 +72,7 @@ module AVR
       })
     end
 
-    opcode(:adiw, [:word_register, :word], %i[S V N Z C]) do |cpu, memory, offset, args|
+    opcode(:adiw, [:word_register, :byte], %i[S V N Z C]) do |cpu, memory, offset, args|
       result = (args[0].value + args[1]) & 0xffff
       set_sreg_for_adiw(cpu, result, args[0].value, args[1])
       args[0].value = result
