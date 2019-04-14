@@ -25,6 +25,12 @@ module AVR
       end
     end
 
+    def mask_for_flags(flags)
+      mask = 0
+      flags.each { |flag| mask |= STATUS_BITS_BV[flag] }
+      mask
+    end
+
     def bit_values
       STATUS_BITS.map { |name| name.to_s + "=" + (send(name) ? "1" : "0") }.join(", ")
     end
