@@ -10,8 +10,8 @@ RSpec.describe [AVR::Opcode, :swap] do
   it "performs nibble swap correctly" do
     @cpu.r0 = 0xf0
     @i.execute
-    expect(@cpu.r0.value).to be 0x0f
+    expect(@cpu.r0.value).to eq 0x0f
     @i.execute
-    expect(@cpu.r0.value).to be 0xf0
+    expect(@cpu.r0.value).to eq 0xf0
   end
 end

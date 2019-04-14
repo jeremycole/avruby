@@ -10,7 +10,7 @@ RSpec.describe [AVR::Opcode, :adiw] do
   it "adds correctly" do
     @cpu.Z = 0
     @i.execute
-    expect(@cpu.Z.value).to be 1
+    expect(@cpu.Z.value).to eq 1
   end
 
   it "does not set the carry flag without overflow" do
@@ -22,7 +22,7 @@ RSpec.describe [AVR::Opcode, :adiw] do
   it "overflows to zero and sets the carry flag" do
     @cpu.Z = 0xffff
     @i.execute
-    expect(@cpu.Z.value).to be 0
+    expect(@cpu.Z.value).to eq 0
     expect(@cpu.sreg.C).to be true
   end
 
@@ -30,7 +30,7 @@ RSpec.describe [AVR::Opcode, :adiw] do
     @cpu.Z = 0
     @cpu.sreg.C = true
     @i.execute
-    expect(@cpu.Z.value).to be 1
+    expect(@cpu.Z.value).to eq 1
     expect(@cpu.sreg.C).to be false
   end
 end

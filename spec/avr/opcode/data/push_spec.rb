@@ -8,7 +8,7 @@ RSpec.describe [AVR::Opcode, :push] do
     previous_sp = @cpu.sp.value
     @cpu.instruction(0, :push, @cpu.r0).execute
 
-    expect(@cpu.r0.value).to be 1
+    expect(@cpu.r0.value).to eq 1
     expect(@cpu.sram.memory[@cpu.sp.value+1].value).to eq 1
     expect(@cpu.sp.value).to eq previous_sp - 1
   end

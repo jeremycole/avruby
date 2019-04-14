@@ -6,6 +6,6 @@ RSpec.describe [AVR::Opcode, :ori] do
   it "performs bitwise OR correctly" do
     @cpu.r0 = 0b01010101
     @cpu.instruction(0, :ori, @cpu.r0, 0b01101100).execute
-    expect(@cpu.r0.value).to be 0b01111101
+    expect(@cpu.r0.value).to eq 0b01111101
   end
 end

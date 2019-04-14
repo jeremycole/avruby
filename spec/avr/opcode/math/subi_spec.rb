@@ -10,7 +10,7 @@ RSpec.describe [AVR::Opcode, :subi] do
   it "subtracts correctly" do
     @cpu.r0 = 2
     @i.execute
-    expect(@cpu.r0.value).to be 1
+    expect(@cpu.r0.value).to eq 1
   end
 
   it "does not set the carry flag without overflow" do
@@ -22,7 +22,7 @@ RSpec.describe [AVR::Opcode, :subi] do
   it "overflows to zero and sets the carry flag" do
     @cpu.r0 = 0
     @i.execute
-    expect(@cpu.r0.value).to be 255
+    expect(@cpu.r0.value).to eq 255
     expect(@cpu.sreg.C).to be true
   end
 
@@ -30,7 +30,7 @@ RSpec.describe [AVR::Opcode, :subi] do
     @cpu.r0 = 2
     @cpu.sreg.C = true
     @i.execute
-    expect(@cpu.r0.value).to be 1
+    expect(@cpu.r0.value).to eq 1
     expect(@cpu.sreg.C).to be false
   end
 end
