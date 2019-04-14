@@ -44,7 +44,14 @@ module AVR
 
     def extract_rd_k7(word)
       rd = extract_bits(word, 4, 4) | 0b10000
-      k = (extract_bits(word, 8, 3) << 4) | extract_bits(word, 0, 4)
+      (extract_bits(word, 8, 3) << 4)
+      # The bit order for k is scrambled: !8, 8, 10, 9, 3, 2, 1 0
+      k3210 = extract_bits(word, 0, 4)
+      k4    = extract_bits(word, 9, 1)
+      k5    = extract_bits(word, 10, 1)
+      k6    = extract_bits(word, 8, 1)
+      k7    = ~k6 & 0x01
+      k     = (k7 << 7) | (k6 << 6) | (k5 << 5) | (k4 << 4) | k3210
       [cpu.registers[rd], k]
     end
 
