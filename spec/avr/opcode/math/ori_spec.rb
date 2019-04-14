@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :ori do
+RSpec.describe [AVR::Opcode, :ori] do
   include_examples "opcode", :ori
 
   it "performs bitwise OR correctly" do

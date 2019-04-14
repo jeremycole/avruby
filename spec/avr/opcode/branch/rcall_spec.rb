@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :rcall do
+RSpec.describe [AVR::Opcode, :rcall] do
   include_examples "opcode", :rcall
 
   it "pushes the current PC onto the stack" do

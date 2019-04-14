@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :mov do
+RSpec.describe [AVR::Opcode, :mov] do
   include_examples "opcode", :mov
 
   before(:all) do

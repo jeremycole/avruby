@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :jmp do
+RSpec.describe [AVR::Opcode, :jmp] do
   include_examples "opcode", :jmp
 
   it "sets PC to the specified constant" do

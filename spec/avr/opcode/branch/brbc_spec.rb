@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :brbc do
+RSpec.describe [AVR::Opcode, :brbc] do
   include_examples "opcode", :brbc
 
   after(:each) do

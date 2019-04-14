@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :ldi do
+RSpec.describe [AVR::Opcode, :ldi] do
   include_examples "opcode", :ldi
 
   it "loads the constant into the register" do

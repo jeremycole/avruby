@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :andi do
+RSpec.describe [AVR::Opcode, :andi] do
   include_examples "opcode", :andi
 
   it "performs bitwise AND correctly" do

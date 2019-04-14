@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :adiw do
+RSpec.describe [AVR::Opcode, :adiw] do
   include_examples "opcode", :adiw
 
   before(:all) do

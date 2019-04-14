@@ -1,6 +1,6 @@
 require 'shared_examples_for_opcode'
 
-RSpec.describe AVR::Opcode, :rjmp do
+RSpec.describe [AVR::Opcode, :rjmp] do
   include_examples "opcode", :rjmp
 
   it "adjusts PC by the specified offset" do
