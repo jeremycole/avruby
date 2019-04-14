@@ -1,13 +1,11 @@
 module AVR
   class Opcode
     opcode(:push, [:register]) do |cpu, memory, offset, args|
-      cpu.sram.memory[cpu.sp.value].value = args[0].value
-      cpu.sp.decrement
+      stack_push(cpu, args[0].value)
     end
 
     opcode(:pop, [:register]) do |cpu, memory, offset, args|
-      cpu.sp.increment
-      args[0].value = cpu.sram.memory[cpu.sp.value].value
+      args[0].value = stack_pop(cpu)
     end
   end
 end

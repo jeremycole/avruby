@@ -131,6 +131,25 @@ module AVR
 
     OPCODES = {}
 
+    def self.stack_push(cpu, byte)
+      cpu.sram.memory[cpu.sp.value].value = byte
+      cpu.sp.decrement
+    end
+
+    def self.stack_push_word(cpu, word)
+      stack_push(cpu, (word & 0xff00) >> 8)
+      stack_push(cpu, (word & 0x00ff))
+    end
+
+    def self.stack_pop(cpu)
+      cpu.sp.increment
+      cpu.sram.memory[cpu.sp.value].value
+    end
+
+    def self.stack_pop_word(cpu)
+      stack_pop(cpu) | (stack_pop(cpu) << 8)
+    end
+
     def self.opcode(mnemonic, arg_types=[], sreg_flags=[], &block)
       raise "No block given" unless block_given?
       OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
