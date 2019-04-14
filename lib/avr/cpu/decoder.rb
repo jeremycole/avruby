@@ -42,6 +42,12 @@ module AVR
       [cpu.registers[rd], n]
     end
 
+    def extract_rd_k7(word)
+      rd = extract_bits(word, 4, 4) | 0b10000
+      k = (extract_bits(word, 8, 3) << 4) | extract_bits(word, 0, 4)
+      [cpu.registers[rd], k]
+    end
+
     def extract_rd_k(word)
       rd = extract_bits(word, 4, 4) | 0b10000
       k = (extract_bits(word, 8, 4) << 4) | extract_bits(word, 0, 4)
@@ -124,6 +130,7 @@ module AVR
         0b01000 => [:ld, :Y],
       },
       0b1001_00 => {
+        0b00000 => :lds,
         0b00001 => [:ld, :Z, :post_increment],
         0b00010 => [:ld, :Z, :pre_decrement],
         0b00100 => [:lpm, :Z],
@@ -134,6 +141,7 @@ module AVR
         0b01101 => [:ld, :X, :post_increment],
         0b01110 => [:ld, :X, :pre_decrement],
         0b01111 => :pop,
+        0b10000 => :sts,
         0b10100 => :xch,
         0b10101 => :las,
         0b10110 => :lac,
@@ -169,6 +177,11 @@ module AVR
     OPCODES_A_R = {
       0b1011_0 => :in,
       0b1011_1 => :out,
+    }
+
+    OPCODES_RD_K7 = {
+      0b1010_0 => :lds,
+      0b1010_1 => :sts,
     }
 
     OPCODES_RD_K = {
@@ -234,6 +247,14 @@ module AVR
         if opcode.is_a?(Hash)
           case
           when opcode[n].is_a?(Symbol) # XXX Rd
+            case opcode[n]
+            when :lds
+              address = cpu.fetch
+              return instruction(offset, opcode[n], rd, address)
+            when :sts
+              address = cpu.fetch
+              return instruction(offset, opcode[n], address, rd)
+            end
             return instruction(offset, opcode[n], rd)
           when opcode[n].is_a?(Array) && opcode[n].size >= 2 # XXX Rd, [-]{X,Y,Z}[+]
             word_register = cpu.send(opcode[n][1])
@@ -263,6 +284,13 @@ module AVR
         a, r = extract_a_r(word)
         return instruction(offset, opcode, r, a) if opcode == :in
         return instruction(offset, opcode, a, r) if opcode == :out
+      end
+
+      opcode = OPCODES_RD_K7[msb5]
+      if opcode
+        rd, k = extract_rd_k7(word)
+        return instruction(offset, opcode, rd, k) if opcode == :lds
+        return instruction(offset, opcode, k, rd) if opcode == :sts
       end
 
       msb4 = extract_bits(word, 12, 4)

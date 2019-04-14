@@ -1,5 +1,13 @@
 module AVR
   class Opcode
+    opcode(:lds, [:register, :word]) do |cpu, memory, offset, args|
+      args[0].value = cpu.sram.memory[args[1]].value
+    end
+
+    opcode(:sts, [:word, :register]) do |cpu, memory, offset, args|
+      cpu.sram.memory[args[0]].value = args[1].value
+    end
+
     opcode(:st, [:modifying_word_register, :register]) do |cpu, memory, offset, args|
       args[0] = [args[0]] unless args[0].is_a?(Array)
       args[0][0].value -= 1 if args[0][1] == :pre_decrement
