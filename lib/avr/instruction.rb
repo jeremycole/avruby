@@ -29,22 +29,7 @@ module AVR
     def args_to_s
       return args.join(", ") unless opcode
       return nil unless opcode.arg_types.size > 0
-      arg_strings = []
-      opcode.arg_types.each_with_index.map do |arg_type, i|
-        case arg_type
-        when :register
-          arg_strings << args[i].name
-        when :constant, :io_address
-          arg_strings << ("0x%02x" % [args[i]])
-        when :pc
-          arg_strings << ("0x%04x" % [args[i]])
-        when :offset
-          arg_strings << (".%+d" % [2 * args[i]])
-        else
-          arg_strings << args[i].to_s
-        end
-      end
-      arg_strings.join(", ")
+      opcode.format_args(args).join(", ")
     end
 
     def to_s

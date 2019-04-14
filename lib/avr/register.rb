@@ -18,7 +18,7 @@ module AVR
     end
 
     def to_s
-      name + "=" + value_hex
+      name
     end
 
     def inspect

@@ -16,6 +16,20 @@ module AVR
     class StatusRegisterBitExpected < OpcodeException; end
     class ConstantOutOfRange < OpcodeException; end
 
+    OPCODE_ARGUMENT_TYPES = {
+      sreg_flag:          "%s",
+      near_relative_pc:   proc { |arg| ".%+d" % [2 * arg] },
+      far_relative_pc:    proc { |arg| ".%+d" % [2 * arg] },
+      absolute_pc:        "0x%04x",
+      byte:               "0x%02x",
+      word:               "0x%04x",
+      register:           "%s",
+      word_register:      "%s",
+      io_address:         "0x%02x",
+      lower_io_address:   "0x%02x",
+      bit_number:         "%d",
+    }
+
     attr_reader :mnemonic
     attr_reader :arg_types
     attr_reader :opcode_proc
@@ -24,6 +38,9 @@ module AVR
       @mnemonic = mnemonic
       @arg_types = arg_types
       @opcode_proc = opcode_proc
+      arg_types.each do |arg_type|
+        raise "Unknown Opcode argument type: #{arg_type}" unless OPCODE_ARGUMENT_TYPES[arg_type]
+      end
     end
 
     def validate_arg(cpu, arg, arg_number)
@@ -73,6 +90,22 @@ module AVR
       end
 
       true
+    end
+
+    def format_args(args)
+      formatted_args = []
+      args.each_with_index do |arg, i|
+        arg_formatter = OPCODE_ARGUMENT_TYPES[arg_types[i]]
+        case arg_formatter
+        when String
+          formatted_args << (arg_formatter % arg)
+        when Proc
+          formatted_args << arg_formatter.call(arg)
+        else
+          raise "Unknown argument formatter (#{arg_formatter.class}) for #{arg}"
+        end
+      end
+      formatted_args
     end
 
     def inspect
