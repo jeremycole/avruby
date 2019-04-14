@@ -40,5 +40,10 @@ module AVR
       set_sreg_for_and_or(cpu, result, args[0].value, args[1])
       args[0].value = result
     end
+
+    opcode(:swap, [:register]) do |cpu, memory, offset, args|
+      result = ((args[0].value & 0xf0) >> 4) | ((args[0].value & 0x0f) << 4)
+      args[0].value = result
+    end
   end
 end
