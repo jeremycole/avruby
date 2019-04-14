@@ -129,6 +129,7 @@ end
 
 require "avr/opcode/nop"
 require "avr/opcode/register"
+require "avr/opcode/compare"
 require "avr/opcode/data/stack"
 require "avr/opcode/data/immediate"
 require "avr/opcode/branch/unconditional"
