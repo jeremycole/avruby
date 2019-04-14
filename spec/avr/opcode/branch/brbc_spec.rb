@@ -16,6 +16,6 @@ RSpec.describe [AVR::Opcode, :brbc] do
   it "does not branch if the bit is clear" do
     @cpu.sreg.Z = false
     @cpu.instruction(0, :brbc, :Z, +20).execute
-    expect(@cpu.pc).to eq 21
+    expect(@cpu.pc).to eq 20
   end
 end

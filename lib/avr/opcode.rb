@@ -25,6 +25,11 @@ module AVR
       word:               "0x%04x",
       register:           "%s",
       word_register:      "%s",
+      modifying_word_register: proc { |arg| "%s%s%s" % [
+        arg[1] == :pre_decrement ? "-" : "",
+        arg[0].to_s,
+        arg[1] == :post_increment ? "+" : "",
+      ]},
       io_address:         "0x%02x",
       lower_io_address:   "0x%02x",
       bit_number:         "%d",
@@ -132,6 +137,8 @@ require "avr/opcode/register"
 require "avr/opcode/compare"
 require "avr/opcode/data/stack"
 require "avr/opcode/data/immediate"
+require "avr/opcode/data/program"
+require "avr/opcode/data/sram"
 require "avr/opcode/branch/unconditional"
 require "avr/opcode/branch/conditional"
 require "avr/opcode/math/addition"

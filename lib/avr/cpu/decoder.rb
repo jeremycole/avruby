@@ -126,6 +126,9 @@ module AVR
         0b10101 => :las,
         0b10110 => :lac,
         0b10111 => :lat,
+        0b11100 => [:st, :X, :unchanged],
+        0b11101 => [:st, :X, :post_increment],
+        0b11110 => [:st, :X, :pre_decrement],
         0b11111 => :push,
       },
       0b1001_01 => {
@@ -181,7 +184,7 @@ module AVR
       lsb4 = extract_bits(word, 0, 4)
       opcode = OPCODES_SREG[msb9]
       if opcode && lsb4 == 0b1000
-        s = extract_bits(4, 3)
+        s = extract_bits(word, 4, 3)
         return instruction(offset, opcode, AVR::SREG::STATUS_BITS[s])
       end
 
@@ -211,11 +214,17 @@ module AVR
       if opcode
         rd, n = extract_rd_n(word)
         if opcode.is_a?(Hash)
-          case opcode[n].class
-          when Symbol # XXX Rd
+          case
+          when opcode[n].is_a?(Symbol) # XXX Rd
             return instruction(offset, opcode[n], rd)
-          when Array # XXX Rd, [-]{X,Y,Z}[+]
-            return instruction(offset, opcode[0], rd, opcode[1], opcode[2]) if opcode.size == 3
+          when opcode[n].is_a?(Array) && opcode[n].size == 3 # XXX Rd, [-]{X,Y,Z}[+]
+            modifying_word_register = [cpu.send(opcode[n][1]), opcode[n][2]]
+            case opcode[n][0]
+            when :lpm
+              return instruction(offset, opcode[n][0], rd, modifying_word_register)
+            when :st
+              return instruction(offset, opcode[n][0], modifying_word_register, rd)
+            end
           end
         end
         return instruction(offset, :lsl, rd) if opcode == :add && rd == n
