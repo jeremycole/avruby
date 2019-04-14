@@ -1,5 +1,23 @@
 module AVR
   class Opcode
+    def self.set_sreg_for_dec(cpu, r, rd)
+      n = (r & (1<<7)) != 0
+      v = (rd == 0x80)
+
+      cpu.sreg.set_by_hash({
+        S: n ^ v,
+        V: v,
+        N: n,
+        Z: (r == 0),
+      })
+    end
+
+    opcode(:dec, [:register], %i[S V N Z]) do |cpu, memory, offset, args|
+      result = (args[0].value - 1) & 0xff
+      set_sreg_for_dec(cpu, result, args[0].value)
+      args[0].value = result
+    end
+
     def self.set_sreg_for_sub_sbc(cpu, r, rd, rr)
       b7  = (1<<7)
       b3  = (1<<3)
