@@ -5,11 +5,16 @@ module AVR
       @cpu.send(:define_singleton_method, register.name.to_sym, proc { register })
       @cpu.send(:define_singleton_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
       @register_list << register.name
+      if register.is_a?(RegisterPair)
+        @word_register_map[register.l] = register
+        @word_register_map[register.h] = register
+      end
     end
 
     def initialize(cpu)
       @cpu = cpu
       @registers = Hash.new
+      @word_register_map = Hash.new
       @register_list = []
     end
 
@@ -31,6 +36,10 @@ module AVR
 
     def [](key)
       @registers[@register_list[key]] if key.is_a?(Fixnum)
+    end
+
+    def associated_word_register(register)
+      @word_register_map[register]
     end
 
     def inspect
