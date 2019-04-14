@@ -108,17 +108,17 @@ module AVR
       0b0010_10 => :or,
       0b0010_11 => :mov,
       0b1000_00 => {
-        0b00000 => [:ld, :Z, :unchanged],
-        0b01000 => [:ld, :Y, :unchanged],
+        0b00000 => [:ld, :Z],
+        0b01000 => [:ld, :Y],
       },
       0b1001_00 => {
         0b00001 => [:ld, :Z, :post_increment],
         0b00010 => [:ld, :Z, :pre_decrement],
-        0b00100 => [:lpm, :Z, :unchanged],
+        0b00100 => [:lpm, :Z],
         0b00101 => [:lpm, :Z, :post_increment],
         0b01001 => [:ld, :Y, :post_increment],
         0b01010 => [:ld, :Y, :pre_decrement],
-        0b01100 => [:ld, :X, :unchanged],
+        0b01100 => [:ld, :X],
         0b01101 => [:ld, :X, :post_increment],
         0b01110 => [:ld, :X, :pre_decrement],
         0b01111 => :pop,
@@ -126,7 +126,7 @@ module AVR
         0b10101 => :las,
         0b10110 => :lac,
         0b10111 => :lat,
-        0b11100 => [:st, :X, :unchanged],
+        0b11100 => [:st, :X],
         0b11101 => [:st, :X, :post_increment],
         0b11110 => [:st, :X, :pre_decrement],
         0b11111 => :push,
@@ -217,8 +217,9 @@ module AVR
           case
           when opcode[n].is_a?(Symbol) # XXX Rd
             return instruction(offset, opcode[n], rd)
-          when opcode[n].is_a?(Array) && opcode[n].size == 3 # XXX Rd, [-]{X,Y,Z}[+]
-            modifying_word_register = [cpu.send(opcode[n][1]), opcode[n][2]]
+          when opcode[n].is_a?(Array) && opcode[n].size >= 2 # XXX Rd, [-]{X,Y,Z}[+]
+            word_register = cpu.send(opcode[n][1])
+            modifying_word_register = opcode[n][2] ? [word_register, opcode[n][2]] : word_register
             case opcode[n][0]
             when :lpm
               return instruction(offset, opcode[n][0], rd, modifying_word_register)

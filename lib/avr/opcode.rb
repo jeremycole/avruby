@@ -25,11 +25,17 @@ module AVR
       word:               "0x%04x",
       register:           "%s",
       word_register:      "%s",
-      modifying_word_register: proc { |arg| "%s%s%s" % [
-        arg[1] == :pre_decrement ? "-" : "",
-        arg[0].to_s,
-        arg[1] == :post_increment ? "+" : "",
-      ]},
+      modifying_word_register: proc { |arg|
+        if arg.is_a?(AVR::RegisterPair)
+          "%s" % arg
+        else
+          "%s%s%s" % [
+            arg[1] == :pre_decrement ? "-" : "",
+            arg[0].to_s,
+            arg[1] == :post_increment ? "+" : "",
+          ]
+        end
+      },
       io_address:         "0x%02x",
       lower_io_address:   "0x%02x",
       bit_number:         "%d",
