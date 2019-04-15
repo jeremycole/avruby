@@ -20,7 +20,7 @@ module AVR
       sreg_flag:          "%s",
       near_relative_pc:   proc { |arg| ".%+d" % [2 * arg] },
       far_relative_pc:    proc { |arg| ".%+d" % [2 * arg] },
-      absolute_pc:        "0x%04x",
+      absolute_pc:        proc { |arg| "0x%04x" % [2 * arg] },
       byte:               "0x%02x",
       word:               "0x%04x",
       register:           "%s",

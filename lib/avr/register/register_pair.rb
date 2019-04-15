@@ -8,8 +8,8 @@ module AVR
       @h = h
     end
 
-    def value_hex
-      "%04x" % value
+    def format
+      "%04x"
     end
 
     def value

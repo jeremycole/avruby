@@ -44,17 +44,60 @@ module AVR
 
     def trace_cpu
       cpu.trace do |instruction|
-        puts "*** EXECUTING INSTRUCTION: #{instruction} ***"
+        puts "*** %20s: %s ***" % [
+          "INSTRUCTION TRACE",
+          instruction,
+        ]
+      end
+    end
+
+    def trace_registers
+      register_addresses = {}
+      cpu.registers.registers.each do |name, register|
+        case register
+        when MemoryByteRegister
+          register_addresses[register.memory_byte.address] ||= []
+          register_addresses[register.memory_byte.address] << register
+        when RegisterPair
+          register_addresses[register.l.memory_byte.address] ||= []
+          register_addresses[register.l.memory_byte.address] << register
+          register_addresses[register.h.memory_byte.address] ||= []
+          register_addresses[register.h.memory_byte.address] << register
+        end
+      end
+      cpu.sram.watch do |memory_byte, old_value, new_value|
+        registers = register_addresses[memory_byte.address]
+        if registers
+          registers.each do |register|
+            puts "*** %20s: %12s: %4s -> %4s ***" % [
+              "REGISTER TRACE",
+              register.name,
+              register.is_a?(MemoryByteRegister) ? register.format % old_value : "",
+              register.format % register.value,
+            ]
+          end
+        end
+      end
+    end
+
+    def trace_sreg
+      cpu.sram.watch do |memory_byte, old_value, new_value|
+        if memory_byte.address == cpu.sreg.memory_byte.address
+          puts "*** %20s: %s" % [
+            "SREG TRACE",
+            cpu.sreg.diff_values(old_value, new_value),
+          ]
+        end
       end
     end
 
     def trace_sram
       cpu.sram.watch do |memory_byte, old_value, new_value|
-        puts "*** MEMORY TRACE: %s[%04x]: %02x -> %02x ***" % [
-          memory_byte.memory.name,
-          memory_byte.address,
-          old_value,
-          new_value,
+        puts "*** %20s: %12s: %4s -> %4s ***" % [
+          "MEMORY TRACE",
+          "%s[%04x]" % [memory_byte.memory.name, memory_byte.address],
+          memory_byte.format % old_value,
+          memory_byte.format % new_value,
         ]
       end
     end
@@ -81,6 +124,8 @@ module AVR
     def trace_all
       trace_cpu
       trace_sram
+      trace_sreg
+      trace_registers
       trace_status_pre_tick
       trace_status_post_tick
     end

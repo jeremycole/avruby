@@ -9,6 +9,10 @@ module AVR
       @value = value
     end
 
+    def format
+      "%02x"
+    end
+
     def to_i
       value.to_i
     end
@@ -28,8 +32,10 @@ module AVR
     def value=(new_value)
       return if new_value == value
       raise "Value #{new_value} out of range" if new_value < 0 || new_value > 255
-      memory.notify(self, value, new_value)
+      old_value = value
       @value = new_value
+      memory.notify(self, old_value, new_value)
+      @value
     end
   end
 end

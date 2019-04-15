@@ -11,6 +11,9 @@ module AVR
       end
     end
 
+    attr_reader :registers
+    attr_reader :word_register_map
+
     def initialize(cpu)
       @cpu = cpu
       @registers = Hash.new

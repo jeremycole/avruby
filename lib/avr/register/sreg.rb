@@ -58,5 +58,18 @@ module AVR
     def inspect
       "#<#{self.class.name} #{bit_values}>"
     end
+
+    def diff_values(old_value, new_value)
+      diff_mask = old_value ^ new_value
+      diff_strings = []
+      STATUS_BITS_BV.each do |flag, mask|
+        old_bit = ((old_value & mask) != 0) ? 1 : 0
+        new_bit = ((new_value & mask) != 0) ? 1 : 0
+        if diff_mask & mask != 0
+          diff_strings << "#{flag}=#{old_bit}->#{new_bit}"
+        end
+      end
+      "[" + diff_strings.join(", ") + "]"
+    end
   end
 end

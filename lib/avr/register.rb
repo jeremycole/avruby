@@ -9,8 +9,12 @@ module AVR
       @name = name
     end
 
+    def format
+      "%02x"
+    end
+
     def value_hex
-      "%02x" % value
+      format % value
     end
 
     def to_i
