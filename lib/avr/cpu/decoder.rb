@@ -62,7 +62,7 @@ module AVR
     end
 
     def extract_rdw_k(word)
-      rdwl = extract_bits(word, 4, 2) | 0b11100
+      rdwl = (extract_bits(word, 4, 2) << 1) | 0b11000
       k = (extract_bits(word, 6, 2) << 4) | extract_bits(word, 0, 4)
       [cpu.registers.associated_word_register(cpu.registers[rdwl]), k]
     end
