@@ -95,6 +95,7 @@ module AVR
 
     def reset
       @pc = 0
+      @next_pc = 0
       sreg.reset
     end
 
