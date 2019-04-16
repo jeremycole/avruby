@@ -12,6 +12,10 @@ module AVR
       })
     end
 
+    decode("1001 101d dddd 0011", :inc) do |cpu, offset, opcode_definition, operands|
+      cpu.instruction(offset, :inc, operands[:Rd])
+    end
+
     opcode(:inc, [:register], %i[S V N Z]) do |cpu, memory, offset, args|
       result = (args[0].value + 1) & 0xff
       set_sreg_for_inc(cpu, result, args[0].value)
@@ -42,10 +46,18 @@ module AVR
       })
     end
 
+    decode("0000 11rd dddd rrrr", :add) do |cpu, offset, opcode_definition, operands|
+      cpu.instruction(offset, :add, operands[:Rd], operands[:Rr])
+    end
+
     opcode(:add, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
       result = (args[0].value + args[1].value) & 0xff
       set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
+    end
+
+    decode("0001 11rd dddd rrrr", :adc) do |cpu, offset, opcode_definition, operands|
+      cpu.instruction(offset, :adc, operands[:Rd], operands[:Rr])
     end
 
     opcode(:adc, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
@@ -70,6 +82,10 @@ module AVR
         Z: (r == 0),
         C: c,
       })
+    end
+
+    decode("1001 0110 KKdd KKKK", :adiw) do |cpu, offset, opcode_definition, operands|
+      cpu.instruction(offset, :adiw, operands[:Rd], operands[:K])
     end
 
     opcode(:adiw, [:word_register, :byte], %i[S V N Z C]) do |cpu, memory, offset, args|

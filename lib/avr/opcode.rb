@@ -1,3 +1,5 @@
+require "avr/opcode_decoder"
+
 module AVR
   class Opcode
     class OpcodeException < RuntimeError; end
@@ -154,21 +156,13 @@ module AVR
       raise "No block given" unless block_given?
       OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end
+
+    def self.decode(pattern, mnemonic, variant=nil, &block)
+      AVR::OpcodeDecoder.add_opcode_definition(AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, variant, block.to_proc))
+    end
+
+    def self.parse_operands(pattern, &block)
+      AVR::OpcodeDecoder.add_operand_parser(AVR::OpcodeDecoder::OperandParser.new(pattern, block.to_proc))
+    end
   end
 end
-
-require "avr/opcode/nop"
-require "avr/opcode/register"
-require "avr/opcode/compare"
-require "avr/opcode/data/stack"
-require "avr/opcode/data/immediate"
-require "avr/opcode/data/program"
-require "avr/opcode/data/sram"
-require "avr/opcode/branch/unconditional"
-require "avr/opcode/branch/conditional"
-require "avr/opcode/branch/return"
-require "avr/opcode/math/addition"
-require "avr/opcode/math/subtraction"
-require "avr/opcode/math/bitwise"
-require "avr/opcode/io/bit"
-require "avr/opcode/io/in_out"

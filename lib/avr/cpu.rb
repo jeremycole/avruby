@@ -1,5 +1,3 @@
-require "avr/cpu/decoder"
-
 module AVR
   class CPU
     attr_reader :device
@@ -42,7 +40,7 @@ module AVR
         @sram.memory[device.data_memory_map[:SPH]],
         device.ram_end)
 
-      @decoder = Decoder.new(self, device.flash)
+      @decoder = OpcodeDecoder.new
 
       @ports = {}
       device.port_map.each do |name, addr|
@@ -106,8 +104,25 @@ module AVR
       word
     end
 
+    def instruction(offset, mnemonic, *args)
+      AVR::Instruction.new(self, device.flash, offset, mnemonic, *args)
+    end
+
     def decode
-      decoder.decode
+      offset = next_pc
+      word = fetch
+      decoded_opcode = decoder.decode(word)
+      unless decoded_opcode
+        raise "Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)" % [
+          word,
+          offset,
+          offset * 2,
+        ]
+      end
+
+      decoded_opcode.opcode_definition.parse(self, offset,
+        decoded_opcode.opcode_definition,
+        decoded_opcode.prepare_operands(self))
     end
 
     def peek
@@ -129,10 +144,6 @@ module AVR
         print_status
         raise
       end
-    end
-
-    def instruction(offset, mnemonic, *args)
-      decoder.instruction(offset, mnemonic, *args)
     end
   end
 end
