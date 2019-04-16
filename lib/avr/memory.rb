@@ -62,6 +62,12 @@ module AVR
       (memory[byte_address + 1].value << 8) | memory[byte_address].value
     end
 
+    def set_word(address, value)
+      byte_address = address << 1
+      memory[byte_address + 1].value = (value & 0xff00) >> 8
+      memory[byte_address].value = value & 0x00ff
+    end
+
     def load_from_intel_hex(filename)
       ihex = IntelHex.new(filename)
       sum = 0
