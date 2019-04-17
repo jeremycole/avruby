@@ -21,15 +21,27 @@ module AVR
       args[0].value = cpu.sram.memory[args[1]].value
     end
 
+    decode("1001 000d dddd 1100", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], cpu.X)
+    end
+
+    decode("1001 000d dddd 1101", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.X, :post_increment])
+    end
+
+    decode("1001 000d dddd 1110", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.X, :pre_decrement])
+    end
+
     decode("1000 000d dddd 1000", :ld) do |cpu, opcode_definition, operands|
       cpu.instruction(:ld, operands[:Rd], cpu.Y)
     end
 
-    decode("1000 000d dddd 1001", :ld) do |cpu, opcode_definition, operands|
+    decode("1001 000d dddd 1001", :ld) do |cpu, opcode_definition, operands|
       cpu.instruction(:ld, operands[:Rd], [cpu.Y, :post_increment])
     end
 
-    decode("1000 000d dddd 1010", :ld) do |cpu, opcode_definition, operands|
+    decode("1001 000d dddd 1010", :ld) do |cpu, opcode_definition, operands|
       cpu.instruction(:ld, operands[:Rd], [cpu.Y, :pre_decrement])
     end
 
@@ -37,11 +49,11 @@ module AVR
       cpu.instruction(:ld, operands[:Rd], cpu.Z)
     end
 
-    decode("1000 000d dddd 0001", :ld) do |cpu, opcode_definition, operands|
+    decode("1001 000d dddd 0001", :ld) do |cpu, opcode_definition, operands|
       cpu.instruction(:ld, operands[:Rd], [cpu.Z, :post_increment])
     end
 
-    decode("1000 000d dddd 0010", :ld) do |cpu, opcode_definition, operands|
+    decode("1001 000d dddd 0010", :ld) do |cpu, opcode_definition, operands|
       cpu.instruction(:ld, operands[:Rd], [cpu.Z, :pre_decrement])
     end
 
