@@ -5,7 +5,7 @@ RSpec.describe [AVR::Opcode, :ijmp] do
 
   it "sets PC to the specified constant" do
     @cpu.Z = 0x0500
-    @cpu.instruction(0, :ijmp).execute
+    @cpu.instruction(:ijmp).execute
     expect(@cpu.pc).to eq 0x0500
   end
 end

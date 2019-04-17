@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :cpc] do
   include_examples "opcode", :cpc
 
   before(:all) do
-    @i = @cpu.instruction(0, :cpc, @cpu.r0, @cpu.r1)
+    @i = @cpu.instruction(:cpc, @cpu.r0, @cpu.r1)
   end
 
   it "compares r0 == r1, Z=1, C=0" do

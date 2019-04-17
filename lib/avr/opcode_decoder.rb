@@ -3,14 +3,12 @@ module AVR
     class OpcodeDefinition
       attr_reader :pattern
       attr_reader :mnemonic
-      attr_reader :variant
       attr_reader :options
       attr_reader :parse_proc
 
-      def initialize(pattern, mnemonic, variant, parse_proc)
+      def initialize(pattern, mnemonic, parse_proc)
         @pattern = pattern.gsub(/[^01a-zA-Z]/, "")
         @mnemonic = mnemonic
-        @variant = variant
         @options = options
         @parse_proc = parse_proc
 
@@ -47,8 +45,8 @@ module AVR
         operands
       end
   
-      def parse(cpu, offset, opcode_definition, operands)
-        parse_proc.call(cpu, offset, opcode_definition, operands)
+      def parse(cpu, opcode_definition, operands)
+        parse_proc.call(cpu, opcode_definition, operands)
       end
     end
 

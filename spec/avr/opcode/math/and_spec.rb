@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :and] do
   include_examples "opcode", :and
 
   before(:all) do
-    @i = @cpu.instruction(0, :and, @cpu.r0, @cpu.r1)
+    @i = @cpu.instruction(:and, @cpu.r0, @cpu.r1)
   end
 
   it "performs bitwise AND correctly" do

@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :swap] do
   include_examples "opcode", :swap
 
   before(:all) do
-    @i = @cpu.instruction(0, :swap, @cpu.r0)
+    @i = @cpu.instruction(:swap, @cpu.r0)
   end
 
   it "performs nibble swap correctly" do

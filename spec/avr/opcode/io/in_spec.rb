@@ -10,7 +10,7 @@ RSpec.describe [AVR::Opcode, :in] do
 
   it "reads the contents of the IO register into the register" do
     @portb.value = 1
-    @cpu.instruction(0, :in, @cpu.r0, @portb_io_address).execute
+    @cpu.instruction(:in, @cpu.r0, @portb_io_address).execute
     expect(@cpu.r0.value).to eq 1
   end
 end

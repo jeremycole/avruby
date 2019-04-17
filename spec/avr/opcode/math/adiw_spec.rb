@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :adiw] do
   include_examples "opcode", :adiw
 
   before(:all) do
-    @i = @cpu.instruction(0, :adiw, @cpu.Z, 1)
+    @i = @cpu.instruction(:adiw, @cpu.Z, 1)
   end
 
   it "adds correctly" do

@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :eor] do
   include_examples "opcode", :eor
 
   before(:all) do
-    @i = @cpu.instruction(0, :eor, @cpu.r0, @cpu.r1)
+    @i = @cpu.instruction(:eor, @cpu.r0, @cpu.r1)
   end
 
   it "performs bitwise XOR correctly" do

@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :dec] do
   include_examples "opcode", :dec
 
   before(:all) do
-    @i = @cpu.instruction(0, :dec, @cpu.r0)
+    @i = @cpu.instruction(:dec, @cpu.r0)
   end
 
   it "decrements correctly" do

@@ -21,7 +21,7 @@ RSpec.describe [AVR::Opcode, :mov] do
 
   context "instruction" do
     before(:all) do
-      @i = @cpu.instruction(0, :mov, @cpu.r0, @cpu.r1)
+      @i = @cpu.instruction(:mov, @cpu.r0, @cpu.r1)
     end
 
     it "copies the source register to the target register" do

@@ -105,8 +105,8 @@ module AVR
       word
     end
 
-    def instruction(offset, mnemonic, *args)
-      AVR::Instruction.new(self, device.flash, offset, mnemonic, *args)
+    def instruction(mnemonic, *args)
+      AVR::Instruction.new(self, mnemonic, *args)
     end
 
     def decode
@@ -121,7 +121,7 @@ module AVR
         ]
       end
 
-      decoded_opcode.opcode_definition.parse(self, offset,
+      decoded_opcode.opcode_definition.parse(self,
         decoded_opcode.opcode_definition,
         decoded_opcode.prepare_operands(self))
     end

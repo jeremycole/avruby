@@ -58,7 +58,7 @@ module AVR
       end
     end
 
-    def validate_arg(cpu, arg, arg_number)
+    def validate_arg(arg, arg_number)
       case arg_types[arg_number]
       when :register
         return RegisterExpected unless arg.is_a?(AVR::Register)
@@ -94,11 +94,11 @@ module AVR
       end
     end
 
-    def validate(cpu, args)
+    def validate(args)
       raise IncorrectArgumentCount unless args.size == arg_types.size
 
       args.each_with_index do |arg, i|
-        arg_exception = validate_arg(cpu, arg, i)
+        arg_exception = validate_arg(arg, i)
         if arg_exception
           raise arg_exception.new("Argument #{i} (#{arg}) invalid for #{arg_types[i]}")
         end
@@ -127,8 +127,8 @@ module AVR
       "#<#{self.class.name} #{mnemonic} #{arg_types}>"
     end
 
-    def execute(cpu, memory, offset, args)
-      opcode_proc.call(cpu, memory, offset, args)
+    def execute(cpu, memory, args)
+      opcode_proc.call(cpu, memory, args)
     end
 
     OPCODES = {}
@@ -157,8 +157,8 @@ module AVR
       OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end
 
-    def self.decode(pattern, mnemonic, variant=nil, &block)
-      AVR::OpcodeDecoder.add_opcode_definition(AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, variant, block.to_proc))
+    def self.decode(pattern, mnemonic, &block)
+      AVR::OpcodeDecoder.add_opcode_definition(AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, block.to_proc))
     end
 
     def self.parse_operands(pattern, &block)

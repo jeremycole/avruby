@@ -30,29 +30,29 @@ module AVR
       })
     end
 
-    decode("0001 01rd dddd rrrr", :cp) do |cpu, offset, opcode_definition, operands|
-      cpu.instruction(offset, :cp, operands[:Rd], operands[:Rr])
+    decode("0001 01rd dddd rrrr", :cp) do |cpu, opcode_definition, operands|
+      cpu.instruction(:cp, operands[:Rd], operands[:Rr])
     end
 
-    opcode(:cp, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
+    opcode(:cp, [:register, :register], %i[H S V N Z C]) do |cpu, memory, args|
       result = (args[0].value - args[1].value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1].value, :cp)
     end
 
-    decode("0000 01rd dddd rrrr", :cpc) do |cpu, offset, opcode_definition, operands|
-      cpu.instruction(offset, :cpc, operands[:Rd], operands[:Rr])
+    decode("0000 01rd dddd rrrr", :cpc) do |cpu, opcode_definition, operands|
+      cpu.instruction(:cpc, operands[:Rd], operands[:Rr])
     end
 
-    opcode(:cpc, [:register, :register], %i[H S V N Z C]) do |cpu, memory, offset, args|
+    opcode(:cpc, [:register, :register], %i[H S V N Z C]) do |cpu, memory, args|
       result = (args[0].value - args[1].value - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1].value, :cpc)
     end
 
-    decode("0011 KKKK dddd KKKK", :cpi) do |cpu, offset, opcode_definition, operands|
-      cpu.instruction(offset, :cpi, operands[:Rd], operands[:K])
+    decode("0011 KKKK dddd KKKK", :cpi) do |cpu, opcode_definition, operands|
+      cpu.instruction(:cpi, operands[:Rd], operands[:K])
     end
 
-    opcode(:cpi, [:register, :byte], %i[H S V N Z C]) do |cpu, memory, offset, args|
+    opcode(:cpi, [:register, :byte], %i[H S V N Z C]) do |cpu, memory, args|
       result = (args[0].value - args[1]) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1], :cpi)
     end

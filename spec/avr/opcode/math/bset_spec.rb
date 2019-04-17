@@ -5,7 +5,7 @@ RSpec.describe [AVR::Opcode, :bset] do
 
   it "sets the correct SREG bit" do
     @cpu.sreg.value = 0x00
-    @cpu.instruction(0, :bset, :Z).execute
+    @cpu.instruction(:bset, :Z).execute
     expect(@cpu.sreg.I).to be false
     expect(@cpu.sreg.T).to be false
     expect(@cpu.sreg.H).to be false

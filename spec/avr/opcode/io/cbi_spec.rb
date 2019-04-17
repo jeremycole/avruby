@@ -10,19 +10,19 @@ RSpec.describe [AVR::Opcode, :cbi] do
 
   it "clears the bit in the IO register" do
     @portb.value = 2
-    @cpu.instruction(0, :cbi, @portb_io_address, 1).execute
+    @cpu.instruction(:cbi, @portb_io_address, 1).execute
     expect(@portb.value).to eq 0
   end
 
   it "doesn't change other bits in the IO register" do
     @portb.value = 10
-    @cpu.instruction(0, :cbi, @portb_io_address, 3).execute
+    @cpu.instruction(:cbi, @portb_io_address, 3).execute
     expect(@portb.value).to eq 2
   end
 
   it "doesn't do anything if the bit is already cleared" do
     @portb.value = 2
-    @cpu.instruction(0, :cbi, @portb_io_address, 3).execute
+    @cpu.instruction(:cbi, @portb_io_address, 3).execute
     expect(@portb.value).to eq 2
   end
 end

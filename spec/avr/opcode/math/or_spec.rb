@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :or] do
   include_examples "opcode", :or
 
   before(:all) do
-    @i = @cpu.instruction(0, :or, @cpu.r0, @cpu.r1)
+    @i = @cpu.instruction(:or, @cpu.r0, @cpu.r1)
   end
 
   it "performs bitwise OR correctly" do

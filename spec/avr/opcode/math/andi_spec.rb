@@ -5,7 +5,7 @@ RSpec.describe [AVR::Opcode, :andi] do
 
   it "performs bitwise AND correctly" do
     @cpu.r0 = 0b01010101
-    @cpu.instruction(0, :andi, @cpu.r0, 0b01101100).execute
+    @cpu.instruction(:andi, @cpu.r0, 0b01101100).execute
     expect(@cpu.r0.value).to eq 0b01000100
   end
 end

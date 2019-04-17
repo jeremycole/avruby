@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :subi] do
   include_examples "opcode", :subi
 
   before(:all) do
-    @i = @cpu.instruction(0, :subi, @cpu.r0, 1)
+    @i = @cpu.instruction(:subi, @cpu.r0, 1)
   end
 
   it "subtracts correctly" do

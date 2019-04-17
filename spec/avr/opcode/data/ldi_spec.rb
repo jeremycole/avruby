@@ -5,7 +5,7 @@ RSpec.describe [AVR::Opcode, :ldi] do
 
   it "loads the constant into the register" do
     @cpu.r0 = 0
-    @cpu.instruction(0, :ldi, @cpu.r0, 1).execute
+    @cpu.instruction(:ldi, @cpu.r0, 1).execute
     expect(@cpu.r0.value).to eq 1
   end
 end

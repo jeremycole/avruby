@@ -7,17 +7,15 @@ module AVR
     attr_reader :args
     attr_reader :opcode
   
-    def initialize(cpu, memory, offset, mnemonic, *args)
+    def initialize(cpu, mnemonic, *args)
       @cpu = cpu
-      @memory = memory
-      @offset = offset
       @mnemonic = mnemonic
       @args = args
       @opcode = AVR::Opcode::OPCODES[mnemonic]
     end
 
     def validate
-      opcode.validate(cpu, args)
+      opcode.validate(args)
     end
 
     def valid?
@@ -38,14 +36,14 @@ module AVR
     end
 
     def inspect
-      "#<#{self.class.name} {#{to_s}} @ #{memory.name}[#{offset}]>"
+      "#<#{self.class.name} {#{to_s}}>"
     end
 
     def execute
       raise "Invalid instruction" unless valid?
 
-      cpu.next_pc = offset + 1
-      result = opcode.execute(cpu, memory, offset, args)
+      cpu.next_pc = cpu.pc + 1
+      result = opcode.execute(cpu, nil, args)
       cpu.pc = cpu.next_pc
       result
     end
