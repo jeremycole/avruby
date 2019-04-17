@@ -1,5 +1,10 @@
 module AVR
   class Opcode
+    decode("1001 0100 0000 1100", :jmp) do |cpu, offset, opcode_definition, operands|
+      k = cpu.fetch
+      cpu.instruction(offset, :jmp, k)
+    end
+
     decode("1001 010k kkkk 110k", :jmp) do |cpu, offset, opcode_definition, operands|
       k = cpu.fetch
       cpu.instruction(offset, :jmp, operands[:k] << 16 | k)
@@ -23,6 +28,11 @@ module AVR
 
     opcode(:ijmp) do |cpu, memory, offset, args|
       cpu.next_pc = cpu.Z.value
+    end
+
+    decode("1001 0100 0000 1110", :call) do |cpu, offset, opcode_definition, operands|
+      k = cpu.fetch
+      cpu.instruction(offset, :call, k)
     end
 
     decode("1001 010k kkkk 111k", :call) do |cpu, offset, opcode_definition, operands|
