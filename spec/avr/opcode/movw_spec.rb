@@ -4,7 +4,7 @@ RSpec.describe [AVR::Opcode, :movw] do
   include_examples "opcode", :movw
 
   before(:all) do
-    @i = @cpu.instruction(:movw, @cpu.Y, @cpu.Z)
+    @i = @cpu.instruction(:movw, [@cpu.r29, @cpu.r28], [@cpu.r31, @cpu.r30])
   end
 
   it "copies the source word register to the target word register" do

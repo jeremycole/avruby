@@ -10,8 +10,14 @@ module AVR
 
     parse_operands("____ ____ dddd rrrr") do |cpu, operands|
       {
-        Rd: cpu.registers.associated_word_register(cpu.registers[operands[:d] << 1]),
-        Rr: cpu.registers.associated_word_register(cpu.registers[operands[:r] << 1]),
+        Rd: [
+          cpu.registers[(operands[:d] << 1) + 1],
+          cpu.registers[operands[:d] << 1],
+        ],
+        Rr: [
+          cpu.registers[(operands[:r] << 1) + 1],
+          cpu.registers[operands[:r] << 1],
+        ],
       }
     end
 
@@ -19,8 +25,9 @@ module AVR
       cpu.instruction(:movw, operands[:Rd], operands[:Rr])
     end
 
-    opcode(:movw, [:word_register, :word_register]) do |cpu, memory, args|
-      args[0].value = args[1].value
+    opcode(:movw, [:register_pair, :register_pair]) do |cpu, memory, args|
+      args[0][0].value = args[1][0].value
+      args[0][1].value = args[1][1].value
     end
   end
 end

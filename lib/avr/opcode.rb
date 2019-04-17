@@ -26,6 +26,7 @@ module AVR
       byte:               "0x%02x",
       word:               "0x%04x",
       register:           "%s",
+      register_pair:      proc { |arg| "%s:%s" % [arg[0], arg[1]] },
       word_register:      "%s",
       modifying_word_register: proc { |arg|
         if arg.is_a?(AVR::RegisterPair)
