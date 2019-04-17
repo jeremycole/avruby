@@ -38,6 +38,9 @@ module AVR
           ]
         end
       },
+      displaced_word_register: proc { |arg|
+        "%s%+d" % [arg[0], arg[1]]
+      },
       io_address:         "0x%02x",
       lower_io_address:   "0x%02x",
       bit_number:         "%d",

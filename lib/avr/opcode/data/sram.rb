@@ -20,23 +20,66 @@ module AVR
       args[0].value = cpu.sram.memory[args[1]].value
     end
 
+    decode("1000 000d dddd 1000", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], cpu.Y)
+    end
+
+    decode("1000 000d dddd 1001", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.Y, :post_increment])
+    end
+
+    decode("1000 000d dddd 1010", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.Y, :pre_decrement])
+    end
+
+    decode("1000 000d dddd 0000", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], cpu.Z)
+    end
+
+    decode("1000 000d dddd 0001", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.Z, :post_increment])
+    end
+
+    decode("1000 000d dddd 0010", :ld) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ld, operands[:Rd], [cpu.Z, :pre_decrement])
+    end
+
+    opcode(:ld, [:register, :modifying_word_register]) do |cpu, memory, args|
+      args[1] = [args[1]] unless args[1].is_a?(Array)
+      args[1][0].value -= 1 if args[1][1] == :pre_decrement
+      args[0].value = cpu.sram.memory[args[1][0].value].value
+      args[1][0].value += 1 if args[1][1] == :post_increment
+    end
+
     parse_operands("__q_ qq_d dddd _qqq") do |cpu, operands|
       {
         Rd: cpu.registers[operands[:d]],
         q: operands[:q],
       }
     end
-    
+
+    decode("10q0 qq0d dddd 1qqq", :ldd) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ldd, operands[:Rd], [cpu.Y, operands[:q]])
+    end
+
+    decode("10q0 qq0d dddd 0qqq", :ldd) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ldd, operands[:Rd], [cpu.Z, operands[:q]])
+    end
+
+    opcode(:ldd, [:register, :displaced_word_register]) do |cpu, memory, args|
+      args[0].value = cpu.sram.memory[args[1][0].value + args[1][1]].value
+    end
+
+    decode("1001 001r rrrr 0000", :sts) do |cpu, opcode_definition, operands|
+      k = cpu.fetch
+      cpu.instruction(:sts, k, operands[:Rr])
+    end
+
     parse_operands("____ _kkk rrrr kkkk") do |cpu, operands|
       {
         Rr: cpu.registers[operands[:r]],
         k: bit_jumble_for_lds_sts(k),
       }
-    end    
-    
-    decode("1001 001r rrrr 0000", :sts) do |cpu, opcode_definition, operands|
-      k = cpu.fetch
-      cpu.instruction(:sts, k, operands[:Rr])
     end
 
     decode("1010 0kkk rrrr kkkk", :sts) do |cpu, opcode_definition, operands|
@@ -71,6 +114,18 @@ module AVR
       cpu.instruction(:st, [cpu.Y, :pre_decrement], operands[:Rr])
     end
 
+    decode("1000 001r rrrr 0000", :st) do |cpu, opcode_definition, operands|
+      cpu.instruction(:st, cpu.Z, operands[:Rr])
+    end
+
+    decode("1001 001r rrrr 0001", :st) do |cpu, opcode_definition, operands|
+      cpu.instruction(:st, [cpu.Z, :post_increment], operands[:Rr])
+    end
+
+    decode("1001 001r rrrr 0010", :st) do |cpu, opcode_definition, operands|
+      cpu.instruction(:st, [cpu.Z, :pre_decrement], operands[:Rr])
+    end
+
     opcode(:st, [:modifying_word_register, :register]) do |cpu, memory, args|
       args[0] = [args[0]] unless args[0].is_a?(Array)
       args[0][0].value -= 1 if args[0][1] == :pre_decrement
@@ -85,8 +140,16 @@ module AVR
       }
     end
 
-    #decode("10q0 qq1r rrrr 1qqq", :std) do |cpu, opcode_definition, operands|
-    #  cpu.instruction(:std, cpu.Y, operands[:Rr], operands[:q])
-    #end
+    decode("10q0 qq1r rrrr 1qqq", :std) do |cpu, opcode_definition, operands|
+      cpu.instruction(:std, [cpu.Y, operands[:q]], operands[:Rr])
+    end
+
+    decode("10q0 qq1r rrrr 0qqq", :std) do |cpu, opcode_definition, operands|
+      cpu.instruction(:std, [cpu.Z, operands[:q]], operands[:Rr])
+    end
+
+    opcode(:std, [:displaced_word_register, :register]) do |cpu, memory, args|
+      cpu.sram.memory[args[0][0].value + args[0][1]].value = args[1].value
+    end
   end
 end
