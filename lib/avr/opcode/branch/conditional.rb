@@ -30,5 +30,21 @@ module AVR
     opcode(:cpse, [:register, :register]) do |cpu, memory, args|
       cpu.decode if args[0].value == args[1].value
     end
+
+    decode("1111 110r rrrr 0bbb", :sbrc) do |cpu, opcode_definition, operands|
+      cpu.instruction(:sbrc, operands[:Rr], operands[:b])
+    end
+
+    opcode(:sbrc, [:register, :bit_number]) do |cpu, memory, args|
+      cpu.decode if args[0].value & (1 << args[1]) == 0
+    end
+
+    decode("1111 111r rrrr 0bbb", :sbrs) do |cpu, opcode_definition, operands|
+      cpu.instruction(:sbrs, operands[:Rr], operands[:b])
+    end
+
+    opcode(:sbrs, [:register, :bit_number]) do |cpu, memory, args|
+      cpu.decode if args[0].value & (1 << args[1]) != 0
+    end
   end
 end
