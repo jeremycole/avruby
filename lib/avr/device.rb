@@ -44,7 +44,7 @@ module AVR
 
     def trace_cpu
       cpu.trace do |instruction|
-        puts "*** %20s: %s ***" % [
+        puts "*** %20s: %s" % [
           "INSTRUCTION TRACE",
           instruction,
         ]
@@ -69,7 +69,7 @@ module AVR
         registers = register_addresses[memory_byte.address]
         if registers
           registers.each do |register|
-            puts "*** %20s: %12s: %4s -> %4s ***" % [
+            puts "*** %20s: %12s: %4s -> %4s" % [
               "REGISTER TRACE",
               register.name,
               register.is_a?(MemoryByteRegister) ? register.format % old_value : "",
@@ -93,7 +93,18 @@ module AVR
 
     def trace_sram
       cpu.sram.watch do |memory_byte, old_value, new_value|
-        puts "*** %20s: %12s: %4s -> %4s ***" % [
+        puts "*** %20s: %12s: %4s -> %4s" % [
+          "MEMORY TRACE",
+          "%s[%04x]" % [memory_byte.memory.name, memory_byte.address],
+          memory_byte.format % old_value,
+          memory_byte.format % new_value,
+        ]
+      end
+    end
+
+    def trace_flash
+      flash.watch do |memory_byte, old_value, new_value|
+        puts "*** %20s: %12s: %4s -> %4s" % [
           "MEMORY TRACE",
           "%s[%04x]" % [memory_byte.memory.name, memory_byte.address],
           memory_byte.format % old_value,
@@ -124,6 +135,7 @@ module AVR
     def trace_all
       trace_cpu
       trace_sram
+      trace_flash
       trace_sreg
       trace_registers
       trace_status_pre_tick
