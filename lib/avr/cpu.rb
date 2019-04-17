@@ -63,6 +63,7 @@ module AVR
     def print_status
       puts "Status:"
       puts "%8s = %d" % ["Ticks", clock.ticks]
+      puts "%8s = %d opcodes" % ["Cache", decoder.cache.size]
       puts "%8s = 0x%04x words" % ["PC", pc]
       puts "%8s = 0x%04x bytes" % ["PC", pc * 2]
       puts "%8s = 0x%04x (%d bytes used)" % ["SP", sp.value, device.ram_end - sp.value]
