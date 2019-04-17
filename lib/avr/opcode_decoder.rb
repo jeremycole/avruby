@@ -96,12 +96,23 @@ module AVR
       OPERAND_PARSERS[operand_parser.pattern] = operand_parser
     end
 
+    attr_reader :cache
+
+    def initialize
+      @cache = {}
+    end
+
     def decode(word)
+      cached_decoded_opcode = cache[word]
+      return cached_decoded_opcode if cached_decoded_opcode
+
       OPCODE_MATCH_MASKS.each do |mask, values|
         opcode_definition = values[word & mask]
         next unless opcode_definition
         operands = opcode_definition.extract_operands(word)
-        return DecodedOpcode.new(opcode_definition, operands)
+        decoded_opcode = DecodedOpcode.new(opcode_definition, operands)
+        cache[word] = decoded_opcode
+        return decoded_opcode
       end
       nil
     end
