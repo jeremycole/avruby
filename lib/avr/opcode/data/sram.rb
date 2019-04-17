@@ -17,6 +17,7 @@ module AVR
     end
 
     opcode(:lds, [:register, :word]) do |cpu, memory, args|
+      cpu.next_pc += 1
       args[0].value = cpu.sram.memory[args[1]].value
     end
 
@@ -87,6 +88,7 @@ module AVR
     end
 
     opcode(:sts, [:word, :register]) do |cpu, memory, args|
+      cpu.next_pc += 1
       cpu.sram.memory[args[0]].value = args[1].value
     end
 
