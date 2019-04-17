@@ -1,5 +1,6 @@
 require "avr/opcode/operand_parsers"
 require "avr/opcode/nop"
+require "avr/opcode/sreg"
 require "avr/opcode/register"
 require "avr/opcode/compare"
 require "avr/opcode/data/stack"
