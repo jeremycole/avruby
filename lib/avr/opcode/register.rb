@@ -8,6 +8,13 @@ module AVR
       args[0].value = args[1].value
     end
 
+    parse_operands("____ ____ dddd rrrr") do |cpu, operands|
+      {
+        Rd: cpu.registers.associated_word_register(cpu.registers[operands[:d] << 1]),
+        Rr: cpu.registers.associated_word_register(cpu.registers[operands[:r] << 1]),
+      }
+    end
+
     decode("0000 0001 dddd rrrr", :movw) do |cpu, opcode_definition, operands|
       cpu.instruction(:movw, operands[:Rd], operands[:Rr])
     end

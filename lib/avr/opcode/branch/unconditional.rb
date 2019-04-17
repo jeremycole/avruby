@@ -14,22 +14,6 @@ module AVR
       cpu.next_pc = args[0]
     end
 
-    decode("1100 kkkk kkkk kkkk", :rjmp) do |cpu, opcode_definition, operands|
-      cpu.instruction(:rjmp, operands[:k])
-    end
-
-    opcode(:rjmp, [:far_relative_pc]) do |cpu, memory, args|
-      cpu.next_pc = cpu.pc + args[0] + 1
-    end
-
-    decode("1001 0100 0000 1001", :ijmp) do |cpu, opcode_definition, operands|
-      cpu.instruction(:ijmp)
-    end
-
-    opcode(:ijmp) do |cpu, memory, args|
-      cpu.next_pc = cpu.Z.value
-    end
-
     decode("1001 0100 0000 1110", :call) do |cpu, opcode_definition, operands|
       k = cpu.fetch
       cpu.instruction(:call, k)
@@ -45,6 +29,19 @@ module AVR
       cpu.next_pc = args[0]
     end
 
+    # rcall rjmp
+    parse_operands("____ kkkk kkkk kkkk") do |cpu, operands|
+      { k: twos_complement(operands[:k], 12) }
+    end
+
+    decode("1100 kkkk kkkk kkkk", :rjmp) do |cpu, opcode_definition, operands|
+      cpu.instruction(:rjmp, operands[:k])
+    end
+
+    opcode(:rjmp, [:far_relative_pc]) do |cpu, memory, args|
+      cpu.next_pc = cpu.pc + args[0] + 1
+    end
+
     decode("1101 kkkk kkkk kkkk", :rcall) do |cpu, opcode_definition, operands|
       cpu.instruction(:rcall, operands[:k])
     end
@@ -52,6 +49,14 @@ module AVR
     opcode(:rcall, [:far_relative_pc]) do |cpu, memory, args|
       stack_push_word(cpu, cpu.pc + 1)
       cpu.next_pc = cpu.pc + args[0] + 1
+    end
+
+    decode("1001 0100 0000 1001", :ijmp) do |cpu, opcode_definition, operands|
+      cpu.instruction(:ijmp)
+    end
+
+    opcode(:ijmp) do |cpu, memory, args|
+      cpu.next_pc = cpu.Z.value
     end
 
     decode("1001 0101 0000 1001", :icall) do |cpu, opcode_definition, operands|
