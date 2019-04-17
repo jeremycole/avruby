@@ -22,5 +22,13 @@ module AVR
     opcode(:brbc, [:sreg_flag, :near_relative_pc]) do |cpu, memory, args|
       cpu.next_pc = cpu.pc + args[1] + 1 unless cpu.sreg.send(args[0])
     end
+
+    decode("0001 00rd dddd rrrr", :cpse) do |cpu, opcode_definition, operands|
+      cpu.instruction(:cpse, operands[:Rd], operands[:Rr])
+    end
+
+    opcode(:cpse, [:register, :register]) do |cpu, memory, args|
+      cpu.decode if args[0].value == args[1].value
+    end
   end
 end
