@@ -165,5 +165,52 @@ module AVR
     opcode(:std, [:displaced_word_register, :register]) do |cpu, memory, args|
       cpu.sram.memory[args[0][0].value + args[0][1]].value = args[1].value
     end
+
+    def self.exchange_memory_byte_with_register(memory_byte, register, mnemonic)
+      old_value = memory_byte.value
+      case mnemonic
+      when :xch
+        memory_byte.value = register.value
+      when :las
+        memory_byte.value = register.value | old_value
+      when :lac
+        memory_byte.value = (~register.value & old_value) & 0xff
+      when :lat
+        memory_byte.value = register.value ^ old_value
+      end
+      register.value = old_value
+    end
+
+    decode("1001 001r rrrr 0100", :xch) do |cpu, opcode_definition, operands|
+      cpu.instruction(:xch, operands[:Rr])
+    end
+
+    opcode(:xch, [:register]) do |cpu, memory, args|
+      exchange_memory_byte_with_register(cpu.sram.memory[cpu.Z.value], args[0], :xch)
+    end
+
+    decode("1001 001r rrrr 0101", :las) do |cpu, opcode_definition, operands|
+      cpu.instruction(:las, operands[:Rr])
+    end
+
+    opcode(:las, [:register]) do |cpu, memory, args|
+      exchange_memory_byte_with_register(cpu.sram.memory[cpu.Z.value], args[0], :las)
+    end
+
+    decode("1001 001r rrrr 0110", :lac) do |cpu, opcode_definition, operands|
+      cpu.instruction(:lac, operands[:Rr])
+    end
+
+    opcode(:lac, [:register]) do |cpu, memory, args|
+      exchange_memory_byte_with_register(cpu.sram.memory[cpu.Z.value], args[0], :lac)
+    end
+
+    decode("1001 001r rrrr 0111", :lat) do |cpu, opcode_definition, operands|
+      cpu.instruction(:lat, operands[:Rr])
+    end
+
+    opcode(:lat, [:register]) do |cpu, memory, args|
+      exchange_memory_byte_with_register(cpu.sram.memory[cpu.Z.value], args[0], :lat)
+    end
   end
 end
