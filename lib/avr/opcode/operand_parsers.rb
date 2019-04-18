@@ -43,15 +43,7 @@ module AVR
       }
     end
     
-    # bld
-    parse_operands("____ ___d dddd _bbb") do |cpu, operands|
-      {
-        Rd: cpu.registers[operands[:d]],
-        b: operands[:b],
-      }
-    end
-
-    # bst sbrc sbrs
+    # sbrc sbrs
     parse_operands("____ ___r rrrr _bbb") do |cpu, operands|
       {
         Rr: cpu.registers[operands[:r]],
