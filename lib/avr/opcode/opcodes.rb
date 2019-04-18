@@ -1,5 +1,8 @@
 require "avr/opcode/operand_parsers"
 require "avr/opcode/nop"
+require "avr/opcode/break"
+require "avr/opcode/sleep"
+require "avr/opcode/wdr"
 require "avr/opcode/sreg"
 require "avr/opcode/register"
 require "avr/opcode/compare"
