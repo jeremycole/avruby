@@ -85,5 +85,72 @@ module AVR
       })
       args[0].value = result
     end
+
+    # There is no specific opcode for LSL Rd; it is encoded as ADD Rd, Rd.
+    # decode("0000 11dd dddd dddd", :lsl) ...
+
+    opcode(:lsl, [:register], %i[H S V N Z C]) do |cpu, memory, args|
+      result = (args[0].value << 1) & 0xff
+
+      h = (args[0].value & (1<<3)) != 0
+      n = (result & (1<<7)) != 0
+      c = (args[0].value & (1<<7)) != 0
+      v = n ^ c
+      s = n ^ v
+      cpu.sreg.set_by_hash({
+        H: h,
+        S: s,
+        V: v,
+        N: n,
+        Z: (result == 0),
+        C: c,
+      })
+
+      args[0].value = result
+    end
+
+    decode("1001 010d dddd 0110", :lsr) do |cpu, opcode_definition, operands|
+      cpu.instruction(:lsr, operands[:Rd])
+    end
+
+    opcode(:lsr, [:register], %i[S V N Z C]) do |cpu, memory, args|
+      result = args[0].value >> 1
+
+      n = false
+      c = (args[0].value & 1) != 0
+      v = n ^ c
+      s = n ^ v
+      cpu.sreg.set_by_hash({
+        S: s,
+        V: v,
+        N: n,
+        Z: (result == 0),
+        C: c,
+      })
+
+      args[0].value = result
+    end
+
+    decode("1001 010d dddd 0101", :asr) do |cpu, opcode_definition, operands|
+      cpu.instruction(:asr, opcode[:Rd])
+    end
+
+    opcode(:asr, [:register], %i[S V N Z C]) do |cpu, memory, args|
+      result = ((args[0].value) >> 1) | (args[0].value & 0x80)
+
+      n = (result & (1<<7)) != 0
+      c = (args[0].value & 1) != 0
+      v = n ^ c
+      s = n ^ v
+      cpu.sreg.set_by_hash({
+        S: s,
+        V: v,
+        N: n,
+        Z: (result == 0),
+        C: c,
+      })
+
+      args[0].value = result
+    end
   end
 end
