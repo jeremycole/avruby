@@ -55,6 +55,10 @@ module AVR
       @tracer = nil
     end
 
+    def notify_at_tick(tick, &block)
+      clock.notify_at_tick(tick, AVR::Clock::Sink.new("notify #{block} at #{tick}", block.to_proc))
+    end
+
     def trace(&block)
       @tracer = nil
       @tracer = block.to_proc if block_given?

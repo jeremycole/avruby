@@ -1,9 +1,9 @@
 module AVR
   class Clock
     class Sink
-      def initialize(name, &block)
+      def initialize(name, sink_proc=nil, &block)
         @name = name
-        @sink_proc = block.to_proc
+        @sink_proc = sink_proc || block.to_proc
       end
 
       def tick(source, ticks)
@@ -13,6 +13,7 @@ module AVR
 
     attr_reader :name
     attr_reader :sinks
+    attr_reader :watches
     attr_accessor :count
     attr_accessor :ticks
     attr_accessor :scale
@@ -20,6 +21,7 @@ module AVR
     def initialize(name)
       @name = name
       @sinks = []
+      @watches = {}
       @ticks = 0
       @count = 0
       @scale = 1
@@ -33,12 +35,20 @@ module AVR
       sinks.push(sink)
     end
 
+    def notify_at_tick(tick, sink)
+      @watches[tick] ||= []
+      @watches[tick] << sink
+    end
+
     def tick(source=nil, ticks=nil)
       @count += 1
       if (@count % @scale) == 0
         @last_tick = @ticks
         sinks.each do |sink|
           sink.tick(self, @ticks)
+        end
+        watches[@ticks]&.each do |watch|
+          watch.tick(self, @ticks)
         end
         @ticks += 1
       end
