@@ -114,6 +114,18 @@ module AVR
       AVR::Instruction.new(self, mnemonic, *args)
     end
 
+    def interrupt(name_or_vector_number)
+      sreg.I = false
+      case name_or_vector_number
+      when Integer
+        address = name_or_vector_number * 2
+      when Symbol
+        address = device.interrupt_vector_map[name_or_vector_number]
+      end
+
+      instruction(:call, address).execute
+    end
+
     def decode
       offset = next_pc
       word = fetch

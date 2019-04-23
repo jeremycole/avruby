@@ -98,6 +98,37 @@ module AVR
       ram_start + sram_size - 1
     end
 
+    def interrupt_vector_map
+      @interrupt_vector_map ||= {
+        RESET:          0x0000,
+        INT0:           0x0002,
+        INT1:           0x0004,
+        PCINT0:         0x0006,
+        PCINT1:         0x0008,
+        PCINT2:         0x000a,
+        WDT:            0x000c,
+        TIMER2_COMPA:   0x000e,
+        TIMER2_COMPB:   0x0010,
+        TIMER2_OVF:     0x0012,
+        TIMER1_CAPT:    0x0014,
+        TIMER1_COMPA:   0x0016,
+        TIMER1_COMPB:   0x0018,
+        TIMER1_OVF:     0x001a,
+        TIMER0_COMPA:   0x001c,
+        TIMER0_COMPB:   0x001e,
+        TIMER0_OVF:     0x0020,
+        SPI_STC:        0x0022,
+        USART_RX:       0x0024,
+        USART_UDRE:     0x0026,
+        USART_TX:       0x0028,
+        ADC:            0x002a,
+        EE_READY:       0x002c,
+        ANALOG_COMP:    0x002e,
+        TWI:            0x0030,
+        SPM_READY:      0x0032,
+      }
+    end
+
     def port_map
       @port_map ||= {
         B: {
