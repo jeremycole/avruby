@@ -32,6 +32,7 @@ module AVR
 end
 
 require "avr/register/memory_byte_register"
+require "avr/register/memory_byte_register_with_named_bits"
 require "avr/register/register_pair"
 require "avr/register/register_file"
 require "avr/register/sreg"

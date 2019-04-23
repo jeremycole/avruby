@@ -33,7 +33,7 @@ module AVR
         io_registers.add(MemoryByteRegister.new(self, name.to_s, @sram.memory[address])) if address
       end
 
-      @sreg = SREG.new(self, @sram.memory[device.data_memory_map[:SREG]])
+      @sreg = SREG.new(self)
 
       @sp = SP.new(self,
         @sram.memory[device.data_memory_map[:SPL]],
