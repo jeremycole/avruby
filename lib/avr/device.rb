@@ -36,6 +36,7 @@ module AVR
       @flash = Flash.new(flash_size)
       @eeprom = EEPROM.new(eeprom_size)
       @cpu = CPU.new(self)
+      @eeprom.attach(cpu)
       @system_clock = Clock.new("system")
       @system_clock.push_sink(cpu.clock)
       @oscillator = Oscillator.new("oscillator")
@@ -113,6 +114,17 @@ module AVR
       end
     end
 
+    def trace_eeprom
+      eeprom.watch do |memory_byte, old_value, new_value|
+        puts "*** %20s: %12s: %4s -> %4s" % [
+          "MEMORY TRACE",
+          "%s[%04x]" % [memory_byte.memory.name, memory_byte.address],
+          memory_byte.format % old_value,
+          memory_byte.format % new_value,
+        ]
+      end
+    end
+
     def trace_status_pre_tick
       oscillator.unshift_sink(AVR::Clock::Sink.new("pre-execution status") {
         puts
@@ -136,6 +148,7 @@ module AVR
       trace_cpu
       trace_sram
       trace_flash
+      trace_eeprom
       trace_sreg
       trace_registers
       trace_status_pre_tick

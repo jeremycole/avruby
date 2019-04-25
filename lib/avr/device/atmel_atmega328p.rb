@@ -66,6 +66,12 @@ module AVR
       }.freeze
     end
 
+    def register_bit_names_map
+      @register_bit_names_map ||= {
+        EECR: [:EERE, :EEPE, :EEMPE, :EERIE, :EEPM0, :EEPM1, nil, nil]
+      }
+    end
+
     def register_start
       0x0000
     end

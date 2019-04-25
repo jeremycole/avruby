@@ -30,7 +30,14 @@ module AVR
       @io_registers = RegisterFile.new(self)
       device.io_registers.each do |name|
         address = device.data_memory_map[name]
-        io_registers.add(MemoryByteRegister.new(self, name.to_s, @sram.memory[address])) if address
+        next unless address
+
+        bit_names = device.register_bit_names_map[name]
+        if bit_names
+          io_registers.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, @sram.memory[address], bit_names))
+        else
+          io_registers.add(MemoryByteRegister.new(self, name.to_s, @sram.memory[address]))
+        end
       end
 
       @sreg = SREG.new(self)
