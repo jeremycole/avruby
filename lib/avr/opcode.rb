@@ -69,28 +69,28 @@ module AVR
       when :word_register
         return WordRegisterExpected unless arg.is_a?(AVR::RegisterPair)
       when :byte
-        return ByteConstantExpected unless arg.is_a?(Fixnum)
+        return ByteConstantExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0x00 and arg <= 0xff
       when :word
-        return WordConstantExpected unless arg.is_a?(Fixnum)
+        return WordConstantExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0x0000 and arg <= 0xffff
       when :absolute_pc
-        return AbsolutePcExpected unless arg.is_a?(Fixnum)
+        return AbsolutePcExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0 and arg <= 2**22-1
       when :near_relative_pc
-        return NearRelativePcExpected unless arg.is_a?(Fixnum)
+        return NearRelativePcExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= -64 and arg <= 63
       when :far_relative_pc
-        return FarRelativePcExpected unless arg.is_a?(Fixnum)
+        return FarRelativePcExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= -2048 and arg <= 2047
       when :io_address
-        return IoAddressExpected unless arg.is_a?(Fixnum)
+        return IoAddressExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0 and arg <= 63
       when :lower_io_address
-        return IoAddressExpected unless arg.is_a?(Fixnum)
+        return IoAddressExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0 and arg <= 31
       when :bit_number
-        return BitNumberExpected unless arg.is_a?(Fixnum)
+        return BitNumberExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0 and arg <= 7
       when :sreg_flag
         return StatusRegisterBitExpected unless arg.is_a?(Symbol)

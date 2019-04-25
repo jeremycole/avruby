@@ -38,7 +38,7 @@ module AVR
     end
 
     def [](key)
-      @registers[@register_list[key]] if key.is_a?(Fixnum)
+      @registers[@register_list[key]] if key.is_a?(Integer)
     end
 
     def associated_word_register(register)

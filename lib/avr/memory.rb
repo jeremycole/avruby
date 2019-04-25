@@ -53,7 +53,7 @@ module AVR
 
     def watch(filter=true, &block)
       watch = Watch.new(block.to_proc)
-      push_watch(filter.is_a?(Fixnum) ? [filter] : filter, watch)
+      push_watch(filter.is_a?(Integer) ? [filter] : filter, watch)
       watch
     end
 
