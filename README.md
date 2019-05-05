@@ -1,5 +1,7 @@
 # AVRuby
 
+[![Build Status](https://travis-ci.org/jeremycole/avruby.svg?branch=master)](https://travis-ci.org/jeremycole/avruby)
+
 ## tl;dr
 
 This is an AVR emulator, written really stupidly in Ruby. It's not supposed to be practical, it's supposed to be educational, and maybe a bit of fun.
