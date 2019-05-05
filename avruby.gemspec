@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("{bin,lib}/**/*") + %w[LICENSE.md README.md]
   s.executables = [ 'avruby_shell' ]
   s.require_path = 'lib'
+  s.add_dependency('intel_hex', '>= 0.5.0')
 end

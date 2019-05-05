@@ -1,5 +1,7 @@
 require "avr/memory/memory_byte"
 
+require "intel_hex"
+
 module AVR
   class Memory
     class Watch
@@ -69,9 +71,9 @@ module AVR
     end
 
     def load_from_intel_hex(filename)
-      ihex = IntelHex.new(filename)
+      ihex = IntelHex::FileReader.new(filename)
       sum = 0
-      ihex.each_byte do |address, byte|
+      ihex.each_byte_with_address do |byte, address|
         memory[address].value = byte
         sum += 1
       end
