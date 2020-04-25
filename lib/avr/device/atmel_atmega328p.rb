@@ -18,9 +18,9 @@ module AVR
 
     def word_register_map
       @word_register_map ||= {
-        'X' => { l: 26, h: 27 },
-        'Y' => { l: 28, h: 29 },
-        'Z' => { l: 30, h: 31 },
+        X: { l: 26, h: 27 },
+        Y: { l: 28, h: 29 },
+        Z: { l: 30, h: 31 },
       }
     end
 
