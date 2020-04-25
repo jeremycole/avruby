@@ -1,11 +1,11 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :or] do
-  include_examples "opcode", :or
+  include_examples 'opcode', :or
 
   let(:i) { cpu.instruction(:or, cpu.r0, cpu.r1) }
 
-  it "performs bitwise OR correctly" do
+  it 'performs bitwise OR correctly' do
     cpu.r0 = 0
     cpu.r1 = 0
     i.execute

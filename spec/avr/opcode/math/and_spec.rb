@@ -1,11 +1,11 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :and] do
-  include_examples "opcode", :and
+  include_examples 'opcode', :and
 
   let(:i) { cpu.instruction(:and, cpu.r0, cpu.r1) }
 
-  it "performs bitwise AND correctly" do
+  it 'performs bitwise AND correctly' do
     cpu.r0 = 0
     cpu.r1 = 1
     i.execute

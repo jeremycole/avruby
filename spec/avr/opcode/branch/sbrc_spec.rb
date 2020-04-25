@@ -1,9 +1,9 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :sbrc] do
-  include_examples "opcode", :sbrc
+  include_examples 'opcode', :sbrc
 
-  it "skips if bit in r0 is cleared, with 1-word instruction" do
+  it 'skips if bit in r0 is cleared, with 1-word instruction' do
     cpu.r0 = 5
     cpu.device.flash.set_word(0, 0b1111_1100_0000_0111) # sbrc r0, 7
     cpu.device.flash.set_word(1, 0b0000_0000_0000_0000) # nop
@@ -11,7 +11,7 @@ RSpec.describe [AVR::Opcode, :sbrc] do
     expect(cpu.next_pc).to eq 2
   end
 
-  it "skips if bit in r0 is cleared, with 2-word instruction" do
+  it 'skips if bit in r0 is cleared, with 2-word instruction' do
     cpu.r0 = 5
     cpu.device.flash.set_word(0, 0b1111_1100_0000_0111) # sbrc r0, 7
     cpu.device.flash.set_word(1, 0b1001_0100_0000_1100) # jmp ...
@@ -20,7 +20,7 @@ RSpec.describe [AVR::Opcode, :sbrc] do
     expect(cpu.next_pc).to eq 3
   end
 
-  it "does not skip if bit in r0 is set, with 1-word instruction" do
+  it 'does not skip if bit in r0 is set, with 1-word instruction' do
     cpu.r0 = 128
     cpu.device.flash.set_word(0, 0b1111_1100_0000_0111) # sbrc r0, 7
     cpu.device.flash.set_word(1, 0b0000_0000_0000_0000) # nop

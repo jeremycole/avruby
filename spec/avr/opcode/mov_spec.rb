@@ -1,16 +1,16 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :mov] do
-  include_examples "opcode", :mov
+  include_examples 'opcode', :mov
 
-  context "decoder" do
-    it "extracts mnemonic and operands correctly" do
+  context 'decoder' do
+    it 'extracts mnemonic and operands correctly' do
       d = cpu.decoder.decode(0b0010_1100_0000_0001)
       expect(d.opcode_definition.mnemonic).to eq :mov
-      expect(d.operands).to eq({:d=>0, :r=>1})
+      expect(d.operands).to eq({ d: 0, r: 1 })
     end
 
-    it "decodes from flash" do
+    it 'decodes from flash' do
       device.flash.set_word(0, 0b0010_1100_0000_0001)
       i = device.cpu.decode
       expect(i).to be_an_instance_of AVR::Instruction
@@ -19,10 +19,10 @@ RSpec.describe [AVR::Opcode, :mov] do
     end
   end
 
-  context "instruction" do
+  context 'instruction' do
     let(:i) { cpu.instruction(:mov, cpu.r0, cpu.r1) }
 
-    it "copies the source register to the target register" do
+    it 'copies the source register to the target register' do
       cpu.r0 = 0
       cpu.r1 = 1
       i.execute

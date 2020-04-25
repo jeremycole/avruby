@@ -1,9 +1,9 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :bclr] do
-  include_examples "opcode", :bclr
+  include_examples 'opcode', :bclr
 
-  it "sets the correct SREG bit" do
+  it 'sets the correct SREG bit' do
     cpu.sreg.value = 0xff
     cpu.instruction(:bclr, :Z).execute
     expect(cpu.sreg.I).to be true

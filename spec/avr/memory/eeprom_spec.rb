@@ -2,29 +2,29 @@ RSpec.describe AVR::EEPROM do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }
 
-  it "is defined and is a subclass of AVR::Memory" do
+  it 'is defined and is a subclass of AVR::Memory' do
     expect(AVR::EEPROM).to be_an_instance_of Class
     expect(AVR::EEPROM.superclass).to eq AVR::Memory
   end
 
-  it "is available in the device" do
+  it 'is available in the device' do
     expect(device.eeprom).to be_an_instance_of AVR::EEPROM
   end
 
-  it "has low and high address registers" do
+  it 'has low and high address registers' do
     expect(cpu.EEARL).to be_an_instance_of AVR::MemoryByteRegister
     expect(cpu.EEARH).to be_an_instance_of AVR::MemoryByteRegister
   end
 
-  it "has a data register" do
+  it 'has a data register' do
     expect(cpu.EEDR).to be_an_instance_of AVR::MemoryByteRegister
   end
 
-  it "has a control register" do
+  it 'has a control register' do
     expect(cpu.EECR).to be_an_instance_of AVR::MemoryByteRegisterWithNamedBits
   end
 
-  it "can read data from EEPROM" do
+  it 'can read data from EEPROM' do
     device.eeprom.memory[0xaa].value = 0xaf
     cpu.EEDR.value = 0x00
     cpu.EEARL.value = 0xaa
@@ -33,7 +33,7 @@ RSpec.describe AVR::EEPROM do
     expect(cpu.EECR.EERE).to be false
   end
 
-  it "clears the EEMPE flag after 4 cycles" do
+  it 'clears the EEMPE flag after 4 cycles' do
     5.times do |i|
       cpu.device.flash.set_word(0x0100 + i, 0b0000_0000_0000_0000) # nop
     end
@@ -47,7 +47,7 @@ RSpec.describe AVR::EEPROM do
     expect(cpu.EECR.EEMPE).to be false
   end
 
-  it "can write data to EEPROM" do
+  it 'can write data to EEPROM' do
     device.eeprom.memory[0xaa].value = 0xff
     cpu.EEDR.value = 0xaf
     cpu.EEARL.value = 0xaa
@@ -58,7 +58,7 @@ RSpec.describe AVR::EEPROM do
     expect(cpu.EECR.EEPE).to be false
   end
 
-  it "calls the EE_READY interrupt when ready" do
+  it 'calls the EE_READY interrupt when ready' do
     device.eeprom.memory[0xaa].value = 0xaf
     cpu.EEDR.value = 0x00
     cpu.EEARL.value = 0xaa

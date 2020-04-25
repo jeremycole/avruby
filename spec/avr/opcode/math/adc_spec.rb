@@ -1,11 +1,11 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :adc] do
-  include_examples "opcode", :adc
+  include_examples 'opcode', :adc
 
   let(:i) { cpu.instruction(:adc, cpu.r0, cpu.r1) }
 
-  it "adds correctly" do
+  it 'adds correctly' do
     cpu.r0 = 0
     cpu.r1 = 1
     i.execute
@@ -13,14 +13,14 @@ RSpec.describe [AVR::Opcode, :adc] do
     expect(cpu.r1.value).to eq 1
   end
 
-  it "does not set the carry flag without overflow" do
+  it 'does not set the carry flag without overflow' do
     cpu.r0 = 0
     cpu.r1 = 1
     i.execute
     expect(cpu.sreg.C).to be false
   end
 
-  it "overflows to zero and sets the carry flag" do
+  it 'overflows to zero and sets the carry flag' do
     cpu.r0 = 255
     cpu.r1 = 1
     i.execute
@@ -28,7 +28,7 @@ RSpec.describe [AVR::Opcode, :adc] do
     expect(cpu.sreg.C).to be true
   end
 
-  it "adds the carry flag" do
+  it 'adds the carry flag' do
     cpu.r0 = 0
     cpu.r1 = 1
     cpu.sreg.C = true

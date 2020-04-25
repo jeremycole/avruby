@@ -1,11 +1,11 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :mul] do
-  include_examples "opcode", :mul
+  include_examples 'opcode', :mul
 
   let(:i) { cpu.instruction(:mul, cpu.r16, cpu.r17) }
 
-  it "performs multiplication correctly" do
+  it 'performs multiplication correctly' do
     cpu.r16 = 17
     cpu.r17 = 19
     i.execute
@@ -13,7 +13,7 @@ RSpec.describe [AVR::Opcode, :mul] do
     expect(cpu.r1.value).to eq 0x01
   end
 
-  it "sets the carry bit when appropriate" do
+  it 'sets the carry bit when appropriate' do
     cpu.r16 = 255
     cpu.r17 = 255
     i.execute
@@ -22,7 +22,7 @@ RSpec.describe [AVR::Opcode, :mul] do
     expect(cpu.sreg.C).to eq true
   end
 
-  it "sets the Z bit when the result is zero" do
+  it 'sets the Z bit when the result is zero' do
     cpu.r16 = 0
     cpu.r17 = 123
     i.execute

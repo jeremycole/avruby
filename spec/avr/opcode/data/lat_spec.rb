@@ -1,9 +1,9 @@
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :lat] do
-  include_examples "opcode", :lat
+  include_examples 'opcode', :lat
 
-  it "exchanges the contents of the SRAM pointed to by Z with the register XORed with the register" do
+  it 'exchanges the contents of the SRAM pointed to by Z with the register XORed with the register' do
     cpu.Z = 0x0500
     cpu.r0 = 0b01100110
     cpu.sram.memory[0x0500].value = 0b11110000
