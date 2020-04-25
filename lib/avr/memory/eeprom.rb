@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class EEPROM < AVR::Memory
     ERASED_VALUE = 0xff
@@ -5,7 +7,7 @@ module AVR
     attr_reader :cpu
 
     def initialize(size)
-      super("EEPROM", size, ERASED_VALUE)
+      super('EEPROM', size, ERASED_VALUE)
     end
 
     def attach(cpu)
@@ -17,7 +19,7 @@ module AVR
         cpu.EEDR.memory_byte => :EEDR,
       }
 
-      @cpu.sram.watch(@watched_memory_bytes.keys.map { |m| m.address }) do |memory_byte, old_value, new_value|
+      @cpu.sram.watch(@watched_memory_bytes.keys.map(&:address)) do |memory_byte, old_value, new_value|
         case @watched_memory_bytes[memory_byte]
         when :EECR
           handle_eecr(old_value, new_value)
@@ -30,7 +32,7 @@ module AVR
       new_eecr = cpu.EECR.hash_for_value(new_value)
 
       if !old_eecr[:EEMPE] && new_eecr[:EEMPE]
-        cpu.notify_at_tick(cpu.clock.ticks+4) do
+        cpu.notify_at_tick(cpu.clock.ticks + 4) do
           cpu.EECR.EEMPE = false
         end
       end
@@ -41,7 +43,7 @@ module AVR
         elsif new_eecr[:EEPM0]
           memory[(cpu.EEARH.value << 8) | cpu.EEARL.value].value = ERASED_VALUE
         end
-        cpu.EECR.set_by_hash({EEMPE: false, EEPE: false})
+        cpu.EECR.from_h({ EEMPE: false, EEPE: false })
       end
 
       if !old_eecr[:EERE] && new_eecr[:EERE]

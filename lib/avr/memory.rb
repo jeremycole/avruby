@@ -1,11 +1,12 @@
-require "avr/memory/memory_byte"
+# frozen_string_literal: true
 
-require "intel_hex"
+require 'avr/memory/memory_byte'
+require 'intel_hex'
 
 module AVR
   class Memory
     class Watch
-      def initialize(proc=nil, &block)
+      def initialize(proc = nil, &block)
         @watch_proc = proc || block.to_proc
       end
 
@@ -20,7 +21,7 @@ module AVR
     attr_reader :memory
     attr_reader :watches
 
-    def initialize(name, size, value=0)
+    def initialize(name, size, value = 0)
       @name = name
       @size = size
       @memory = size.times.map { |address| MemoryByte.new(self, address, value) }
@@ -46,14 +47,14 @@ module AVR
     end
 
     def unshift_watch(filter, watch)
-      watches.unshift({filter: filter, watch: watch})
+      watches.unshift({ filter: filter, watch: watch })
     end
 
     def push_watch(filter, watch)
-      watches.push({filter: filter, watch: watch})
+      watches.push({ filter: filter, watch: watch })
     end
 
-    def watch(filter=true, &block)
+    def watch(filter = true, &block)
       watch = Watch.new(block.to_proc)
       push_watch(filter.is_a?(Integer) ? [filter] : filter, watch)
       watch
@@ -82,6 +83,6 @@ module AVR
   end
 end
 
-require "avr/memory/sram"
-require "avr/memory/eeprom"
-require "avr/memory/flash"
+require 'avr/memory/sram'
+require 'avr/memory/eeprom'
+require 'avr/memory/flash'

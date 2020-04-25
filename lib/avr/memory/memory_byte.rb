@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module AVR
   class MemoryByte
     attr_reader :memory
     attr_reader :address
+    attr_reader :value
 
     def initialize(memory, address, value)
       @memory = memory
@@ -10,7 +13,7 @@ module AVR
     end
 
     def format
-      "%02x"
+      '%02x'
     end
 
     def to_i
@@ -25,17 +28,13 @@ module AVR
       value.chr
     end
 
-    def value
-      @value
-    end
-
     def value=(new_value)
       return if new_value == value
-      raise "Value #{new_value} out of range" if new_value < 0 || new_value > 255
+      raise "Value #{new_value} out of range" unless (0..255).include?(new_value)
+
       old_value = value
       @value = new_value
       memory.notify(self, old_value, new_value)
-      @value
     end
   end
 end

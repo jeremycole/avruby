@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class MemoryByteRegister < Register
     attr_reader :memory_byte

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module AVR
   class Clock
     class Sink
-      def initialize(name, sink_proc=nil, &block)
+      def initialize(name, sink_proc = nil, &block)
         @name = name
         @sink_proc = sink_proc || block.to_proc
       end
@@ -40,9 +42,9 @@ module AVR
       @watches[tick] << sink
     end
 
-    def tick(source=nil, ticks=nil)
+    def tick(_source = nil, _ticks = nil)
       @count += 1
-      if (@count % @scale) == 0
+      if (@count % @scale).zero?
         @last_tick = @ticks
         sinks.each do |sink|
           sink.tick(self, @ticks)

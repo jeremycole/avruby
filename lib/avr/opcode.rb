@@ -1,4 +1,6 @@
-require "avr/opcode_decoder"
+# frozen_string_literal: true
+
+require 'avr/opcode_decoder'
 
 module AVR
   class Opcode
@@ -18,34 +20,36 @@ module AVR
     class StatusRegisterBitExpected < OpcodeException; end
     class ConstantOutOfRange < OpcodeException; end
 
+    # rubocop:disable Layout/HashAlignment
     OPCODE_ARGUMENT_TYPES = {
-      sreg_flag:          "%s",
-      near_relative_pc:   proc { |arg| ".%+d" % [2 * arg] },
-      far_relative_pc:    proc { |arg| ".%+d" % [2 * arg] },
-      absolute_pc:        proc { |arg| "0x%04x" % [2 * arg] },
-      byte:               "0x%02x",
-      word:               "0x%04x",
-      register:           "%s",
-      register_pair:      proc { |arg| "%s:%s" % [arg[0], arg[1]] },
-      word_register:      "%s",
+      sreg_flag:          '%s',
+      near_relative_pc:   proc { |arg| '.%+d' % [2 * arg] },
+      far_relative_pc:    proc { |arg| '.%+d' % [2 * arg] },
+      absolute_pc:        proc { |arg| '0x%04x' % [2 * arg] },
+      byte:               '0x%02x',
+      word:               '0x%04x',
+      register:           '%s',
+      register_pair:      proc { |arg| '%s:%s' % [arg[0], arg[1]] },
+      word_register:      '%s',
       modifying_word_register: proc { |arg|
         if arg.is_a?(AVR::RegisterPair)
-          "%s" % arg
+          '%s' % arg
         else
-          "%s%s%s" % [
-            arg[1] == :pre_decrement ? "-" : "",
+          '%s%s%s' % [
+            arg[1] == :pre_decrement ? '-' : '',
             arg[0].to_s,
-            arg[1] == :post_increment ? "+" : "",
+            arg[1] == :post_increment ? '+' : '',
           ]
         end
       },
       displaced_word_register: proc { |arg|
-        "%s%+d" % [arg[0], arg[1]]
+        '%s%+d' % [arg[0], arg[1]]
       },
-      io_address:         "0x%02x",
-      lower_io_address:   "0x%02x",
-      bit_number:         "%d",
-    }
+      io_address:         '0x%02x',
+      lower_io_address:   '0x%02x',
+      bit_number:         '%d',
+    }.freeze
+    # rubocop:enable Layout/HashAlignment
 
     attr_reader :mnemonic
     attr_reader :arg_types
@@ -70,28 +74,28 @@ module AVR
         return WordRegisterExpected unless arg.is_a?(AVR::RegisterPair)
       when :byte
         return ByteConstantExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0x00 and arg <= 0xff
+        return ConstantOutOfRange unless arg >= 0x00 && arg <= 0xff
       when :word
         return WordConstantExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0x0000 and arg <= 0xffff
+        return ConstantOutOfRange unless arg >= 0x0000 && arg <= 0xffff
       when :absolute_pc
         return AbsolutePcExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0 and arg <= 2**22-1
+        return ConstantOutOfRange unless arg >= 0 && arg <= 2**22 - 1
       when :near_relative_pc
         return NearRelativePcExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= -64 and arg <= 63
+        return ConstantOutOfRange unless arg >= -64 && arg <= 63
       when :far_relative_pc
         return FarRelativePcExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= -2048 and arg <= 2047
+        return ConstantOutOfRange unless arg >= -2048 && arg <= 2047
       when :io_address
         return IoAddressExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0 and arg <= 63
+        return ConstantOutOfRange unless arg >= 0 && arg <= 63
       when :lower_io_address
         return IoAddressExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0 and arg <= 31
+        return ConstantOutOfRange unless arg >= 0 && arg <= 31
       when :bit_number
         return BitNumberExpected unless arg.is_a?(Integer)
-        return ConstantOutOfRange unless arg >= 0 and arg <= 7
+        return ConstantOutOfRange unless arg >= 0 && arg <= 7
       when :sreg_flag
         return StatusRegisterBitExpected unless arg.is_a?(Symbol)
         return StatusRegisterBitExpected unless AVR::SREG::STATUS_BITS.include?(arg)
@@ -103,9 +107,8 @@ module AVR
 
       args.each_with_index do |arg, i|
         arg_exception = validate_arg(arg, i)
-        if arg_exception
-          raise arg_exception.new("Argument #{i} (#{arg}) invalid for #{arg_types[i]}")
-        end
+
+        raise arg_exception, "Argument #{i} (#{arg}) invalid for #{arg_types[i]}" if arg_exception
       end
 
       true
@@ -156,13 +159,16 @@ module AVR
       stack_pop(cpu) | (stack_pop(cpu) << 8)
     end
 
-    def self.opcode(mnemonic, arg_types=[], sreg_flags=[], &block)
-      raise "No block given" unless block_given?
+    def self.opcode(mnemonic, arg_types = [], sreg_flags = [], &block)
+      raise 'No block given' unless block_given?
+
       OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end
 
     def self.decode(pattern, mnemonic, &block)
-      AVR::OpcodeDecoder.add_opcode_definition(AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, block.to_proc))
+      AVR::OpcodeDecoder.add_opcode_definition(
+        AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, block.to_proc)
+      )
     end
 
     def self.parse_operands(pattern, &block)

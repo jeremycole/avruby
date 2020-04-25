@@ -1,22 +1,23 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require "optparse"
-require "avr"
-require "irb"
-require "irb/completion"
-require "pp"
+require 'optparse'
+require 'avr'
+require 'irb'
+require 'irb/completion'
+require 'pp'
 
-IRB.setup(nil, argv: ["-f"])
+IRB.setup(nil, argv: ['-f'])
 
-IRB.conf[:IRB_NAME] = "avr"
+IRB.conf[:IRB_NAME] = 'avr'
 IRB.conf[:SAVE_HISTORY] = 1000
-IRB.conf[:HISTORY_FILE] = File.join(ENV['HOME'], ".avruby_shell_history")
+IRB.conf[:HISTORY_FILE] = File.join(ENV['HOME'], '.avruby_shell_history')
 IRB.conf[:PROMPT][:avruby_shell] = {
-    :PROMPT_I=>"\u001b[0;34;1m%N>\u001b[0m ",
-    :PROMPT_N=>"\u001b[0;34;1m%N>\u001b[0m ",
-    :PROMPT_S=>"\u001b[0;33;1m%N+\u001b[0m ",
-    :PROMPT_C=>"\u001b[0;35;1m%N*\u001b[0m ",
-    :RETURN=>"\u001b[0;31;1m=>\u001b[0m \u001b[32m%s\u001b[0m\n\n"
+  PROMPT_I: "\u001b[0;34;1m%N>\u001b[0m ",
+  PROMPT_N: "\u001b[0;34;1m%N>\u001b[0m ",
+  PROMPT_S: "\u001b[0;33;1m%N+\u001b[0m ",
+  PROMPT_C: "\u001b[0;35;1m%N*\u001b[0m ",
+  RETURN: "\u001b[0;31;1m=>\u001b[0m \u001b[32m%s\u001b[0m\n\n",
 }
 IRB.conf[:PROMPT_MODE] = :avruby_shell
 
@@ -27,19 +28,23 @@ IRB.conf[:PROMPT_MODE] = :avruby_shell
 }
 
 OptionParser.new do |opts|
-  opts.on("-h", "--help", "Show this help.") { |o| puts opts; puts; exit }
-  opts.on("-b", "--benchmark-time=TIME", "Specify the run time, in seconds.") { |o| @options[:benchmark_time] = o.to_f }
-  opts.on("-t", "--[no-]trace", "Enable tracing.") { |o| @options[:trace] = o }
-  opts.on("-I", "--intel-hex-file=FILE", "Load Intel hex file.") { |o| @options[:intel_hex_files] << o }
+  opts.on('-h', '--help', 'Show this help.') do
+    puts opts
+    puts
+    exit
+  end
+  opts.on('-b', '--benchmark-time=TIME', 'Specify the run time, in seconds.') { |o| @options[:benchmark_time] = o.to_f }
+  opts.on('-t', '--[no-]trace', 'Enable tracing.') { |o| @options[:trace] = o }
+  opts.on('-I', '--intel-hex-file=FILE', 'Load Intel hex file.') { |o| @options[:intel_hex_files] << o }
 end.parse!
 
-print "Initializing device... "
+print 'Initializing device... '
 @device = AVR::Device::Atmel_ATmega328p.new
 @cpu = @device.cpu
-puts "OK."
+puts 'OK.'
 
 unless @options[:intel_hex_files].empty?
-  puts "Loading Intel hex firmware into Flash..."
+  puts 'Loading Intel hex firmware into Flash...'
   @options[:intel_hex_files].each do |hex_file|
     print "- Loading #{hex_file}... "
     bytes_loaded = @device.flash.load_from_intel_hex(hex_file)
@@ -48,27 +53,27 @@ unless @options[:intel_hex_files].empty?
 end
 
 if @options[:trace]
-  print "Setting up tracing... "
+  print 'Setting up tracing... '
   @device.trace_all
-  puts "OK."
+  puts 'OK.'
 end
 
 if @options[:benchmark_time]
-  print "Benchmarking for %0.1f seconds... " % [@options[:benchmark_time]]
+  print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
   @device.oscillator.run_timed(@options[:benchmark_time])
-  puts "OK."
+  puts 'OK.'
 
-  puts "Execution speed: %.2f kHz" % [
-    @device.oscillator.ticks.to_f / @options[:benchmark_time] / 1000.0
+  puts 'Execution speed: %.2f kHz' % [
+    @device.oscillator.ticks.to_f / @options[:benchmark_time] / 1000.0,
   ]
 
   exit
 end
 
-puts "Ready. Use @device and @cpu to access the AVR."
+puts 'Ready. Use @device and @cpu to access the AVR.'
 puts
 
 irb = IRB::Irb.new
 irb.run(IRB.conf)
 
-puts "Stopped."
+puts 'Stopped.'

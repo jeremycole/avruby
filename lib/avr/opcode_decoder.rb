@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class OpcodeDecoder
     class OpcodeDefinition
@@ -7,7 +9,7 @@ module AVR
       attr_reader :parse_proc
 
       def initialize(pattern, mnemonic, parse_proc)
-        @pattern = pattern.gsub(/[^01a-zA-Z]/, "")
+        @pattern = pattern.gsub(/[^01a-zA-Z]/, '')
         @mnemonic = mnemonic
         @options = options
         @parse_proc = parse_proc
@@ -16,15 +18,15 @@ module AVR
       end
 
       def operand_pattern
-        @operand_pattern ||= pattern.gsub(/[01]/, "_")
+        @operand_pattern ||= pattern.gsub(/[01]/, '_')
       end
 
       def match_value
-        @match_value ||= pattern.gsub(/[^01]/, "0").to_i(2)
+        @match_value ||= pattern.gsub(/[^01]/, '0').to_i(2)
       end
 
       def match_mask
-        @match_mask ||= pattern.gsub(/[01]/, "1").gsub(/[^01]/, "0").to_i(2)
+        @match_mask ||= pattern.gsub(/[01]/, '1').gsub(/[^01]/, '0').to_i(2)
       end
 
       def match?(word)
@@ -34,17 +36,16 @@ module AVR
       def extract_operands(word)
         operands = Hash.new(0)
         mask = 0x10000
-        pattern.split("").each do |operand|
+        pattern.split('').each do |operand|
           mask >>= 1
-          next if operand == "0" || operand == "1"
+          next if %w[0 1].include?(operand)
+
           operands[operand.to_sym] <<= 1
-          if (word & mask) != 0
-            operands[operand.to_sym] |= 1
-          end
+          operands[operand.to_sym] |= 1 if (word & mask) != 0
         end
         operands
       end
-  
+
       def parse(cpu, opcode_definition, operands)
         parse_proc.call(cpu, opcode_definition, operands)
       end
@@ -55,7 +56,7 @@ module AVR
       attr_reader :parse_proc
 
       def initialize(pattern, parse_proc)
-        @pattern = pattern.gsub(/[^01a-zA-Z_]/, "")
+        @pattern = pattern.gsub(/[^01a-zA-Z_]/, '')
         @parse_proc = parse_proc
       end
 
@@ -107,6 +108,7 @@ module AVR
       OPCODE_MATCH_MASKS.each do |mask, values|
         opcode_definition = values[word & mask]
         next unless opcode_definition
+
         operands = opcode_definition.extract_operands(word)
         decoded_opcode = DecodedOpcode.new(opcode_definition, operands)
         cache[word] = decoded_opcode

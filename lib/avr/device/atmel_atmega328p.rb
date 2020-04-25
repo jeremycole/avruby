@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# rubocop:disable Naming/ClassAndModuleCamelCase
+# rubocop:disable Style/ClassAndModuleChildren
 module AVR
   class Device::Atmel_ATmega328p < Device
     def sram_size
@@ -5,7 +9,7 @@ module AVR
     end
 
     def flash_size
-      32768
+      32_768
     end
 
     def eeprom_size
@@ -14,13 +18,14 @@ module AVR
 
     def word_register_map
       @word_register_map ||= {
-        "X" => { l: 26, h: 27 },
-        "Y" => { l: 28, h: 29 },
-        "Z" => { l: 30, h: 31 },
+        'X' => { l: 26, h: 27 },
+        'Y' => { l: 28, h: 29 },
+        'Z' => { l: 30, h: 31 },
       }
     end
 
     def data_memory_map
+      # rubocop:disable Layout/HashAlignment
       @data_memory_map ||= {
         # 32 registers, r0-r31
         PINB:               0x0023,
@@ -64,11 +69,12 @@ module AVR
         SREG:               0x005f,
         EICRA:              0x0069,
       }.freeze
+      # rubocop:enable Layout/HashAlignment
     end
 
     def register_bit_names_map
       @register_bit_names_map ||= {
-        EECR: [:EERE, :EEPE, :EEMPE, :EERIE, :EEPM0, :EEPM1, nil, nil]
+        EECR: [:EERE, :EEPE, :EEMPE, :EERIE, :EEPM0, :EEPM1, nil, nil],
       }
     end
 
@@ -105,6 +111,7 @@ module AVR
     end
 
     def interrupt_vector_map
+      # rubocop:disable Layout/HashAlignment
       @interrupt_vector_map ||= {
         RESET:          0x0000,
         INT0:           0x0002,
@@ -133,6 +140,7 @@ module AVR
         TWI:            0x0030,
         SPM_READY:      0x0032,
       }
+      # rubocop:enable Layout/HashAlignment
     end
 
     def port_map
@@ -156,3 +164,5 @@ module AVR
     end
   end
 end
+# rubocop:enable Style/ClassAndModuleChildren
+# rubocop:enable Naming/ClassAndModuleCamelCase

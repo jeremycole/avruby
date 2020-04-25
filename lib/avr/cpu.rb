@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class CPU
     attr_reader :device
@@ -20,9 +22,11 @@ module AVR
       @sram = SRAM.new(device.ram_start + device.sram_size)
 
       @registers = RegisterFile.new(self)
+
       device.register_count.times do |n|
         registers.add(MemoryByteRegister.new(self, "r#{n}", @sram.memory[n]))
       end
+
       device.word_register_map.each do |name, map|
         registers.add(RegisterPair.new(self, name, @registers[map[:l]], @registers[map[:h]]))
       end
@@ -42,10 +46,12 @@ module AVR
 
       @sreg = SREG.new(self)
 
-      @sp = SP.new(self,
+      @sp = SP.new(
+        self,
         @sram.memory[device.data_memory_map[:SPL]],
         @sram.memory[device.data_memory_map[:SPH]],
-        device.ram_end)
+        device.ram_end
+      )
 
       @decoder = OpcodeDecoder.new
 
@@ -54,10 +60,8 @@ module AVR
         @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port])
       end
 
-      @clock = Clock.new("cpu")
-      @clock.push_sink(Clock::Sink.new("cpu") {
-        self.step
-      })
+      @clock = Clock.new('cpu')
+      @clock.push_sink(Clock::Sink.new('cpu') { step })
 
       @tracer = nil
     end
@@ -72,28 +76,28 @@ module AVR
     end
 
     def print_status
-      puts "Status:"
-      puts "%8s = %d" % ["Ticks", clock.ticks]
-      puts "%8s = %d opcodes" % ["Cache", decoder.cache.size]
-      puts "%8s = 0x%04x words" % ["PC", pc]
-      puts "%8s = 0x%04x bytes" % ["PC", pc * 2]
-      puts "%8s = 0x%04x (%d bytes used)" % ["SP", sp.value, device.ram_end - sp.value]
-      puts "%8s = 0x%02x [%s]" % ["SREG", sreg.value, sreg.bit_values]
+      puts 'Status:'
+      puts '%8s = %d' % ['Ticks', clock.ticks]
+      puts '%8s = %d opcodes' % ['Cache', decoder.cache.size]
+      puts '%8s = 0x%04x words' % ['PC', pc]
+      puts '%8s = 0x%04x bytes' % ['PC', pc * 2]
+      puts '%8s = 0x%04x (%d bytes used)' % ['SP', sp.value, device.ram_end - sp.value]
+      puts '%8s = 0x%02x [%s]' % ['SREG', sreg.value, sreg.bit_values]
       puts
-      puts "Registers:"
+      puts 'Registers:'
       registers.print_status
       puts
-      puts "IO Registers:"
+      puts 'IO Registers:'
       io_registers.print_status
       puts
-      puts "IO Ports:"
-      puts "%4s  %s" % ["", Port::PINS.join(" ")]
+      puts 'IO Ports:'
+      puts '%4s  %s' % ['', Port::PINS.join(' ')]
       ports.each do |name, port|
-        puts "%4s: %s" % [name, port.pin_states.join(" ")]
+        puts '%4s: %s' % [name, port.pin_states.join(' ')]
       end
       puts
-      puts "Next instruction:"
-      puts "  " + peek.to_s
+      puts 'Next instruction:'
+      puts '  ' + peek.to_s
       puts
     end
 
@@ -138,16 +142,18 @@ module AVR
       word = fetch
       decoded_opcode = decoder.decode(word)
       unless decoded_opcode
-        raise "Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)" % [
+        raise 'Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)' % [
           word,
           offset,
           offset * 2,
         ]
       end
 
-      decoded_opcode.opcode_definition.parse(self,
+      decoded_opcode.opcode_definition.parse(
+        self,
         decoded_opcode.opcode_definition,
-        decoded_opcode.prepare_operands(self))
+        decoded_opcode.prepare_operands(self)
+      )
     end
 
     def peek
@@ -161,10 +167,10 @@ module AVR
 
     def step
       i = decode
-      @tracer.call(i) if @tracer
+      @tracer&.call(i)
       begin
         i.execute
-      rescue
+      rescue StandardError
         puts "*** Caught exception while executing #{i}, CPU status:"
         print_status
         raise

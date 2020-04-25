@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class Oscillator < Clock
     def infinite
@@ -11,13 +13,11 @@ module AVR
     def time_limit(limit)
       Enumerator.new do |y|
         end_time = Time.now.to_f + limit
-        while Time.now.to_f < end_time
-           y << true
-        end
+        y << true while Time.now.to_f < end_time
       end
     end
 
-    def run(limit=infinite)
+    def run(limit = infinite)
       limit.each { tick }
     end
 

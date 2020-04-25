@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AVR
   class Instruction
     attr_reader :cpu
@@ -6,7 +8,7 @@ module AVR
     attr_reader :mnemonic
     attr_reader :args
     attr_reader :opcode
-  
+
     def initialize(cpu, mnemonic, *args)
       @cpu = cpu
       @mnemonic = mnemonic
@@ -19,28 +21,31 @@ module AVR
     end
 
     def valid?
-      raise "No opcode available" unless opcode
+      raise 'No opcode available' unless opcode
+
       validate
       true
     end
 
     def args_to_s
-      return args.join(", ") unless opcode
-      return nil unless opcode.arg_types.size > 0
-      opcode.format_args(args).join(", ")
+      return args.join(', ') unless opcode
+      return nil if opcode.arg_types.empty?
+
+      opcode.format_args(args).join(', ')
     end
 
     def to_s
-      return mnemonic.to_s if args.size == 0
-      mnemonic.to_s + " " + args_to_s
+      return mnemonic.to_s if args.empty?
+
+      "#{mnemonic} #{args_to_s}"
     end
 
     def inspect
-      "#<#{self.class.name} {#{to_s}}>"
+      "#<#{self.class.name} {#{self}}>"
     end
 
     def execute
-      raise "Invalid instruction" unless valid?
+      raise 'Invalid instruction' unless valid?
 
       cpu.next_pc = cpu.pc + 1
       result = opcode.execute(cpu, nil, args)

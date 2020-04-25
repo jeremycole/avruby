@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Naming/MethodParameterName
 module AVR
   class RegisterPair < Register
     attr_reader :l, :h
@@ -9,7 +12,7 @@ module AVR
     end
 
     def format
-      "%04x"
+      '%04x'
     end
 
     def value
@@ -22,3 +25,4 @@ module AVR
     end
   end
 end
+# rubocop:enable Naming/MethodParameterName

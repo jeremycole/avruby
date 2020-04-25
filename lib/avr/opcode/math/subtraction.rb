@@ -1,30 +1,36 @@
+# frozen_string_literal: true
+
 module AVR
   class Opcode
+    # rubocop:disable Naming/MethodParameterName
     def self.set_sreg_for_dec(cpu, r, rd)
-      n = (r & (1<<7)) != 0
+      n = (r & (1 << 7)) != 0
       v = (rd == 0x80)
 
-      cpu.sreg.set_by_hash({
-        S: n ^ v,
-        V: v,
-        N: n,
-        Z: (r == 0),
-      })
+      cpu.sreg.from_h(
+        {
+          S: n ^ v,
+          V: v,
+          N: n,
+          Z: r.zero?,
+        }
+      )
     end
+    # rubocop:enable Naming/MethodParameterName
 
-    decode("1001 010d dddd 1010", :dec) do |cpu, opcode_definition, operands|
+    decode('1001 010d dddd 1010', :dec) do |cpu, _opcode_definition, operands|
       cpu.instruction(:dec, operands[:Rd])
     end
 
-    opcode(:dec, [:register], %i[S V N Z]) do |cpu, memory, args|
+    opcode(:dec, %i[register], %i[S V N Z]) do |cpu, _memory, args|
       result = (args[0].value - 1) & 0xff
       set_sreg_for_dec(cpu, result, args[0].value)
       args[0].value = result
     end
 
+    # rubocop:disable Naming/MethodParameterName
     def self.set_sreg_for_sub_sbc(cpu, r, rd, rr)
-      b7  = (1<<7)
-      b3  = (1<<3)
+      b7  = (1 << 7)
       r7  = (r  & b7) != 0
       rd7 = (rd & b7) != 0
       rr7 = (rr & b7) != 0
@@ -37,81 +43,90 @@ module AVR
       c   = !rd7 & rr7 | rr7 & r7 | r7 & !rd7
       h   = !rd3 & rr3 | rr3 & r3 | r3 & !rd3
 
-      cpu.sreg.set_by_hash({
-        H: h,
-        S: n ^ v,
-        V: v,
-        N: n,
-        Z: (r == 0),
-        C: c,
-      })
+      cpu.sreg.from_h(
+        {
+          H: h,
+          S: n ^ v,
+          V: v,
+          N: n,
+          Z: r.zero?,
+          C: c,
+        }
+      )
     end
+    # rubocop:enable Naming/MethodParameterName
 
-    decode("0001 10rd dddd rrrr", :sub) do |cpu, opcode_definition, operands|
+    decode('0001 10rd dddd rrrr', :sub) do |cpu, _opcode_definition, operands|
       cpu.instruction(:sub, operands[:Rd], operands[:Rr])
     end
 
-    opcode(:sub, [:register, :register], %i[H S V N Z C]) do |cpu, memory, args|
+    opcode(:sub, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
       result = (args[0].value - args[1].value) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
     end
 
-    decode("0101 KKKK dddd KKKK", :subi) do |cpu, opcode_definition, operands|
+    decode('0101 KKKK dddd KKKK', :subi) do |cpu, _opcode_definition, operands|
       cpu.instruction(:subi, operands[:Rd], operands[:K])
     end
 
-    opcode(:subi, [:register, :byte], %i[H S V N Z C]) do |cpu, memory, args|
+    opcode(:subi, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
       result = (args[0].value - args[1]) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1])
       args[0].value = result
     end
 
-    decode("0000 10rd dddd rrrr", :sbc) do |cpu, opcode_definition, operands|
+    decode('0000 10rd dddd rrrr', :sbc) do |cpu, _opcode_definition, operands|
       cpu.instruction(:sbc, operands[:Rd], operands[:Rr])
     end
 
-    opcode(:sbc, [:register, :register], %i[H S V N Z C]) do |cpu, memory, args|
+    opcode(:sbc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
       result = (args[0].value - args[1].value - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1].value)
       args[0].value = result
     end
 
-    decode("0100 KKKK dddd KKKK", :sbci) do |cpu, opcode_definition, operands|
+    decode('0100 KKKK dddd KKKK', :sbci) do |cpu, _opcode_definition, operands|
       cpu.instruction(:sbci, operands[:Rd], operands[:K])
     end
 
-    opcode(:sbci, [:register, :byte], %i[H S V N Z C]) do |cpu, memory, args|
+    opcode(:sbci, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
       result = (args[0].value - args[1] - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1])
       args[0].value = result
     end
 
-    def self.set_sreg_for_sbiw(cpu, r, rd, k)
-      b15  = (1<<15)
-      b7   = (1<<7)
+    # rubocop:disable Naming/MethodParameterName
+    # rubocop:disable Layout/SpaceAroundOperators
+    def self.set_sreg_for_sbiw(cpu, r, rd)
+      b15  = (1 << 15)
+      b7   = (1 << 7)
       rdh7 = (rd & b7) != 0
       r15  = (r & b15) != 0
       v   = r15 & !rdh7
       n   = r15
       c   = r15 & !rdh7
 
-      cpu.sreg.set_by_hash({
-        S: n ^ v,
-        V: v,
-        N: n,
-        Z: (r == 0),
-        C: c,
-      })
+      cpu.sreg.from_h(
+        {
+          S: n ^ v,
+          V: v,
+          N: n,
+          Z: r.zero?,
+          C: c,
+        }
+      )
     end
+    # rubocop:enable Layout/SpaceAroundOperators
+    # rubocop:enable Naming/MethodParameterName
 
-    decode("1001 0111 KKdd KKKK", :sbiw) do |cpu, opcode_definition, operands|
+    decode('1001 0111 KKdd KKKK', :sbiw) do |cpu, _opcode_definition, operands|
       cpu.instruction(:sbiw, operands[:Rd], operands[:K])
     end
 
-    opcode(:sbiw, [:word_register, :byte], %i[S V N Z C]) do |cpu, memory, args|
+    opcode(:sbiw, %i[word_register byte], %i[S V N Z C]) do |cpu, _memory, args|
       result = (args[0].value - args[1]) & 0xffff
-      set_sreg_for_sbiw(cpu, result, args[0].value, args[1])
+      set_sreg_for_sbiw(cpu, result, args[0].value)
       args[0].value = result
     end
   end
