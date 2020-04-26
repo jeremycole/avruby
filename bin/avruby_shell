@@ -70,7 +70,14 @@ if @options[:benchmark_time]
   exit
 end
 
-puts 'Ready. Use @device and @cpu to access the AVR.'
+puts 'Typically, you should:'
+puts '  Use @device to access the entire device.'
+puts '  Use @cpu (or @device.cpu) to access the CPU.'
+puts '  Some useful things to run:'
+puts '    @device.oscillator.tick to single step.'
+puts '    @device.oscillator.run(5.times) to run for 5 ticks.'
+puts '    @device.oscillator.run to run indefinitely.'
+puts 'Ready. Have fun!'
 puts
 
 irb = IRB::Irb.new
