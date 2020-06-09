@@ -14,6 +14,10 @@ module AVR
 
     def register_count; end
 
+    def register_bit_names_map; end
+
+    def word_register_map; end
+
     def io_register_start; end
 
     def io_register_count; end
@@ -25,6 +29,10 @@ module AVR
     def ram_start; end
 
     def ram_end; end
+
+    def interrupt_vector_map; end
+
+    def port_map; end
 
     def data_memory_map_by_address
       @data_memory_map_by_address ||= data_memory_map.each_with_object({}) do |(n, a), h|
