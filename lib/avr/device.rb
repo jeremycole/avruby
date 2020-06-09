@@ -46,6 +46,22 @@ module AVR
       end
     end
 
+    def standard_port(port)
+      {
+        pin: data_memory_map["PIN#{port}".to_sym],
+        ddr: data_memory_map["DDR#{port}".to_sym],
+        port: data_memory_map["PORT#{port}".to_sym],
+      }
+    end
+
+    def standard_ports(ports)
+      ports.each_with_object({}) { |m, h| h[m] = standard_port(m) }
+    end
+
+    def sequential_interrupt_vectors(interrupts)
+      interrupts.each_with_index.each_with_object({}) { |(name, i), h| h[name.to_sym] = i * 2 }
+    end
+
     attr_reader :cpu
     attr_reader :system_clock
     attr_reader :oscillator

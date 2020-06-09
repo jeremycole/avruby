@@ -111,56 +111,40 @@ module AVR
     end
 
     def interrupt_vector_map
-      # rubocop:disable Layout/HashAlignment
-      @interrupt_vector_map ||= {
-        RESET:          0x0000,
-        INT0:           0x0002,
-        INT1:           0x0004,
-        PCINT0:         0x0006,
-        PCINT1:         0x0008,
-        PCINT2:         0x000a,
-        WDT:            0x000c,
-        TIMER2_COMPA:   0x000e,
-        TIMER2_COMPB:   0x0010,
-        TIMER2_OVF:     0x0012,
-        TIMER1_CAPT:    0x0014,
-        TIMER1_COMPA:   0x0016,
-        TIMER1_COMPB:   0x0018,
-        TIMER1_OVF:     0x001a,
-        TIMER0_COMPA:   0x001c,
-        TIMER0_COMPB:   0x001e,
-        TIMER0_OVF:     0x0020,
-        SPI_STC:        0x0022,
-        USART_RX:       0x0024,
-        USART_UDRE:     0x0026,
-        USART_TX:       0x0028,
-        ADC:            0x002a,
-        EE_READY:       0x002c,
-        ANALOG_COMP:    0x002e,
-        TWI:            0x0030,
-        SPM_READY:      0x0032,
-      }
-      # rubocop:enable Layout/HashAlignment
+      @interrupt_vector_map ||= sequential_interrupt_vectors(
+        %i[
+          RESET
+          INT0
+          INT1
+          PCINT0
+          PCINT1
+          PCINT2
+          WDT
+          TIMER2_COMPA
+          TIMER2_COMPB
+          TIMER2_OVF
+          TIMER1_CAPT
+          TIMER1_COMPA
+          TIMER1_COMPB
+          TIMER1_OVF
+          TIMER0_COMPA
+          TIMER0_COMPB
+          TIMER0_OVF
+          SPI_STC
+          USART_RX
+          USART_UDRE
+          USART_TX
+          ADC
+          EE_READY
+          ANALOG_COMP
+          TWI
+          SPM_READY
+        ]
+      )
     end
 
     def port_map
-      @port_map ||= {
-        B: {
-          pin: data_memory_map[:PINB],
-          ddr: data_memory_map[:DDRB],
-          port: data_memory_map[:PORTB],
-        },
-        C: {
-          pin: data_memory_map[:PINC],
-          ddr: data_memory_map[:DDRC],
-          port: data_memory_map[:PORTC],
-        },
-        D: {
-          pin: data_memory_map[:PIND],
-          ddr: data_memory_map[:DDRD],
-          port: data_memory_map[:PORTD],
-        },
-      }
+      @port_map ||= standard_ports(%i[B C D])
     end
   end
 end
