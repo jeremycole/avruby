@@ -15,7 +15,7 @@ module AVR
     end
 
     def opcode
-      @opcode ||= AVR::Opcode.opcodes[mnemonic]
+      @opcode ||= Opcode.opcodes[mnemonic]
     end
 
     def validate

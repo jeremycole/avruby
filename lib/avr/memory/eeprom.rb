@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AVR
-  class EEPROM < AVR::Memory
+  class EEPROM < Memory
     ERASED_VALUE = 0xff
 
     attr_reader :cpu

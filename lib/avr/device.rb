@@ -137,7 +137,7 @@ module AVR
 
     def trace_status_pre_tick
       oscillator.unshift_sink(
-        AVR::Clock::Sink.new('pre-execution status') do
+        Clock::Sink.new('pre-execution status') do
           puts
           puts
           puts 'PRE-EXECUTION STATUS'
@@ -149,7 +149,7 @@ module AVR
 
     def trace_status_post_tick
       oscillator.push_sink(
-        AVR::Clock::Sink.new('post-execution status') do
+        Clock::Sink.new('post-execution status') do
           puts
           puts 'POST-EXECUTION STATUS'
           puts '*********************'

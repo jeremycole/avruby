@@ -32,7 +32,7 @@ module AVR
       register_pair:      proc { |arg| '%s:%s' % [arg[0], arg[1]] },
       word_register:      '%s',
       modifying_word_register: proc { |arg|
-        if arg.is_a?(AVR::RegisterPair)
+        if arg.is_a?(RegisterPair)
           '%s' % arg
         else
           '%s%s%s' % [
@@ -69,9 +69,9 @@ module AVR
     def validate_arg(arg, arg_number)
       case arg_types[arg_number]
       when :register
-        return RegisterExpected unless arg.is_a?(AVR::Register)
+        return RegisterExpected unless arg.is_a?(Register)
       when :word_register
-        return WordRegisterExpected unless arg.is_a?(AVR::RegisterPair)
+        return WordRegisterExpected unless arg.is_a?(RegisterPair)
       when :byte
         return ByteConstantExpected unless arg.is_a?(Integer)
         return ConstantOutOfRange unless arg >= 0x00 && arg <= 0xff
@@ -98,7 +98,7 @@ module AVR
         return ConstantOutOfRange unless arg >= 0 && arg <= 7
       when :sreg_flag
         return StatusRegisterBitExpected unless arg.is_a?(Symbol)
-        return StatusRegisterBitExpected unless AVR::SREG::STATUS_BITS.include?(arg)
+        return StatusRegisterBitExpected unless SREG::STATUS_BITS.include?(arg)
       end
     end
 
@@ -170,13 +170,13 @@ module AVR
     end
 
     def self.decode(pattern, mnemonic, &block)
-      AVR::OpcodeDecoder.add_opcode_definition(
-        AVR::OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, block.to_proc)
+      OpcodeDecoder.add_opcode_definition(
+        OpcodeDecoder::OpcodeDefinition.new(pattern, mnemonic, block.to_proc)
       )
     end
 
     def self.parse_operands(pattern, &block)
-      AVR::OpcodeDecoder.add_operand_parser(AVR::OpcodeDecoder::OperandParser.new(pattern, block.to_proc))
+      OpcodeDecoder.add_operand_parser(OpcodeDecoder::OperandParser.new(pattern, block.to_proc))
     end
   end
 end

@@ -5,7 +5,7 @@ module AVR
     parse_operands('____ __kk kkkk ksss') do |_cpu, operands|
       {
         k: twos_complement(operands[:k], 7),
-        s: AVR::SREG::STATUS_BITS[operands[:s]],
+        s: SREG::STATUS_BITS[operands[:s]],
       }
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AVR
-  class Flash < AVR::Memory
+  class Flash < Memory
     def initialize(size)
       super('Flash', size, 0xff)
     end

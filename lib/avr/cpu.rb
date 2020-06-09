@@ -67,7 +67,7 @@ module AVR
     end
 
     def notify_at_tick(tick, &block)
-      clock.notify_at_tick(tick, AVR::Clock::Sink.new("notify #{block} at #{tick}", block.to_proc))
+      clock.notify_at_tick(tick, Clock::Sink.new("notify #{block} at #{tick}", block.to_proc))
     end
 
     def trace(&block)
@@ -122,7 +122,7 @@ module AVR
     end
 
     def instruction(mnemonic, *args)
-      AVR::Instruction.new(self, mnemonic, *args)
+      Instruction.new(self, mnemonic, *args)
     end
 
     def interrupt(name_or_vector_number)

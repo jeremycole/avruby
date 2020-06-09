@@ -14,7 +14,7 @@ module AVR
       @pin_address = pin_address
       @ddr_address = ddr_address
       @port_address = port_address
-      @sram_watch = AVR::Memory::Watch.new do |_memory_byte, _old_value, _new_value|
+      @sram_watch = Memory::Watch.new do |_memory_byte, _old_value, _new_value|
         # puts "Port watch fired"
       end
       @cpu.sram.push_watch([@ddr_address, @port_address], @sram_watch)
