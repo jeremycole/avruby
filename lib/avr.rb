@@ -11,3 +11,5 @@ require 'avr/clock'
 require 'avr/oscillator'
 require 'avr/device'
 require 'avr/port'
+
+require 'avr/device/atmel_atmega328p'

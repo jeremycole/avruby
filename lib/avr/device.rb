@@ -170,5 +170,3 @@ module AVR
     end
   end
 end
-
-require 'avr/device/atmel_atmega328p'
