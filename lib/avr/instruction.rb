@@ -7,13 +7,15 @@ module AVR
     attr_reader :offset
     attr_reader :mnemonic
     attr_reader :args
-    attr_reader :opcode
 
     def initialize(cpu, mnemonic, *args)
       @cpu = cpu
       @mnemonic = mnemonic
       @args = args
-      @opcode = AVR::Opcode::OPCODES[mnemonic]
+    end
+
+    def opcode
+      @opcode ||= AVR::Opcode.opcodes[mnemonic]
     end
 
     def validate

@@ -138,7 +138,11 @@ module AVR
       opcode_proc.call(cpu, memory, args)
     end
 
-    OPCODES = {}
+    @opcodes = {}
+
+    class << self
+      attr_reader :opcodes
+    end
 
     def self.stack_push(cpu, byte)
       cpu.sram.memory[cpu.sp.value].value = byte
@@ -162,7 +166,7 @@ module AVR
     def self.opcode(mnemonic, arg_types = [], sreg_flags = [], &block)
       raise 'No block given' unless block_given?
 
-      OPCODES[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
+      opcodes[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end
 
     def self.decode(pattern, mnemonic, &block)

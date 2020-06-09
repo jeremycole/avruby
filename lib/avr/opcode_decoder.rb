@@ -75,24 +75,29 @@ module AVR
       end
 
       def prepare_operands(cpu)
-        parser = AVR::OpcodeDecoder::OPERAND_PARSERS[opcode_definition.operand_pattern]
+        parser = OpcodeDecoder.operand_parsers[opcode_definition.operand_pattern]
         parser&.parse(cpu, operands) || operands
       end
     end
 
-    OPCODE_DEFINITIONS = []
-    OPCODE_MATCH_MASKS = {}
+    @opcode_definitions = []
+    @opcode_match_masks = {}
+    @operand_parsers = {}
 
-    def self.add_opcode_definition(opcode_definition)
-      OPCODE_DEFINITIONS << opcode_definition
-      OPCODE_MATCH_MASKS[opcode_definition.match_mask] ||= {}
-      OPCODE_MATCH_MASKS[opcode_definition.match_mask][opcode_definition.match_value] = opcode_definition
+    class << self
+      attr_reader :opcode_definitions
+      attr_reader :opcode_match_masks
+      attr_reader :operand_parsers
     end
 
-    OPERAND_PARSERS = {}
+    def self.add_opcode_definition(opcode_definition)
+      opcode_definitions << opcode_definition
+      opcode_match_masks[opcode_definition.match_mask] ||= {}
+      opcode_match_masks[opcode_definition.match_mask][opcode_definition.match_value] = opcode_definition
+    end
 
     def self.add_operand_parser(operand_parser)
-      OPERAND_PARSERS[operand_parser.pattern] = operand_parser
+      operand_parsers[operand_parser.pattern] = operand_parser
     end
 
     attr_reader :cache
@@ -105,7 +110,7 @@ module AVR
       cached_decoded_opcode = cache[word]
       return cached_decoded_opcode if cached_decoded_opcode
 
-      OPCODE_MATCH_MASKS.each do |mask, values|
+      OpcodeDecoder.opcode_match_masks.each do |mask, values|
         opcode_definition = values[word & mask]
         next unless opcode_definition
 
