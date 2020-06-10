@@ -3,11 +3,7 @@
 module AVR
   class Oscillator < Clock
     def infinite
-      Enumerator.new do |y|
-        loop do
-          y << true
-        end
-      end
+      [true].cycle
     end
 
     def time_limit(limit)
