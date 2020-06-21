@@ -14,7 +14,9 @@ module AVR
     end
 
     def run(limit = infinite)
+      start_ticks = ticks
       limit.each { tick }
+      ticks - start_ticks
     end
 
     def run_timed(time)

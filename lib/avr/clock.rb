@@ -3,7 +3,7 @@
 module AVR
   class Clock
     class Sink
-      def initialize(name, sink_proc = nil, &block)
+      def initialize(name = nil, sink_proc = nil, &block)
         @name = name
         @sink_proc = sink_proc || block.to_proc
       end
@@ -20,7 +20,7 @@ module AVR
     attr_accessor :ticks
     attr_accessor :scale
 
-    def initialize(name)
+    def initialize(name = nil)
       @name = name
       @sinks = []
       @watches = {}
@@ -35,6 +35,10 @@ module AVR
 
     def push_sink(sink)
       sinks.push(sink)
+    end
+
+    def clear_sinks
+      @sinks = []
     end
 
     def notify_at_tick(tick, sink)
