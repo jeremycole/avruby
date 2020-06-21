@@ -47,45 +47,49 @@ def shell
   puts
 end
 
+def benchmark_warmup
+  print 'Warming up for %0.1f seconds... ' % [@options[:benchmark_warmup_time]]
+  warmup_ticks = @device.oscillator.run_timed(@options[:benchmark_warmup_time])
+  puts 'OK.'
+
+  puts 'Execution speed during warmup: %.2f kHz' % [
+    warmup_ticks.to_f / @options[:benchmark_warmup_time] / 1000.0,
+  ]
+  puts
+end
+
+def benchmark_time
+  print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
+  benchmark_ticks = @device.oscillator.run_timed(@options[:benchmark_time])
+  puts 'OK.'
+
+  puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
+    benchmark_ticks.to_f / @options[:benchmark_time] / 1000.0,
+    @options[:benchmark_time],
+  ]
+  puts
+end
+
+def benchmark_ticks
+  print 'Benchmarking for %d ticks... ' % [@options[:benchmark_ticks]]
+  start_time = Time.now.to_f
+  @device.oscillator.run(@options[:benchmark_ticks].times)
+  end_time = Time.now.to_f
+  puts 'OK.'
+
+  benchmark_time = end_time - start_time
+
+  puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
+    @options[:benchmark_ticks].to_f / benchmark_time / 1000.0,
+    benchmark_time,
+  ]
+  puts
+end
+
 def benchmark
-  if @options[:benchmark_warmup_time]
-    print 'Warming up for %0.1f seconds... ' % [@options[:benchmark_warmup_time]]
-    warmup_ticks = @device.oscillator.run_timed(@options[:benchmark_warmup_time])
-    puts 'OK.'
-
-    puts 'Execution speed during warmup: %.2f kHz' % [
-      warmup_ticks.to_f / @options[:benchmark_warmup_time] / 1000.0,
-    ]
-    puts
-  end
-
-  if @options[:benchmark_time]
-    print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
-    benchmark_ticks = @device.oscillator.run_timed(@options[:benchmark_time])
-    puts 'OK.'
-
-    puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
-      benchmark_ticks.to_f / @options[:benchmark_time] / 1000.0,
-      @options[:benchmark_time],
-    ]
-    puts
-  end
-
-  if @options[:benchmark_ticks]
-    print 'Benchmarking for %d ticks... ' % [@options[:benchmark_ticks]]
-    start_time = Time.now.to_f
-    @device.oscillator.run(@options[:benchmark_ticks].times)
-    end_time = Time.now.to_f
-    puts 'OK.'
-
-    benchmark_time = end_time - start_time
-
-    puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
-      @options[:benchmark_ticks].to_f / benchmark_time / 1000.0,
-      benchmark_time,
-    ]
-    puts
-  end
+  benchmark_warmup if @options[:benchmark_warmup_time]
+  benchmark_time if @options[:benchmark_time]
+  benchmark_ticks if @options[:benchmark_ticks]
 end
 
 def print_opcode_decoder_cache
@@ -122,23 +126,29 @@ OptionParser.new do |opts|
     puts
     exit
   end
-  opts.on('-b', '--benchmark-time=TIME', 'Specify the run time, in seconds.') { |o| @options[:benchmark_time] = o.to_f }
-  opts.on('-B', '--benchmark-ticks=TICKS', 'Specify the run time, in ticks.') { |o| @options[:benchmark_ticks] = o.to_i }
-  opts.on('-w', '--benchmark-warmup-time=TIME', 'Specify the warmup time, in seconds.') { |o| @options[:benchmark_warmup_time] = o.to_f }
-  opts.on('-d', '--[no-]benchmark-print-opcode-cache', 'Enable print of opcode decoder cache after benchmark.') { |o| @options[:benchmark_print_opcode_cache] = o }
-  opts.on('-t', '--[no-]trace', 'Enable tracing.') { |o| @options[:trace] = o }
-  opts.on('-I', '--intel-hex-file=FILE', 'Load Intel hex file.') { |o| @options[:intel_hex_files] << o }
+  opts.on('-b', '--benchmark-time=TIME', 'Specify the run time, in seconds.') do |o|
+    @options[:benchmark_time] = o.to_f
+  end
+  opts.on('-B', '--benchmark-ticks=TICKS', 'Specify the run time, in ticks.') do |o|
+    @options[:benchmark_ticks] = o.to_i
+  end
+  opts.on('-w', '--benchmark-warmup-time=TIME', 'Specify the warmup time, in seconds.') do |o|
+    @options[:benchmark_warmup_time] = o.to_f
+  end
+  opts.on('-d', '--[no-]benchmark-print-opcode-cache', 'Enable print of opcode decoder cache after benchmark.') do |o|
+    @options[:benchmark_print_opcode_cache] = o
+  end
+  opts.on('-t', '--[no-]trace', 'Enable tracing.') do |o|
+    @options[:trace] = o
+  end
+  opts.on('-I', '--intel-hex-file=FILE', 'Load Intel hex file.') do |o|
+    @options[:intel_hex_files] << o
+  end
 end.parse!
 
 initialize_device
-
-unless @options[:intel_hex_files].empty?
-  load_intel_hex_files(@options[:intel_hex_files])
-end
-
-if @options[:trace]
-  enable_tracing
-end
+load_intel_hex_files(@options[:intel_hex_files]) unless @options[:intel_hex_files].empty?
+enable_tracing if @options[:trace]
 
 puts
 
@@ -148,6 +158,4 @@ else
   shell
 end
 
-if @options[:benchmark_print_opcode_cache]
-  print_opcode_decoder_cache
-end
+print_opcode_decoder_cache if @options[:benchmark_print_opcode_cache]
