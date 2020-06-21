@@ -82,7 +82,3 @@ module AVR
     end
   end
 end
-
-require 'avr/memory/sram'
-require 'avr/memory/eeprom'
-require 'avr/memory/flash'

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'avr/opcode_decoder'
-
 module AVR
   class Opcode
     class OpcodeException < RuntimeError; end
