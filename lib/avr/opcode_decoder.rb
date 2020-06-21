@@ -121,5 +121,18 @@ module AVR
       end
       nil
     end
+
+    def print_cache
+      puts "Opcode decoder cache (#{cache.size} opcodes cached):"
+      cache.sort.each do |word, decoded_opcode|
+        puts "  %04x = %17s = %-6s (%s)" % [
+          word,
+          word.to_s(2).rjust(16, '0').split('').each_slice(8).map(&:join).join(' '),
+          decoded_opcode.opcode_definition.mnemonic,
+          decoded_opcode.operands.map { |k, v| '%s = %5d' % [k, v] }.join(', ')
+        ]
+      end
+      nil
+    end
   end
 end

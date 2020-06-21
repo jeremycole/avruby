@@ -7,6 +7,92 @@ require 'irb'
 require 'irb/completion'
 require 'pp'
 
+def initialize_device
+  print 'Initializing device... '
+  @device = AVR::Device::Atmel_ATmega328p.new
+  @cpu = @device.cpu
+  puts 'OK.'
+end
+
+def load_intel_hex_files(files)
+  puts 'Loading Intel hex firmware into Flash...'
+  files.each do |hex_file|
+    print "- Loading #{hex_file}... "
+    bytes_loaded = @device.flash.load_from_intel_hex(hex_file)
+    puts "OK, loaded #{bytes_loaded} bytes."
+  end
+end
+
+def enable_tracing
+  print 'Setting up tracing... '
+  @device.trace_all
+  puts 'OK.'
+end
+
+def shell
+  puts 'Typically, you should:'
+  puts '  Use @device to access the entire device.'
+  puts '  Use @cpu (or @device.cpu) to access the CPU.'
+  puts '  Some useful things to run:'
+  puts '    @device.oscillator.tick to single step.'
+  puts '    @device.oscillator.run(5.times) to run for 5 ticks.'
+  puts '    @device.oscillator.run to run indefinitely.'
+  puts 'Ready. Have fun!'
+  puts
+
+  irb = IRB::Irb.new
+  irb.run(IRB.conf)
+
+  puts 'Stopped.'
+  puts
+end
+
+def benchmark
+  if @options[:benchmark_warmup_time]
+    print 'Warming up for %0.1f seconds... ' % [@options[:benchmark_warmup_time]]
+    warmup_ticks = @device.oscillator.run_timed(@options[:benchmark_warmup_time])
+    puts 'OK.'
+
+    puts 'Execution speed during warmup: %.2f kHz' % [
+      warmup_ticks.to_f / @options[:benchmark_warmup_time] / 1000.0,
+    ]
+    puts
+  end
+
+  if @options[:benchmark_time]
+    print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
+    benchmark_ticks = @device.oscillator.run_timed(@options[:benchmark_time])
+    puts 'OK.'
+
+    puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
+      benchmark_ticks.to_f / @options[:benchmark_time] / 1000.0,
+      @options[:benchmark_time],
+    ]
+    puts
+  end
+
+  if @options[:benchmark_ticks]
+    print 'Benchmarking for %d ticks... ' % [@options[:benchmark_ticks]]
+    start_time = Time.now.to_f
+    @device.oscillator.run(@options[:benchmark_ticks].times)
+    end_time = Time.now.to_f
+    puts 'OK.'
+
+    benchmark_time = end_time - start_time
+
+    puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
+      @options[:benchmark_ticks].to_f / benchmark_time / 1000.0,
+      benchmark_time,
+    ]
+    puts
+  end
+end
+
+def print_opcode_decoder_cache
+  @device.cpu.decoder.print_cache
+  puts
+end
+
 IRB.setup(nil, argv: ['-f'])
 
 IRB.conf[:IRB_NAME] = 'avr'
@@ -24,6 +110,9 @@ IRB.conf[:PROMPT_MODE] = :avruby_shell
 @options = {
   trace: false,
   benchmark_time: nil,
+  benchmark_ticks: nil,
+  benchmark_warmup_time: nil,
+  benchmark_print_opcode_cache: false,
   intel_hex_files: [],
 }
 
@@ -34,53 +123,31 @@ OptionParser.new do |opts|
     exit
   end
   opts.on('-b', '--benchmark-time=TIME', 'Specify the run time, in seconds.') { |o| @options[:benchmark_time] = o.to_f }
+  opts.on('-B', '--benchmark-ticks=TICKS', 'Specify the run time, in ticks.') { |o| @options[:benchmark_ticks] = o.to_i }
+  opts.on('-w', '--benchmark-warmup-time=TIME', 'Specify the warmup time, in seconds.') { |o| @options[:benchmark_warmup_time] = o.to_f }
+  opts.on('-d', '--[no-]benchmark-print-opcode-cache', 'Enable print of opcode decoder cache after benchmark.') { |o| @options[:benchmark_print_opcode_cache] = o }
   opts.on('-t', '--[no-]trace', 'Enable tracing.') { |o| @options[:trace] = o }
   opts.on('-I', '--intel-hex-file=FILE', 'Load Intel hex file.') { |o| @options[:intel_hex_files] << o }
 end.parse!
 
-print 'Initializing device... '
-@device = AVR::Device::Atmel_ATmega328p.new
-@cpu = @device.cpu
-puts 'OK.'
+initialize_device
 
 unless @options[:intel_hex_files].empty?
-  puts 'Loading Intel hex firmware into Flash...'
-  @options[:intel_hex_files].each do |hex_file|
-    print "- Loading #{hex_file}... "
-    bytes_loaded = @device.flash.load_from_intel_hex(hex_file)
-    puts "OK, loaded #{bytes_loaded} bytes."
-  end
+  load_intel_hex_files(@options[:intel_hex_files])
 end
 
 if @options[:trace]
-  print 'Setting up tracing... '
-  @device.trace_all
-  puts 'OK.'
+  enable_tracing
 end
 
-if @options[:benchmark_time]
-  print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
-  @device.oscillator.run_timed(@options[:benchmark_time])
-  puts 'OK.'
-
-  puts 'Execution speed: %.2f kHz' % [
-    @device.oscillator.ticks.to_f / @options[:benchmark_time] / 1000.0,
-  ]
-
-  exit
-end
-
-puts 'Typically, you should:'
-puts '  Use @device to access the entire device.'
-puts '  Use @cpu (or @device.cpu) to access the CPU.'
-puts '  Some useful things to run:'
-puts '    @device.oscillator.tick to single step.'
-puts '    @device.oscillator.run(5.times) to run for 5 ticks.'
-puts '    @device.oscillator.run to run indefinitely.'
-puts 'Ready. Have fun!'
 puts
 
-irb = IRB::Irb.new
-irb.run(IRB.conf)
+if @options[:benchmark_time] || @options[:benchmark_ticks]
+  benchmark
+else
+  shell
+end
 
-puts 'Stopped.'
+if @options[:benchmark_print_opcode_cache]
+  print_opcode_decoder_cache
+end
