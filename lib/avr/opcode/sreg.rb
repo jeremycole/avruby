@@ -3,7 +3,7 @@
 module AVR
   class Opcode
     decode('1001 0100 0sss 1000', :bset) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:bset, STATUS_BITS[operands[:s]])
+      cpu.instruction(:bset, SREG::STATUS_BITS[operands[:s]])
     end
 
     opcode(:bset, %i[sreg_flag], %i[I T H S V N Z C]) do |cpu, _memory, args|
@@ -11,7 +11,7 @@ module AVR
     end
 
     decode('1001 0100 1sss 1000', :bclr) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:bclr, STATUS_BITS[operands[:s]])
+      cpu.instruction(:bclr, SREG::STATUS_BITS[operands[:s]])
     end
 
     opcode(:bclr, %i[sreg_flag], %i[I T H S V N Z C]) do |cpu, _memory, args|
