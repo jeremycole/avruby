@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec')
   s.add_development_dependency('rubocop')
 
-  s.add_dependency('intel_hex', '~> 0.5.2')
+  s.add_dependency('intel_hex', '~> 0.5.3')
 end
