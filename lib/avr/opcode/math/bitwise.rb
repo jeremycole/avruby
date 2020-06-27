@@ -1,17 +1,18 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
   class Opcode
-    def self.set_sreg_for_and_or(cpu, register)
-      r7 = (register & (1 << 7)) != 0
+    sig { params(cpu: CPU, value: Integer).void }
+    def self.set_sreg_for_and_or(cpu, value)
+      r7 = (value & (1 << 7)) != 0
 
       cpu.sreg.from_h(
         {
           S: r7 ^ false,
           V: false,
           N: r7,
-          Z: register.zero?,
+          Z: value.zero?,
         }
       )
     end
@@ -142,7 +143,7 @@ module AVR
       args[0].value = result
     end
 
-    decode('1001 010d dddd 0101', :asr) do |cpu, _opcode_definition, _operands|
+    decode('1001 010d dddd 0101', :asr) do |cpu, _opcode_definition, operands|
       cpu.instruction(:asr, operands[:Rd])
     end
 

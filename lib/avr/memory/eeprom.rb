@@ -1,16 +1,22 @@
-# typed: true
+# typed: false
 # frozen_string_literal: true
 
 module AVR
   class EEPROM < Memory
+    extend T::Sig
+
     ERASED_VALUE = 0xff
 
+    sig { returns(CPU) }
     attr_reader :cpu
 
-    def initialize(size)
+    sig { params(size: Integer, cpu: CPU).void }
+    def initialize(size, cpu)
       super('EEPROM', size, ERASED_VALUE)
+      attach(cpu)
     end
 
+    sig { params(cpu: CPU).void }
     def attach(cpu)
       @cpu = cpu
       @watched_memory_bytes = {
@@ -28,6 +34,7 @@ module AVR
       end
     end
 
+    sig { params(old_value: Integer, new_value: Integer).void }
     def handle_eecr(old_value, new_value)
       old_eecr = cpu.EECR.hash_for_value(old_value)
       new_eecr = cpu.EECR.hash_for_value(new_value)
@@ -40,15 +47,15 @@ module AVR
 
       if !old_eecr[:EEPE] && new_eecr[:EEPE] && new_eecr[:EEMPE]
         if (!new_eecr[:EEPM0] && !new_eecr[:EEPM1]) || new_eecr[:EEPM1]
-          memory[(cpu.EEARH.value << 8) | cpu.EEARL.value].value = cpu.EEDR.value
+          T.must(memory[(cpu.EEARH.value << 8) | cpu.EEARL.value]).value = cpu.EEDR.value
         elsif new_eecr[:EEPM0]
-          memory[(cpu.EEARH.value << 8) | cpu.EEARL.value].value = ERASED_VALUE
+          T.must(memory[(cpu.EEARH.value << 8) | cpu.EEARL.value]).value = ERASED_VALUE
         end
         cpu.EECR.from_h({ EEMPE: false, EEPE: false })
       end
 
       if !old_eecr[:EERE] && new_eecr[:EERE]
-        cpu.EEDR.value = memory[(cpu.EEARH.value << 8) | cpu.EEARL.value].value
+        cpu.EEDR.value = T.must(memory[(cpu.EEARH.value << 8) | cpu.EEARL.value]).value
         cpu.EECR.EERE = false
       end
 

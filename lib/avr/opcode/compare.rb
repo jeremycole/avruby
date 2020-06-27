@@ -1,11 +1,12 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
   class Opcode
     # rubocop:disable Naming/MethodParameterName
     # rubocop:disable Layout/SpaceAroundOperators
-    def self.set_sreg_for_cp_cpi_cpc(cpu, r, rd, rr_k, opcode)
+    sig { params(cpu: CPU, r: Integer, rd: Integer, rr_k: Integer, mnemonic: Symbol).void }
+    def self.set_sreg_for_cp_cpi_cpc(cpu, r, rd, rr_k, mnemonic)
       b7    = (1<<7)
       r7    = (r  & b7) != 0
       rd7   = (rd & b7) != 0
@@ -19,7 +20,7 @@ module AVR
       h     = !rd3 & rr_k3 | rr_k3 & r3 | r3 & !rd3
 
       z = r.zero?
-      z = r.zero? ? cpu.sreg.Z : false if opcode == :cpc
+      z = r.zero? ? cpu.sreg.Z : false if mnemonic == :cpc
 
       cpu.sreg.from_h(
         {

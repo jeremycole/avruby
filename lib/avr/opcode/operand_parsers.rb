@@ -1,13 +1,15 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
   class Opcode
+    sig { params(value: Integer, bits: Integer).returns(Integer) }
     def self.twos_complement(value, bits)
-      mask = 2**(bits - 1)
+      mask = (2**(bits - 1)).to_i
       -(value & mask) + (value & ~mask)
     end
 
+    sig { params(k_in: Integer).returns(Integer) }
     def self.bit_jumble_for_lds_sts(k_in)
       k_out  = k_in & 0b00001111
       k_out |= k_in & 0b01100000 >> 1
