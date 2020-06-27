@@ -1,4 +1,4 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
@@ -11,7 +11,7 @@ module AVR
     parse_operands('____ _kkk dddd kkkk') do |cpu, operands|
       {
         Rd: cpu.registers[operands[:d]],
-        k: bit_jumble_for_lds_sts(k),
+        k: bit_jumble_for_lds_sts(operands[:k]),
       }
     end
 
@@ -94,7 +94,7 @@ module AVR
     parse_operands('____ _kkk rrrr kkkk') do |cpu, operands|
       {
         Rr: cpu.registers[operands[:r]],
-        k: bit_jumble_for_lds_sts(k),
+        k: bit_jumble_for_lds_sts(operands[:k]),
       }
     end
 
@@ -169,6 +169,7 @@ module AVR
       cpu.sram.memory[args[0][0].value + args[0][1]].value = args[1].value
     end
 
+    sig { params(memory_byte: MemoryByte, register: Register, mnemonic: Symbol).void }
     def self.exchange_memory_byte_with_register(memory_byte, register, mnemonic)
       old_value = memory_byte.value
       case mnemonic

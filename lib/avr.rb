@@ -1,6 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'sorbet-runtime'
 require 'avr/version'
 require 'avr/memory'
 require 'avr/memory/sram'

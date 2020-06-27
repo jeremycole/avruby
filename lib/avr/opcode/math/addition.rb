@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
   class Opcode
     # rubocop:disable Naming/MethodParameterName
+    sig { params(cpu: CPU, r: Integer, rd: Integer).void }
     def self.set_sreg_for_inc(cpu, r, rd)
       n = (r & (1 << 7)) != 0
       v = (rd == 0x7f)
@@ -30,6 +31,7 @@ module AVR
     end
 
     # rubocop:disable Naming/MethodParameterName
+    sig { params(cpu: CPU, r: Integer, rd: Integer, rr: Integer).void }
     def self.set_sreg_for_add_adc(cpu, r, rd, rr)
       b7  = (1 << 7)
       r7  = (r  & b7) != 0
@@ -82,6 +84,7 @@ module AVR
 
     # rubocop:disable Naming/MethodParameterName
     # rubocop:disable Layout/SpaceAroundOperators
+    sig { params(cpu: CPU, r: Integer, rd: Integer).void }
     def self.set_sreg_for_adiw(cpu, r, rd)
       b15  = (1 << 15)
       b7   = (1 << 7)
