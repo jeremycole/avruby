@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe AVR::Clock do
   let(:clock) { AVR::Clock.new }
   let(:other_clock) { AVR::Clock.new }

@@ -1,3 +1,4 @@
+# typed: false
 RSpec.describe AVR::EEPROM do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }

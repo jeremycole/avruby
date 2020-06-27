@@ -1,3 +1,4 @@
+# typed: false
 require 'benchmark'
 
 RSpec.describe AVR::Oscillator do

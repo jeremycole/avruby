@@ -1,3 +1,4 @@
+# typed: false
 require 'shared_examples_for_opcode'
 
 RSpec.describe [AVR::Opcode, :ori] do
