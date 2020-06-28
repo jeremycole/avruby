@@ -37,30 +37,30 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('0001 01rd dddd rrrr', :cp) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:cp, operands[:Rd], operands[:Rr])
+      cpu.instruction(:cp, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:cp, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1].value) & 0xff
-      set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1].value, :cp)
+      result = (args.fetch(0).value - args.fetch(1).value) & 0xff
+      set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cp)
     end
 
     decode('0000 01rd dddd rrrr', :cpc) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:cpc, operands[:Rd], operands[:Rr])
+      cpu.instruction(:cpc, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:cpc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1].value - (cpu.sreg.C ? 1 : 0)) & 0xff
-      set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1].value, :cpc)
+      result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
+      set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpc)
     end
 
     decode('0011 KKKK dddd KKKK', :cpi) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:cpi, operands[:Rd], operands[:K])
+      cpu.instruction(:cpi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:cpi, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1]) & 0xff
-      set_sreg_for_cp_cpi_cpc(cpu, result, args[0].value, args[1], :cpi)
+      result = (args.fetch(0).value - args.fetch(1).value) & 0xff
+      set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpi)
     end
   end
 end

@@ -40,6 +40,10 @@ module AVR
       end
     end
 
+    def fetch(key)
+      @registers.fetch(@register_list.fetch(key)) if key.is_a?(Integer)
+    end
+
     def [](key)
       @registers[@register_list[key]] if key.is_a?(Integer)
     end

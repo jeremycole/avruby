@@ -20,6 +20,41 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :registers
 
+    sig { returns(Register) }
+    def r0
+      registers.fetch(:r0)
+    end
+
+    sig { params(value: Integer).void }
+    def r0=(value)
+      registers.fetch(:r0).value = value
+    end
+
+    sig { returns(Register) }
+    def r1
+      registers.fetch(:r1)
+    end
+
+    sig { params(value: Integer).void }
+    def r1=(value)
+      registers.fetch(:r1).value = value
+    end
+
+    sig { returns(Register) }
+    def X
+      registers.fetch(:X)
+    end
+
+    sig { returns(Register) }
+    def Y
+      registers.fetch(:Y)
+    end
+
+    sig { returns(Register) }
+    def Z
+      registers.fetch(:Z)
+    end
+
     sig { returns(RegisterFile) }
     attr_reader :io_registers
 
@@ -57,7 +92,7 @@ module AVR
       end
 
       device.word_register_map.each do |name, map|
-        registers.add(RegisterPair.new(self, name, @registers[map[:l]], @registers[map[:h]]))
+        registers.add(RegisterPair.new(self, @registers[map[:l]], @registers[map[:h]], name))
       end
 
       @io_registers = RegisterFile.new(self)
@@ -157,7 +192,7 @@ module AVR
 
     sig { params(mnemonic: Symbol, args: T.untyped).returns(Instruction) }
     def instruction(mnemonic, *args)
-      Instruction.new(self, mnemonic, *args)
+      Instruction.new(self, mnemonic, args)
     end
 
     sig { params(name_or_vector_number: T.any(Symbol, Integer)).void }
@@ -170,7 +205,7 @@ module AVR
         address = device.interrupt_vector_map[name_or_vector_number]
       end
 
-      instruction(:call, address).execute
+      instruction(:call, AVR::Value.new(address)).execute
     end
 
     sig { returns(Instruction) }

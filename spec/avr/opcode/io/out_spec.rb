@@ -5,7 +5,7 @@ RSpec.describe [AVR::Opcode, :out] do
   include_examples 'opcode', :out
 
   let(:portb) { cpu.PORTB.memory_byte }
-  let(:portb_io_address) { cpu.PORTB.memory_byte.address - device.io_register_start }
+  let(:portb_io_address) { AVR::Value.new(cpu.PORTB.memory_byte.address - device.io_register_start) }
 
   it 'writes the contents of the register into the IO register' do
     cpu.r0.value = 1

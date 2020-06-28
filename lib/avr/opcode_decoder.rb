@@ -8,16 +8,24 @@ module AVR
     class OpcodeDefinition
       extend T::Sig
 
+      ProcType = T.type_alias do
+        T.proc.params(
+          cpu: CPU,
+          opcode_definition: OpcodeDefinition,
+          operands: Opcode::OperandValueHashType
+        ).returns(Instruction)
+      end
+
       sig { returns(String) }
       attr_reader :pattern
 
       sig { returns(Symbol) }
       attr_reader :mnemonic
 
-      sig { returns(T.untyped) }
+      sig { returns(ProcType) }
       attr_reader :parse_proc
 
-      sig { params(pattern: String, mnemonic: Symbol, parse_proc: T.untyped).void }
+      sig { params(pattern: String, mnemonic: Symbol, parse_proc: ProcType).void }
       def initialize(pattern, mnemonic, parse_proc)
         @pattern = T.let(pattern.gsub(/[^01a-zA-Z]/, ''), String)
         raise "Incorrect pattern length for #{pattern}" unless @pattern.size == 16
@@ -50,7 +58,7 @@ module AVR
         word & match_mask == match_value
       end
 
-      sig { params(word: Integer).returns(T::Hash[Symbol, Integer]) }
+      sig { params(word: Integer).returns(Argument::NamedValueType) }
       def extract_operands(word)
         operands = Hash.new(0)
         mask = 0x10000
@@ -61,14 +69,14 @@ module AVR
           operands[operand.to_sym] <<= 1
           operands[operand.to_sym] |= 1 if (word & mask) != 0
         end
-        operands
+        operands.each_with_object({}) { |(k, v), h| h[k] = Value.new(v) }
       end
 
       sig do
         params(
           cpu: CPU,
           opcode_definition: OpcodeDefinition,
-          operands: T::Hash[Symbol, T.any(MemoryByteRegister, Integer)]
+          operands: Argument::NamedValueType
         ).returns(Instruction)
       end
       def parse(cpu, opcode_definition, operands)
@@ -82,28 +90,20 @@ module AVR
       sig { returns(String) }
       attr_reader :pattern
 
-      sig do
-        returns(
-          T.proc.params(
-            cpu: CPU,
-            operands: T::Hash[Symbol, T.any(MemoryByteRegister, Integer)]
-          ).returns(T::Hash[Symbol, T.any(MemoryByteRegister, Integer)])
-        )
+      ProcType = T.type_alias do
+        T.proc.params(cpu: CPU, operands: Opcode::OperandValueHashType).returns(Opcode::OperandValueHashType)
       end
+
+      sig { returns(OperandParser::ProcType) }
       attr_reader :parse_proc
 
-      sig { params(pattern: String, parse_proc: T.untyped).void }
+      sig { params(pattern: String, parse_proc: OperandParser::ProcType).void }
       def initialize(pattern, parse_proc)
         @pattern = T.let(pattern.gsub(/[^01a-zA-Z_]/, ''), String)
-        @parse_proc = T.let(parse_proc, T.untyped)
+        @parse_proc = T.let(parse_proc, OperandParser::ProcType)
       end
 
-      sig do
-        params(
-          cpu: CPU,
-          operands: T::Hash[Symbol, T.any(MemoryByteRegister, Integer)]
-        ).returns(T::Hash[Symbol, T.any(MemoryByteRegister, Integer)])
-      end
+      sig { params(cpu: CPU, operands: Opcode::OperandValueHashType).returns(Opcode::OperandValueHashType) }
       def parse(cpu, operands)
         parse_proc.call(cpu, operands)
       end
@@ -115,21 +115,16 @@ module AVR
       sig { returns(OpcodeDefinition) }
       attr_reader :opcode_definition
 
-      sig { returns(T.untyped) }
+      sig { returns(Opcode::OperandValueHashType) }
       attr_reader :operands
 
-      sig do
-        params(
-          opcode_definition: OpcodeDefinition,
-          operands: T::Hash[Symbol, T.any(MemoryByteRegister, Integer)]
-        ).void
-      end
+      sig { params(opcode_definition: OpcodeDefinition, operands: Opcode::OperandValueHashType).void }
       def initialize(opcode_definition, operands)
         @opcode_definition = opcode_definition
         @operands = operands
       end
 
-      sig { params(cpu: CPU).returns(T::Hash[Symbol, T.any(MemoryByteRegister, Integer)]) }
+      sig { params(cpu: CPU).returns(Opcode::OperandValueHashType) }
       def prepare_operands(cpu)
         parser = OpcodeDecoder.operand_parsers[opcode_definition.operand_pattern]
         parser&.parse(cpu, operands) || operands

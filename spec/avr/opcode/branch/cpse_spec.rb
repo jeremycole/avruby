@@ -19,6 +19,7 @@ RSpec.describe [AVR::Opcode, :cpse] do
     cpu.device.flash.set_word(0, 0b0001_0000_0000_0001) # cpse r0, r1
     cpu.device.flash.set_word(1, 0b1001_0100_0000_1100) # jmp ...
     cpu.device.flash.set_word(2, 0b1010_1010_1010_1010) # ... 0xaaaa
+    cpu.device.flash.set_word(3, 0b0000_0000_0000_0000) # nop
     cpu.step
     expect(cpu.next_pc).to eq 3
   end
