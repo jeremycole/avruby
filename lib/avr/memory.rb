@@ -128,7 +128,7 @@ module AVR
           old_value: Integer,
           new_value: Integer,
         ).void
-      ).returns(AVR::Memory::Watch)
+      ).returns(Watch)
     end
     def watch(filter = nil, &block)
       watch = Watch.new(block.to_proc)
