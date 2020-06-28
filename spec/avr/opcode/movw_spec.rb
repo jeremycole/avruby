@@ -4,7 +4,13 @@ require 'shared_examples_for_opcode'
 RSpec.describe [AVR::Opcode, :movw] do
   include_examples 'opcode', :movw
 
-  let(:i) { cpu.instruction(:movw, [cpu.r29, cpu.r28], [cpu.r31, cpu.r30]) }
+  let(:i) do
+    cpu.instruction(
+      :movw,
+      AVR::RegisterPair.new(cpu, cpu.r29, cpu.r28),
+      AVR::RegisterPair.new(cpu, cpu.r31, cpu.r30)
+    )
+  end
 
   it 'copies the source word register to the target word register' do
     cpu.Y = 0

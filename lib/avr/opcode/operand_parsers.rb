@@ -21,54 +21,54 @@ module AVR
     # adc add and cp cpc cpse eor mov mul muls or sbc sub
     parse_operands('____ __rd dddd rrrr') do |cpu, operands|
       {
-        Rd: cpu.registers[operands[:d]],
-        Rr: cpu.registers[operands[:r]],
+        Rd: cpu.registers.fetch(operands.fetch(:d).value),
+        Rr: cpu.registers.fetch(operands.fetch(:r).value),
       }
     end
 
     # fmul fmuls fmulsu mulsu
     parse_operands('____ ____ _ddd _rrr') do |cpu, operands|
       {
-        Rd: cpu.registers[operands[:d] | 0b10000],
-        Rr: cpu.registers[operands[:r] | 0b10000],
+        Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
+        Rr: cpu.registers.fetch(operands.fetch(:r).value | 0b10000),
       }
     end
 
     # asr com dec elpm inc ld lds lpm lsr neg pop ror swap
     parse_operands('____ ___d dddd ____') do |cpu, operands|
       {
-        Rd: cpu.registers[operands[:d]],
+        Rd: cpu.registers.fetch(operands.fetch(:d).value),
       }
     end
 
     # lac las lat push st xch
     parse_operands('____ ___r rrrr ____') do |cpu, operands|
       {
-        Rr: cpu.registers[operands[:r]],
+        Rr: cpu.registers.fetch(operands.fetch(:r).value),
       }
     end
 
     # sbrc sbrs
     parse_operands('____ ___r rrrr _bbb') do |cpu, operands|
       {
-        Rr: cpu.registers[operands[:r]],
-        b: operands[:b],
+        Rr: cpu.registers.fetch(operands.fetch(:r).value),
+        b: Value.new(operands.fetch(:b).value),
       }
     end
 
     # adiw sbiw
     parse_operands('____ ____ KKdd KKKK') do |cpu, operands|
       {
-        Rd: cpu.registers.associated_word_register(cpu.registers[(operands[:d] << 1) | 0b11000]),
-        K: operands[:K],
+        Rd: cpu.registers.associated_word_register(cpu.registers.fetch((operands.fetch(:d).value << 1) | 0b11000)),
+        K: Value.new(operands.fetch(:K).value),
       }
     end
 
     # andi cpi ldi ori sbci sbr subi
     parse_operands('____ KKKK dddd KKKK') do |cpu, operands|
       {
-        Rd: cpu.registers[operands[:d] | 0b10000],
-        K: operands[:K],
+        Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
+        K: Value.new(operands.fetch(:K).value),
       }
     end
   end

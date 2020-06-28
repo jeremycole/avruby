@@ -25,6 +25,14 @@ module AVR
       end
     end
 
+    def fetch(name)
+      send(name)
+    end
+
+    def fetch_bit(name)
+      fetch(name) ? 1 : 0
+    end
+
     def mask_for_flags(flags)
       mask = 0
       flags.each { |flag| mask |= @bit_names_bv[flag] }

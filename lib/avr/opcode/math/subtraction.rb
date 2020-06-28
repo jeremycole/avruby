@@ -21,13 +21,13 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('1001 010d dddd 1010', :dec) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:dec, operands[:Rd])
+      cpu.instruction(:dec, operands.fetch(:Rd))
     end
 
     opcode(:dec, %i[register], %i[S V N Z]) do |cpu, _memory, args|
-      result = (args[0].value - 1) & 0xff
-      set_sreg_for_dec(cpu, result, args[0].value)
-      args[0].value = result
+      result = (args.fetch(0).value - 1) & 0xff
+      set_sreg_for_dec(cpu, result, args.fetch(0).value)
+      args.fetch(0).value = result
     end
 
     # rubocop:disable Naming/MethodParameterName
@@ -60,43 +60,43 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('0001 10rd dddd rrrr', :sub) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:sub, operands[:Rd], operands[:Rr])
+      cpu.instruction(:sub, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:sub, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1].value) & 0xff
-      set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1].value)
-      args[0].value = result
+      result = (args.fetch(0).value - args.fetch(1).value) & 0xff
+      set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     decode('0101 KKKK dddd KKKK', :subi) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:subi, operands[:Rd], operands[:K])
+      cpu.instruction(:subi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:subi, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1]) & 0xff
-      set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1])
-      args[0].value = result
+      result = (args.fetch(0).value - args.fetch(1).value) & 0xff
+      set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     decode('0000 10rd dddd rrrr', :sbc) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:sbc, operands[:Rd], operands[:Rr])
+      cpu.instruction(:sbc, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:sbc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1].value - (cpu.sreg.C ? 1 : 0)) & 0xff
-      set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1].value)
-      args[0].value = result
+      result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
+      set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     decode('0100 KKKK dddd KKKK', :sbci) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:sbci, operands[:Rd], operands[:K])
+      cpu.instruction(:sbci, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:sbci, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1] - (cpu.sreg.C ? 1 : 0)) & 0xff
-      set_sreg_for_sub_sbc(cpu, result, args[0].value, args[1])
-      args[0].value = result
+      result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
+      set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     # rubocop:disable Naming/MethodParameterName
@@ -125,13 +125,13 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('1001 0111 KKdd KKKK', :sbiw) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:sbiw, operands[:Rd], operands[:K])
+      cpu.instruction(:sbiw, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:sbiw, %i[word_register byte], %i[S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value - args[1]) & 0xffff
-      set_sreg_for_sbiw(cpu, result, args[0].value)
-      args[0].value = result
+      result = (args.fetch(0).value - args.fetch(1).value) & 0xffff
+      set_sreg_for_sbiw(cpu, result, args.fetch(0).value)
+      args.fetch(0).value = result
     end
   end
 end

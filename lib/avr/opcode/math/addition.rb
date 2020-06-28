@@ -21,13 +21,13 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('1001 101d dddd 0011', :inc) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:inc, operands[:Rd])
+      cpu.instruction(:inc, operands.fetch(:Rd))
     end
 
     opcode(:inc, %i[register], %i[S V N Z]) do |cpu, _memory, args|
-      result = (args[0].value + 1) & 0xff
-      set_sreg_for_inc(cpu, result, args[0].value)
-      args[0].value = result
+      result = (args.fetch(0).value + 1) & 0xff
+      set_sreg_for_inc(cpu, result, args.fetch(0).value)
+      args.fetch(0).value = result
     end
 
     # rubocop:disable Naming/MethodParameterName
@@ -59,27 +59,27 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('0000 11rd dddd rrrr', :add) do |cpu, _opcode_definition, operands|
-      if operands[:Rd] == operands[:Rr]
-        cpu.instruction(:lsl, operands[:Rd])
+      if operands.fetch(:Rd).value == operands.fetch(:Rr).value
+        cpu.instruction(:lsl, operands.fetch(:Rd))
       else
-        cpu.instruction(:add, operands[:Rd], operands[:Rr])
+        cpu.instruction(:add, operands.fetch(:Rd), operands.fetch(:Rr))
       end
     end
 
     opcode(:add, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value + args[1].value) & 0xff
-      set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
-      args[0].value = result
+      result = (args.fetch(0).value + args.fetch(1).value) & 0xff
+      set_sreg_for_add_adc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     decode('0001 11rd dddd rrrr', :adc) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:adc, operands[:Rd], operands[:Rr])
+      cpu.instruction(:adc, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:adc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value + args[1].value + (cpu.sreg.C ? 1 : 0)) & 0xff
-      set_sreg_for_add_adc(cpu, result, args[0].value, args[1].value)
-      args[0].value = result
+      result = (args.fetch(0).value + args.fetch(1).value + (cpu.sreg.C ? 1 : 0)) & 0xff
+      set_sreg_for_add_adc(cpu, result, args.fetch(0).value, args.fetch(1).value)
+      args.fetch(0).value = result
     end
 
     # rubocop:disable Naming/MethodParameterName
@@ -108,13 +108,13 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('1001 0110 KKdd KKKK', :adiw) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:adiw, operands[:Rd], operands[:K])
+      cpu.instruction(:adiw, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:adiw, %i[word_register byte], %i[S V N Z C]) do |cpu, _memory, args|
-      result = (args[0].value + args[1]) & 0xffff
-      set_sreg_for_adiw(cpu, result, args[0].value)
-      args[0].value = result
+      result = (args.fetch(0).value + args.fetch(1).value) & 0xffff
+      set_sreg_for_adiw(cpu, result, args.fetch(0).value)
+      args.fetch(0).value = result
     end
   end
 end

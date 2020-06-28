@@ -4,7 +4,7 @@ require 'shared_examples_for_opcode'
 RSpec.describe [AVR::Opcode, :adiw] do
   include_examples 'opcode', :adiw
 
-  let(:i) { cpu.instruction(:adiw, cpu.Z, 1) }
+  let(:i) { cpu.instruction(:adiw, cpu.Z, AVR::Value.new(1)) }
 
   it 'adds correctly' do
     cpu.Z = 0

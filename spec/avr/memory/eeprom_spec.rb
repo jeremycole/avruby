@@ -38,7 +38,7 @@ RSpec.describe AVR::EEPROM do
     5.times do |i|
       cpu.device.flash.set_word(0x0100 + i, 0b0000_0000_0000_0000) # nop
     end
-    cpu.instruction(:jmp, 0x0100).execute
+    cpu.instruction(:jmp, AVR::Value.new(0x0100)).execute
     cpu.EECR.EEMPE = true
     4.times do
       device.oscillator.tick

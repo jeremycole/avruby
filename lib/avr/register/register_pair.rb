@@ -15,13 +15,13 @@ module AVR
     sig do
       params(
         cpu: CPU,
-        name: T.any(Symbol, String),
         l: MemoryByteRegister,
-        h: MemoryByteRegister
+        h: MemoryByteRegister,
+        name: T.nilable(T.any(Symbol, String))
       ).void
     end
-    def initialize(cpu, name, l, h)
-      super(cpu, name)
+    def initialize(cpu, l, h, name = nil)
+      super(cpu, name || "Temporary[#{l.name}, #{h.name}]")
       @l = l
       @h = h
     end

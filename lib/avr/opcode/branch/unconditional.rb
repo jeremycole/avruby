@@ -5,53 +5,53 @@ module AVR
   class Opcode
     decode('1001 0100 0000 1100', :jmp) do |cpu, _opcode_definition, _operands|
       k = cpu.fetch
-      cpu.instruction(:jmp, k)
+      cpu.instruction(:jmp, Value.new(k))
     end
 
     decode('1001 010k kkkk 110k', :jmp) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:jmp, operands[:k] << 16 | k)
+      cpu.instruction(:jmp, Value.new(operands.fetch(:k).value << 16 | k))
     end
 
     opcode(:jmp, %i[absolute_pc]) do |cpu, _memory, args|
-      cpu.next_pc = args[0]
+      cpu.next_pc = args.fetch(0).value
     end
 
     decode('1001 0100 0000 1110', :call) do |cpu, _opcode_definition, _operands|
       k = cpu.fetch
-      cpu.instruction(:call, k)
+      cpu.instruction(:call, Value.new(k))
     end
 
     decode('1001 010k kkkk 111k', :call) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:call, operands[:k] << 16 | k)
+      cpu.instruction(:call, Value.new(operands.fetch(:k).value << 16 | k))
     end
 
     opcode(:call, %i[absolute_pc]) do |cpu, _memory, args|
       stack_push_word(cpu, cpu.pc + 2)
-      cpu.next_pc = args[0]
+      cpu.next_pc = args.fetch(0).value
     end
 
     # rcall rjmp
     parse_operands('____ kkkk kkkk kkkk') do |_cpu, operands|
-      { k: twos_complement(operands[:k], 12) }
+      { k: Value.new(twos_complement(operands.fetch(:k).value, 12)) }
     end
 
     decode('1100 kkkk kkkk kkkk', :rjmp) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:rjmp, operands[:k])
+      cpu.instruction(:rjmp, operands.fetch(:k))
     end
 
     opcode(:rjmp, %i[far_relative_pc]) do |cpu, _memory, args|
-      cpu.next_pc = cpu.pc + args[0] + 1
+      cpu.next_pc = cpu.pc + args.fetch(0).value + 1
     end
 
     decode('1101 kkkk kkkk kkkk', :rcall) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:rcall, operands[:k])
+      cpu.instruction(:rcall, operands.fetch(:k))
     end
 
     opcode(:rcall, %i[far_relative_pc]) do |cpu, _memory, args|
       stack_push_word(cpu, cpu.pc + 1)
-      cpu.next_pc = cpu.pc + args[0] + 1
+      cpu.next_pc = cpu.pc + args.fetch(0).value + 1
     end
 
     decode('1001 0100 0000 1001', :ijmp) do |cpu, _opcode_definition, _operands|

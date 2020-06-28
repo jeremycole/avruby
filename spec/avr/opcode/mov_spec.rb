@@ -8,7 +8,8 @@ RSpec.describe [AVR::Opcode, :mov] do
     it 'extracts mnemonic and operands correctly' do
       d = cpu.decoder.decode(0b0010_1100_0000_0001)
       expect(d.opcode_definition.mnemonic).to eq :mov
-      expect(d.operands).to eq({ d: 0, r: 1 })
+      expect(d.operands.fetch(:d).value).to eq 0
+      expect(d.operands.fetch(:r).value).to eq 1
     end
 
     it 'decodes from flash' do

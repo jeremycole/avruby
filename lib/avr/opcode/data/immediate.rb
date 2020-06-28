@@ -4,11 +4,11 @@
 module AVR
   class Opcode
     decode('1110 KKKK dddd KKKK', :ldi) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:ldi, operands[:Rd], operands[:K])
+      cpu.instruction(:ldi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
     opcode(:ldi, %i[register byte]) do |_cpu, _memory, args|
-      args[0].value = args[1]
+      args.fetch(0).value = args.fetch(1).value
     end
   end
 end

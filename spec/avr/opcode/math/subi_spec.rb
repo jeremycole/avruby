@@ -4,7 +4,7 @@ require 'shared_examples_for_opcode'
 RSpec.describe [AVR::Opcode, :subi] do
   include_examples 'opcode', :subi
 
-  let(:i) { cpu.instruction(:subi, cpu.r0, 1) }
+  let(:i) { cpu.instruction(:subi, cpu.r0, AVR::Value.new(1)) }
 
   it 'subtracts correctly' do
     cpu.r0 = 2

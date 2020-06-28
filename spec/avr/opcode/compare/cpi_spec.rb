@@ -4,7 +4,7 @@ require 'shared_examples_for_opcode'
 RSpec.describe [AVR::Opcode, :cpi] do
   include_examples 'opcode', :cpi
 
-  let(:i) { cpu.instruction(:cpi, cpu.r0, 5) }
+  let(:i) { cpu.instruction(:cpi, cpu.r0, AVR::Value.new(5)) }
 
   it 'compares r0 == K' do
     cpu.r0 = 5

@@ -11,14 +11,14 @@ module AVR
     sig { returns(Symbol) }
     attr_reader :mnemonic
 
-    sig { returns(T::Array[T.untyped]) }
+    sig { returns(Argument::ArrayType) }
     attr_reader :args
 
     sig { returns(Opcode) }
     attr_reader :opcode
 
-    sig { params(cpu: CPU, mnemonic: Symbol, args: T.untyped).void }
-    def initialize(cpu, mnemonic, *args)
+    sig { params(cpu: CPU, mnemonic: Symbol, args: Argument::ArrayType).void }
+    def initialize(cpu, mnemonic, args)
       raise "Unknown opcode #{mnemonic}" unless Opcode.opcodes.include?(mnemonic)
 
       @cpu = cpu

@@ -4,12 +4,12 @@
 module AVR
   class Opcode
     decode('1001 11rd dddd rrrr', :mul) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:mul, operands[:Rd], operands[:Rr])
+      cpu.instruction(:mul, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
     opcode(:mul, %i[register register], %i[Z C]) do |cpu, _memory, args|
-      result = (args[0].value * args[1].value)
-      set_sreg_for_inc(cpu, result, args[0].value)
+      result = (args.fetch(0).value * args.fetch(1).value)
+      set_sreg_for_inc(cpu, result, args.fetch(0).value)
       cpu.sreg.from_h(
         {
           Z: result.zero?,

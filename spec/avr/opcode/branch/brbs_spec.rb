@@ -10,13 +10,13 @@ RSpec.describe [AVR::Opcode, :brbs] do
 
   it 'branches if the bit is set' do
     cpu.sreg.Z = true
-    cpu.instruction(:brbs, :Z, +20).execute
+    cpu.instruction(:brbs, AVR::Value.new(cpu.sreg.fetch_bit(:Z)), AVR::Value.new(+20)).execute
     expect(cpu.pc).to eq 21
   end
 
   it 'does not branch if the bit is clear' do
     cpu.sreg.Z = false
-    cpu.instruction(:brbs, :Z, +20).execute
+    cpu.instruction(:brbs, AVR::Value.new(cpu.sreg.fetch_bit(:Z)), AVR::Value.new(+20)).execute
     expect(cpu.pc).to eq 1
   end
 end
