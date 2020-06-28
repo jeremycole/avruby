@@ -78,7 +78,7 @@ module AVR
     sig { returns(T.nilable(T.proc.params(arg0: Instruction).void)) }
     attr_reader :tracer
 
-    sig { params(device: AVR::Device).void }
+    sig { params(device: Device).void }
     def initialize(device)
       @device = device
       @pc = 0
@@ -205,7 +205,7 @@ module AVR
         address = device.interrupt_vector_map[name_or_vector_number]
       end
 
-      instruction(:call, AVR::Value.new(address)).execute
+      instruction(:call, Value.new(address)).execute
     end
 
     sig { returns(Instruction) }

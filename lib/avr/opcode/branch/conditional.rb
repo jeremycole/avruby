@@ -35,7 +35,7 @@ module AVR
     end
 
     decode('1111 110r rrrr 0bbb', :sbrc) do |cpu, _opcode_definition, operands|
-      register_bit = AVR::RegisterWithBitNumber.new(
+      register_bit = RegisterWithBitNumber.new(
         T.cast(operands.fetch(:Rr), MemoryByteRegister),
         operands.fetch(:b).value
       )
@@ -47,7 +47,7 @@ module AVR
     end
 
     decode('1111 111r rrrr 0bbb', :sbrs) do |cpu, _opcode_definition, operands|
-      register_bit = AVR::RegisterWithBitNumber.new(
+      register_bit = RegisterWithBitNumber.new(
         T.cast(operands.fetch(:Rr), MemoryByteRegister),
         operands.fetch(:b).value
       )

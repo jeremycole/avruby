@@ -4,7 +4,7 @@
 module AVR
   class Opcode
     decode('1001 0100 0sss 1000', :bset) do |cpu, _opcode_definition, operands|
-      sreg_bit = AVR::RegisterWithNamedBit.new(
+      sreg_bit = RegisterWithNamedBit.new(
         cpu.sreg,
         SREG::STATUS_BITS.fetch(operands.fetch(:s).value)
       )
@@ -16,7 +16,7 @@ module AVR
     end
 
     decode('1001 0100 1sss 1000', :bclr) do |cpu, _opcode_definition, operands|
-      sreg_bit = AVR::RegisterWithNamedBit.new(
+      sreg_bit = RegisterWithNamedBit.new(
         cpu.sreg,
         SREG::STATUS_BITS.fetch(operands.fetch(:s).value)
       )

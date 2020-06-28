@@ -5,10 +5,10 @@ module AVR
   class Register < Value
     extend T::Sig
 
-    sig { returns(AVR::CPU) }
+    sig { returns(CPU) }
     attr_reader :cpu
 
-    sig { params(cpu: AVR::CPU, name: T.any(String, Symbol)).void }
+    sig { params(cpu: CPU, name: T.any(String, Symbol)).void }
     def initialize(cpu, name)
       super()
       @cpu = cpu
