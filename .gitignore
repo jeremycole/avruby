@@ -1,0 +1,7 @@
+vendor
+.byebug_history
+.idea/
+.vscode/
+*.gem
+spec/examples.txt
+sorbet/rbi/hidden-definitions/errors.txt
