@@ -43,10 +43,10 @@ GEM
     rubocop-ast (1.4.0)
       parser (>= 2.7.1.5)
     ruby-progressbar (1.11.0)
-    sorbet (0.5.6188)
-      sorbet-static (= 0.5.6188)
+    sorbet (0.5.6212)
+      sorbet-static (= 0.5.6212)
     sorbet-runtime (0.5.6188)
-    sorbet-static (0.5.6188-universal-darwin-14)
+    sorbet-static (0.5.6212-universal-darwin-14)
     unicode-display_width (2.0.0)
 
 PLATFORMS
