@@ -45,7 +45,7 @@ GEM
     ruby-progressbar (1.11.0)
     sorbet (0.5.6216)
       sorbet-static (= 0.5.6216)
-    sorbet-runtime (0.5.6216)
+    sorbet-runtime (0.5.6304)
     sorbet-static (0.5.6216-universal-darwin-14)
     unicode-display_width (2.0.0)
 
