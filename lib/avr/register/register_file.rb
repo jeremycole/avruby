@@ -36,7 +36,7 @@ module AVR
 
     def print_status
       @register_list.each_slice(8) do |slice|
-        puts slice.map { |name| '%10s' % ["#{name}=#{@registers[name].value_hex}"] }.join + '\n'
+        puts slice.map { |name| '%10s' % ["#{name}=#{@registers[name].value_hex}"] }.join + "\n"
       end
     end
 
