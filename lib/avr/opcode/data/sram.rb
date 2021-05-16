@@ -5,13 +5,13 @@ module AVR
   class Opcode
     decode('1001 000d dddd 0000', :lds) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:lds, operands.fetch(:Rd), k)
+      cpu.instruction(:lds, operands.fetch(:Rd), Value.new(k))
     end
 
     parse_operands('____ _kkk dddd kkkk') do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value + 16),
-        k: bit_jumble_for_lds_sts(operands.fetch(:k).value),
+        k: Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
       }
     end
 
@@ -89,13 +89,13 @@ module AVR
 
     decode('1001 001r rrrr 0000', :sts) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:sts, k, operands.fetch(:Rr))
+      cpu.instruction(:sts, Value.new(k), operands.fetch(:Rr))
     end
 
     parse_operands('____ _kkk rrrr kkkk') do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value + 16),
-        k: bit_jumble_for_lds_sts(operands.fetch(:k).value),
+        k: Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
       }
     end
 
