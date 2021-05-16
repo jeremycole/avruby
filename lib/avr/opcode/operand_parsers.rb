@@ -58,8 +58,13 @@ module AVR
 
     # adiw sbiw
     parse_operands('____ ____ KKdd KKKK') do |cpu, operands|
+      register_base = (operands.fetch(:d).value << 1) | 0b11000
       {
-        Rd: cpu.registers.associated_word_register(cpu.registers.fetch((operands.fetch(:d).value << 1) | 0b11000)),
+        Rd: RegisterPair.new(
+          cpu,
+          cpu.registers.fetch(register_base + 1),
+          cpu.registers.fetch(register_base)
+        ),
         K: Value.new(operands.fetch(:K).value),
       }
     end
