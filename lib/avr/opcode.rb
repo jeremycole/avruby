@@ -27,25 +27,15 @@ module AVR
     OPCODE_ARGUMENT_TYPES = T.let(
       {
         sreg_flag:          '%s',
-        near_relative_pc:   proc { |arg| '.%+d' % [2 * arg] },
-        far_relative_pc:    proc { |arg| '.%+d' % [2 * arg] },
-        absolute_pc:        proc { |arg| '0x%04x' % [2 * arg] },
+        near_relative_pc:   proc { |arg| '.%+d' % [2 * arg.value] },
+        far_relative_pc:    proc { |arg| '.%+d' % [2 * arg.value] },
+        absolute_pc:        proc { |arg| '0x%04x' % [2 * arg.value] },
         byte:               '0x%02x',
         word:               '0x%04x',
         register:           '%s',
-        register_pair:      proc { |arg| '%s:%s' % [arg[0], arg[1]] },
+        register_pair:      '%s',
         word_register:      '%s',
-        modifying_word_register: proc { |arg|
-          if arg.is_a?(RegisterPair)
-            '%s' % arg
-          else
-            '%s%s%s' % [
-              arg[1] == :pre_decrement ? '-' : '',
-              arg[0].to_s,
-              arg[1] == :post_increment ? '+' : '',
-            ]
-          end
-        },
+        modifying_word_register: '%s',
         displaced_word_register: proc { |arg|
           '%s%+d' % [arg.register.name, arg.displacement]
         },
