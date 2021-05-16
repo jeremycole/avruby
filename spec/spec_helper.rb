@@ -21,7 +21,7 @@ RSpec.configure do |config|
 
   config.default_formatter = 'doc' if config.files_to_run.one?
 
-  # config.filter_run_excluding(decode: true)
+  config.filter_run_excluding(opcode_decoder: :all)
 
   # config.profile_examples = 10
   config.order = :random

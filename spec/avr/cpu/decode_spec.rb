@@ -1,5 +1,5 @@
 # typed: false
-RSpec.describe AVR::EEPROM do
+RSpec.describe AVR::OpcodeDecoder do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }
 
@@ -120,12 +120,25 @@ RSpec.describe AVR::EEPROM do
     opcode_for_all_sreg_flags(0b1001_0100_1000_1000, "bclr"),
   )
 
-  ALL_OPCODES.each do |word, code|
-    binary = format("%016b", word).each_char.each_slice(4).map(&:join).join("_")
-    it "can decode 0b#{binary} = #{code}", decode: true do
-      device.flash.set_word(0, word)
-      device.flash.set_word(1, 0x1234)
-      expect(cpu.decode.to_s).to eq(code)
+  describe "all opcode decodes", opcode_decoder: :all do
+    ALL_OPCODES.each do |word, code|
+      binary = format("%016b", word).each_char.each_slice(4).map(&:join).join("_")
+      it "can decode 0b#{binary} = #{code}" do
+        device.flash.set_word(0, word)
+        device.flash.set_word(1, 0x1234)
+        expect(cpu.decode.to_s).to eq(code)
+      end
+    end
+  end
+
+  describe "sample opcode decodes", opcode_decoder: :sample do
+    ALL_OPCODES.to_a.sample(100).each do |word, code|
+      binary = format("%016b", word).each_char.each_slice(4).map(&:join).join("_")
+      it "(sample) can decode 0b#{binary} = #{code}" do
+        device.flash.set_word(0, word)
+        device.flash.set_word(1, 0x1234)
+        expect(cpu.decode.to_s).to eq(code)
+      end
     end
   end
 end
