@@ -4,7 +4,7 @@
 module AVR
   class Opcode
     decode('1001 0101 1100 1000', :lpm) do |cpu, _opcode_definition, _operands|
-      cpu.instruction(:lpm, cpu.r0, RegisterWithModification.new(cpu.Z))
+      cpu.instruction(:lpm)
     end
 
     decode('1001 000d dddd 0100', :lpm) do |cpu, _opcode_definition, operands|
@@ -16,6 +16,7 @@ module AVR
     end
 
     opcode(:lpm, %i[register modifying_word_register]) do |cpu, _memory, args|
+      args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.size.zero?
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
       args.fetch(0).value = cpu.device.flash.memory.fetch(mwr.register.value).value
