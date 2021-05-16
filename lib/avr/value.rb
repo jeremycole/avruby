@@ -13,7 +13,7 @@ module AVR
 
     sig { params(value: Integer).void }
     def initialize(value = 0)
-      @name = T.let(:Constant, Symbol)
+      @name = T.let(value.to_s, String)
       @value = T.let(value, Integer)
     end
 

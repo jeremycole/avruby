@@ -5,8 +5,8 @@ RSpec.describe AVR::OpcodeDecoder do
 
   BASIC_OPCODES = {
     0b1001_0101_1001_1000 => "break",
-    # 0b1111_0100_0000_1000 => "brbc 0, 1", # not implemented
-    # 0b1111_0000_0000_1000 => "brbs 0, 1", # not implemented
+    0b1111_0100_0000_1000 => "brbc 0, .+2",
+    0b1111_0000_0000_1000 => "brbs 0, .+2",
     0b1001_0100_0000_1110 => "call 0x2468", # address stored in next word in flash
     0b1001_1000_0000_0000 => "cbi 0x00, 0", # cbi $00, 0?
     # 0b1001_0100_0000_1011 => "des 0x00", # not implemented
