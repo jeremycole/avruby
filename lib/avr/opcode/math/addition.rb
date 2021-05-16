@@ -59,7 +59,7 @@ module AVR
     # rubocop:enable Naming/MethodParameterName
 
     decode('0000 11rd dddd rrrr', :add) do |cpu, _opcode_definition, operands|
-      if operands.fetch(:Rd).value == operands.fetch(:Rr).value
+      if operands.fetch(:Rd) == operands.fetch(:Rr)
         cpu.instruction(:lsl, operands.fetch(:Rd))
       else
         cpu.instruction(:add, operands.fetch(:Rd), operands.fetch(:Rr))

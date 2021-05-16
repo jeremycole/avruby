@@ -5,12 +5,12 @@ module AVR
   class Opcode
     decode('1001 000d dddd 0000', :lds) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:lds, operands.fetch(:Rd).value, k)
+      cpu.instruction(:lds, operands.fetch(:Rd), k)
     end
 
     parse_operands('____ _kkk dddd kkkk') do |cpu, operands|
       {
-        Rd: cpu.registers.fetch(operands.fetch(:d).value),
+        Rd: cpu.registers.fetch(operands.fetch(:d).value + 16),
         k: bit_jumble_for_lds_sts(operands.fetch(:k).value),
       }
     end
@@ -94,14 +94,16 @@ module AVR
 
     parse_operands('____ _kkk rrrr kkkk') do |cpu, operands|
       {
-        Rr: cpu.registers.fetch(operands.fetch(:r).value),
+        Rr: cpu.registers.fetch(operands.fetch(:r).value + 16),
         k: bit_jumble_for_lds_sts(operands.fetch(:k).value),
       }
     end
 
-    decode('1010 0kkk rrrr kkkk', :sts) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:sts, operands.fetch(:k), operands.fetch(:Rr))
-    end
+    # TODO: The 16-bit STS instruction has a very weird encoding that conflicts with LDD.
+    #       Needs more work to support decode properly.
+    # decode('1010 1kkk rrrr kkkk', :sts) do |cpu, _opcode_definition, operands|
+    #   cpu.instruction(:sts, operands.fetch(:k), operands.fetch(:Rr))
+    # end
 
     opcode(:sts, %i[word register]) do |cpu, _memory, args|
       cpu.next_pc += 1
