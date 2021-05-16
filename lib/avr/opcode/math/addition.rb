@@ -73,7 +73,11 @@ module AVR
     end
 
     decode('0001 11rd dddd rrrr', :adc) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:adc, operands.fetch(:Rd), operands.fetch(:Rr))
+      if operands.fetch(:Rd) == operands.fetch(:Rr)
+        cpu.instruction(:rol, operands.fetch(:Rd))
+      else
+        cpu.instruction(:adc, operands.fetch(:Rd), operands.fetch(:Rr))
+      end
     end
 
     opcode(:adc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
