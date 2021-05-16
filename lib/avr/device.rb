@@ -126,8 +126,9 @@ module AVR
     sig { void }
     def trace_cpu
       cpu.trace do |instruction|
-        puts '*** %20s: %s' % [
+        puts '*** %20s: %04x %s' % [
           'INSTRUCTION TRACE',
+          cpu.pc * 2,
           instruction,
         ]
       end
