@@ -99,8 +99,9 @@ module AVR
       }
     end
 
-    # TODO: The 16-bit STS instruction has a very weird encoding that conflicts with LDD.
-    #       Needs more work to support decode properly.
+    # Note: The 16-bit STS instruction has a very weird encoding that conflicts with LDD.
+    #       It's not supported by all devices, and it's unclear if it is seen in the wild.
+    #
     # decode('1010 1kkk rrrr kkkk', :sts) do |cpu, _opcode_definition, operands|
     #   cpu.instruction(:sts, operands.fetch(:k), operands.fetch(:Rr))
     # end

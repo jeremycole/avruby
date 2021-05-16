@@ -87,10 +87,9 @@ RSpec.describe AVR::OpcodeDecoder do
     opcode_for_all_high_rd(0b0111_1111_0000_1111, "andi", after: "0xff"),
     opcode_for_all_high_rd(0b0011_1111_0000_1111, "cpi", after: "0xff"),
     opcode_for_all_high_rd(0b1110_1111_0000_1111, "ldi", after: "0xff"),
-    opcode_for_all_high_rd(0b1010_0111_0000_1111, "lds", after: "0x00ff"),
+    opcode_for_all_high_rd(0b1010_0111_0000_1111, "lds", after: "0x007f"),
     opcode_for_all_high_rd(0b0110_1111_0000_1111, "ori", after: "0xff"),
     opcode_for_all_high_rd(0b0100_1111_0000_1111, "sbci", after: "0xff"),
-    #opcode_for_all_rd(0b1010_1000_0000_0000, "sts", before: "0x00ff"), # BUG: Decoding conflict with ldd.
     opcode_for_all_high_rd(0b0101_1111_0000_1111, "subi", after: "0xff"),
 
     opcode_for_all_rd_rr_pairs(0b0000_1100_0000_0000, "add", alternate: "lsl"),

@@ -12,9 +12,9 @@ module AVR
     sig { params(k_in: Integer).returns(Integer) }
     def self.bit_jumble_for_lds_sts(k_in)
       k_out  = k_in & 0b00001111
-      k_out |= k_in & 0b01100000 >> 1
-      k_out |= k_in & 0b00010000 << 2
-      k_out |= ~(k_in & 0b00010000 << 3) & 0b10000000
+      k_out |= (k_in & 0b01100000) >> 1
+      k_out |= (k_in & 0b00010000) << 2
+      k_out |= ~((k_in & 0b00010000) << 3) & 0x7f
       k_out
     end
 
