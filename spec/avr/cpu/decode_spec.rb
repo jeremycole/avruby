@@ -46,7 +46,7 @@ RSpec.describe AVR::OpcodeDecoder do
     # opcode_for_all_rd(0b1001_0000_0000_0110, "elpm", after: "Z"), # not implemented
     # opcode_for_all_rd(0b1001_0000_0000_0111, "elpm", after: "Z+"), # not implemented
     opcode_for_all_rd(0b1011_0110_0000_1111, "in", after: "0x3f"),
-    # opcode_for_all_rd(0b1001_0100_0000_0011, "inc"), # not implemented
+    opcode_for_all_rd(0b1001_0100_0000_0011, "inc"),
     opcode_for_all_rd(0b1001_0010_0000_0101, "las"),
     opcode_for_all_rd(0b1001_0010_0000_0111, "lat"),
     opcode_for_all_rd(0b1001_0000_0000_1100, "ld", after: "X"),

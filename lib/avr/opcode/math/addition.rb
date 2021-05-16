@@ -20,7 +20,7 @@ module AVR
     end
     # rubocop:enable Naming/MethodParameterName
 
-    decode('1001 101d dddd 0011', :inc) do |cpu, _opcode_definition, operands|
+    decode('1001 010d dddd 0011', :inc) do |cpu, _opcode_definition, operands|
       cpu.instruction(:inc, operands.fetch(:Rd))
     end
 
