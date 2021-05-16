@@ -3,6 +3,8 @@
 
 module AVR
   class CPU
+    class DecodeError < RuntimeError; end
+
     extend T::Sig
 
     sig { returns(Device) }
@@ -163,7 +165,11 @@ module AVR
       end
       puts
       puts 'Next instruction:'
-      puts '  ' + peek.to_s
+      begin
+        puts "  #{peek}"
+      rescue AVR::CPU::DecodeError => e
+        puts "  [#{e}]"
+      end
       puts
     end
 
@@ -214,11 +220,11 @@ module AVR
       word = fetch
       decoded_opcode = decoder.decode(word)
       unless decoded_opcode
-        raise 'Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)' % [
+        raise DecodeError, format('Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)',
           word,
           offset,
-          offset * 2,
-        ]
+          offset * 2
+        )
       end
 
       decoded_opcode.opcode_definition.parse(
