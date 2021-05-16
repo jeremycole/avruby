@@ -21,7 +21,7 @@ module AVR
       ).void
     end
     def initialize(cpu, l, h, name = nil)
-      super(cpu, name || "Temporary[#{l.name}, #{h.name}]")
+      super(cpu, name || "#{l.name}:#{h.name}")
       @l = l
       @h = h
     end
