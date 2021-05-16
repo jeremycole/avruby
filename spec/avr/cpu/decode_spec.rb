@@ -64,7 +64,7 @@ RSpec.describe AVR::OpcodeDecoder do
     opcode_for_all_rd(0b1001_0000_0000_0100, "lpm", after: "Z"),
     opcode_for_all_rd(0b1001_0000_0000_0101, "lpm", after: "Z+"),
     opcode_for_all_rd(0b1001_0100_0000_0110, "lsr"),
-    # opcode_for_all_rd(0b1001_0100_0000_0001, "neg"), # not implemented
+    opcode_for_all_rd(0b1001_0100_0000_0001, "neg"),
     opcode_for_all_rd(0b1011_1110_0000_1111, "out", before: "0x3f"),
     opcode_for_all_rd(0b1001_0000_0000_1111, "pop"),
     opcode_for_all_rd(0b1001_0010_0000_1111, "push"),

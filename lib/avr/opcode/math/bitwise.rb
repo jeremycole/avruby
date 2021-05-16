@@ -224,5 +224,32 @@ module AVR
 
       args.fetch(0).value = result
     end
+
+    decode('1001 010d dddd 0001', :neg) do |cpu, _opcode_definition, operands|
+      cpu.instruction(:neg, operands.fetch(:Rd))
+    end
+
+    opcode(:neg, %i[register], %i[H S V N Z C]) do |cpu, _memory, args|
+      result = ((0xff - args.fetch(0).value) + 1) & 0xff
+
+      h = ((args.fetch(0).value & (1<<3)) & (result & (1<<3))) != 0 # ???
+      n = (result & (1 << 7)) != 0
+      c = result != 0x00
+      v = result & 0x80
+      s = n ^ v
+
+      cpu.sreg.from_h(
+        {
+          H: h,
+          S: s,
+          V: v,
+          N: n,
+          Z: result.zero?,
+          C: c,
+        }
+      )
+
+      args.fetch(0).value = result
+    end
   end
 end
