@@ -5,8 +5,10 @@ RSpec.describe(AVR::Opcode) do
   describe "eijmp" do
     include_examples "opcode", :eijmp
 
-    it "raises OpcodeNotImplementedError" do
-      expect { cpu.instruction(:eijmp).execute }.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
+    it "is not implemented" do
+      expect do
+        cpu.instruction(:eijmp).execute
+      end.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
     end
   end
 end

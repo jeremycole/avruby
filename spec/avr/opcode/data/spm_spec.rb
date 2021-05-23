@@ -6,13 +6,15 @@ RSpec.describe(AVR::Opcode) do
     include_examples "opcode", :spm
 
     context "when called with no operands" do
-      it "raises OpcodeNotImplementedError" do
-        expect { cpu.instruction(:spm).execute }.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
+      it "is not implemented" do
+        expect do
+          cpu.instruction(:spm).execute
+        end.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
       end
     end
 
     context "when called with a Z operand" do
-      it "raises OpcodeNotImplementedError" do
+      it "is not implemented" do
         expect do
           cpu.instruction(:spm, AVR::RegisterWithModification.new(cpu.Z)).execute
         end.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
@@ -20,7 +22,7 @@ RSpec.describe(AVR::Opcode) do
     end
 
     context "when called with a Z+ operand" do
-      it "raises OpcodeNotImplementedError" do
+      it "is not implemented" do
         expect do
           cpu.instruction(:spm, AVR::RegisterWithModification.new(cpu.Z, :post_increment)).execute
         end.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))

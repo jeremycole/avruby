@@ -5,8 +5,10 @@ RSpec.describe(AVR::Opcode) do
   describe "eicall" do
     include_examples "opcode", :eicall
 
-    it "raises OpcodeNotImplementedError" do
-      expect { cpu.instruction(:eicall).execute }.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
+    it "is not implemented" do
+      expect do
+        cpu.instruction(:eicall).execute
+      end.to(raise_error(AVR::Opcode::OpcodeNotImplementedError))
     end
   end
 end
