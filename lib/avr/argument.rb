@@ -10,11 +10,12 @@ module AVR
         Value,
         Register,
         RegisterPair,
-        MemoryByteRegister,
+        RegisterWithBitNumber,
         RegisterWithDisplacement,
         RegisterWithModification,
-        RegisterWithBitNumber,
-        RegisterWithNamedBit
+        RegisterWithNamedBit,
+        MemoryByteRegister,
+        MemoryByteRegisterWithNamedBits
       )
     end
     ArrayType = T.type_alias { T::Array[ValueType] }

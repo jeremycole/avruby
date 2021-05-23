@@ -44,21 +44,27 @@ module AVR
     class OpcodeArgumentDefinition
       extend T::Sig
 
-      sig { returns(String) }
+      FormatterProc = T.type_alias do
+        T.proc.params(arg: T.untyped).returns(String)
+      end
+
+      ValidatorProc = T.type_alias do
+        T.proc.params(arg: T.untyped).returns(T.nilable(T.class_of(OpcodeException)))
+      end
+
+      sig { returns(Symbol) }
       attr_reader :type_name
 
       sig { params(type_name: Symbol, format: String).void }
       def initialize(type_name, format: "%s")
-        @required = true
+        @required = T.let(true, T::Boolean)
         @type_name = type_name
-        @formatter = proc { |arg| Kernel.format(format, arg) }
-        @validators = []
+        @formatter = T.let(proc { |arg| Kernel.format(format, arg) }, FormatterProc)
+        @validators = T.let([], T::Array[ValidatorProc])
       end
 
-      sig { params(block: T.proc.params(arg: Argument::ValueType).returns(String)).returns(OpcodeArgumentDefinition) }
+      sig { params(block: FormatterProc).returns(OpcodeArgumentDefinition) }
       def formatter(&block)
-        raise ArgumentError, "formatter proc expected" unless block_given?
-
         @formatter = block
 
         self
@@ -69,19 +75,14 @@ module AVR
         @formatter.call(arg)
       end
 
-      sig do
-        params(block: T.proc.params(arg: Argument::ValueType).returns(T::Array[StandardError]))
-          .returns(OpcodeArgumentDefinition)
-      end
+      sig { params(block: ValidatorProc).returns(OpcodeArgumentDefinition) }
       def validator(&block)
-        raise ArgumentError, "validator proc expected" unless block_given?
-
         @validators << block
 
         self
       end
 
-      sig { params(arg: Argument::ValueType).returns(T.nilable(T::Array[StandardError])) }
+      sig { params(arg: T.untyped).returns(T.nilable(T::Array[T.class_of(AVR::Opcode::OpcodeException)])) }
       def validate(arg)
         @validators.map { |validator| validator.call(arg) }.compact
       end
@@ -226,7 +227,7 @@ module AVR
     sig { returns(Symbol) }
     attr_reader :mnemonic
 
-    sig { returns(T::Array[Symbol]) }
+    sig { returns(T::Array[OpcodeArgumentDefinition]) }
     attr_reader :arg_types
 
     sig { returns(T::Array[Symbol]) }
@@ -249,7 +250,7 @@ module AVR
     sig do
       params(
         mnemonic: Symbol,
-        arg_types: T::Array[Symbol],
+        arg_types: T::Array[OpcodeArgumentDefinition],
         sreg_flags: T::Array[Symbol],
         opcode_proc: Opcode::ProcType
       ).void
@@ -265,7 +266,7 @@ module AVR
       end
     end
 
-    sig { returns(Range) }
+    sig { returns(T::Range[Integer]) }
     def required_arg_count
       arg_types.select(&:required?).size..arg_types.size
     end
@@ -275,8 +276,8 @@ module AVR
       raise IncorrectArgumentCount unless required_arg_count.include?(args.size)
 
       args.each_with_index do |arg, i|
-        arg_types[i].validate(arg)&.each do |arg_exception|
-          raise arg_exception, "Argument #{i} (#{arg}) invalid for #{arg_types[i].type_name}"
+        T.must(arg_types[i]).validate(arg)&.each do |arg_exception|
+          raise arg_exception, "Argument #{i} (#{arg}) invalid for #{T.must(arg_types[i]).type_name}"
         end
       end
 
@@ -285,7 +286,7 @@ module AVR
 
     sig { params(args: T::Array[T.untyped]).returns(T::Array[String]) }
     def format_args(args)
-      args.each_with_index.map { |arg, i| arg_types[i].format(arg) }
+      args.each_with_index.map { |arg, i| T.must(arg_types[i]).format(arg) }
     end
 
     sig { returns(String) }
@@ -332,7 +333,7 @@ module AVR
     sig do
       params(
         mnemonic: Symbol,
-        arg_types: T::Array[Symbol],
+        arg_types: T::Array[OpcodeArgumentDefinition],
         sreg_flags: T::Array[Symbol],
         block: T.nilable(Opcode::ProcType)
       ).returns(Opcode)

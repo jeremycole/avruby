@@ -1,2 +1,6 @@
 --dir
 .
+--ignore
+vendor
+--ignore
+sorbet/rbi/hidden-definitions

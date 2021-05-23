@@ -19,7 +19,7 @@ module AVR
         raise unless sink_proc || block_given?
         @name = name
         @sink_proc = T.let(
-          sink_proc || block&.to_proc,
+          sink_proc || block.to_proc,
           T.nilable(T.proc.params(source: Clock, ticks: Integer).void)
         )
       end

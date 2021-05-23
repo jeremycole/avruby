@@ -25,7 +25,7 @@ module AVR
 
     sig { returns(String) }
     def name
-      format("%s%+d", register.name, displacement)
+      Kernel.format("%s%+d", register.name, displacement)
     end
   end
 end
