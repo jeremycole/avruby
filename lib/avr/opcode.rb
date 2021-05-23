@@ -13,6 +13,8 @@ module AVR
 
     class IncorrectArgumentCount < OpcodeException; end
 
+    class IncorrectArgumentOptionality < OpcodeException; end
+
     class RegisterExpected < OpcodeException; end
 
     class UpperRegisterExpected < OpcodeException; end
@@ -39,90 +41,98 @@ module AVR
 
     class ConstantOutOfRange < OpcodeException; end
 
-    module Arg
-      def self.register
-        :register
+    class OpcodeArgumentDefinition
+      attr_reader :type_name
+      attr_reader :formatter
+
+      def initialize(type_name, formatter = proc { |arg| Kernel.format("%s", arg) })
+        @required = true
+        @type_name = type_name
+        @formatter = formatter.is_a?(String) ? proc { |arg| Kernel.format(formatter, arg) } : formatter
       end
 
-      def self.register_pair
-        :register_pair
+      def format(arg)
+        formatter.call(arg)
       end
 
-      def self.sreg_flag
-        :sreg_flag
+      def optional
+        @required = false
+        self
       end
 
-      def self.near_relative_pc
-        :near_relative_pc
+      def required?
+        @required
       end
 
-      def self.far_relative_pc
-        :far_relative_pc
-      end
-
-      def self.absolute_pc
-        :absolute_pc
-      end
-
-      def self.byte
-        :byte
-      end
-
-      def self.word
-        :word
-      end
-
-      def self.word_register
-        :word_register
-      end
-
-      def self.modifying_word_register
-        :modifying_word_register
-      end
-
-      def self.displaced_word_register
-        :displaced_word_register
-      end
-
-      def self.register_with_bit_number
-        :register_with_bit_number
-      end
-
-      def self.io_address
-        :io_address
-      end
-
-      def self.lower_io_address
-        :lower_io_address
-      end
-
-      def self.bit_number
-        :bit_number
+      def optional?
+        !required?
       end
     end
 
-    OPCODE_ARGUMENT_TYPES = T.let(
-      {
-        sreg_flag:          "%s",
-        near_relative_pc:   proc { |arg| format(".%+d", 2 * arg.value) },
-        far_relative_pc:    proc { |arg| format(".%+d", 2 * arg.value) },
-        absolute_pc:        proc { |arg| format("0x%04x", 2 * arg.value) },
-        byte:               "0x%02x",
-        word:               "0x%04x",
-        register:           "%s",
-        register_pair:      "%s",
-        word_register:      "%s",
-        modifying_word_register: "%s",
-        displaced_word_register: proc { |arg|
+    module Arg
+      def self.register
+        OpcodeArgumentDefinition.new(:register)
+      end
+
+      def self.register_pair
+        OpcodeArgumentDefinition.new(:register_pair)
+      end
+
+      def self.sreg_flag
+        OpcodeArgumentDefinition.new(:sreg_flag)
+      end
+
+      def self.near_relative_pc
+        OpcodeArgumentDefinition.new(:near_relative_pc, proc { |arg| format(".%+d", 2 * arg.value) })
+      end
+
+      def self.far_relative_pc
+        OpcodeArgumentDefinition.new(:far_relative_pc, proc { |arg| format(".%+d", 2 * arg.value) })
+      end
+
+      def self.absolute_pc
+        OpcodeArgumentDefinition.new(:absolute_pc, proc { |arg| format("0x%04x", 2 * arg.value) })
+      end
+
+      def self.byte
+        OpcodeArgumentDefinition.new(:byte, "0x%02x")
+      end
+
+      def self.word
+        OpcodeArgumentDefinition.new(:word, "0x%04x")
+      end
+
+      def self.word_register
+        OpcodeArgumentDefinition.new(:word_register)
+      end
+
+      def self.modifying_word_register
+        OpcodeArgumentDefinition.new(:modifying_word_register)
+      end
+
+      def self.displaced_word_register
+        OpcodeArgumentDefinition.new(:displaced_word_register, proc { |arg|
           format("%s%+d", arg.register.name, arg.displacement)
-        },
-        register_with_bit_number: "%s",
-        io_address:         "0x%02x",
-        lower_io_address:   "0x%02x",
-        bit_number:         "%d",
-      }.freeze,
-      T::Hash[Symbol, T.any(String, T.proc.params(arg: T::Array[Integer]).returns(String))]
-    )
+        })
+      end
+
+      def self.register_with_bit_number
+        OpcodeArgumentDefinition.new(:register_with_bit_number)
+      end
+
+      def self.io_address
+        OpcodeArgumentDefinition.new(:io_address, "0x%02x")
+      end
+
+      def self.lower_io_address
+        OpcodeArgumentDefinition.new(:lower_io_address, "0x%02x")
+      end
+
+      def self.bit_number
+        OpcodeArgumentDefinition.new(:bit_number, "%d")
+      end
+    end
+
     sig { returns(Symbol) }
     attr_reader :mnemonic
 
@@ -159,8 +169,9 @@ module AVR
       @arg_types = arg_types
       @sreg_flags = sreg_flags
       @opcode_proc = opcode_proc
-      arg_types.each do |arg_type|
-        raise "Unknown Opcode argument type: #{arg_type}" unless OPCODE_ARGUMENT_TYPES[arg_type]
+      # Ensure we don't have required arguments after optional ones...
+      if arg_types.map(&:required?).slice_when { |a, b| a != b }.flat_map(&:uniq).each_cons(2).include?([false, true])
+        raise IncorrectArgumentOptionality
       end
     end
 
@@ -202,9 +213,13 @@ module AVR
       end
     end
 
+    def required_arg_count
+      arg_types.select(&:required?).size..arg_types.size
+    end
+
     sig { params(args: T::Array[T.untyped]).returns(T::Boolean) }
     def validate(args)
-      raise IncorrectArgumentCount unless args.size == arg_types.size
+      raise IncorrectArgumentCount unless required_arg_count.include?(args.size)
 
       args.each_with_index do |arg, i|
         arg_exception = validate_arg(arg, i)
@@ -217,19 +232,7 @@ module AVR
 
     sig { params(args: T::Array[T.untyped]).returns(T::Array[String]) }
     def format_args(args)
-      formatted_args = []
-      args.each_with_index do |arg, i|
-        arg_formatter = OPCODE_ARGUMENT_TYPES[T.must(arg_types[i])]
-        case arg_formatter
-        when String
-          formatted_args << (arg_formatter % arg)
-        when Proc
-          formatted_args << arg_formatter.call(arg)
-        else
-          raise "Unknown argument formatter (#{arg_formatter.class}) for #{arg}"
-        end
-      end
-      formatted_args
+      args.each_with_index.map { |arg, i| arg_types[i].format(arg) }
     end
 
     sig { returns(String) }
