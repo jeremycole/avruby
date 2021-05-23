@@ -3,7 +3,7 @@ RSpec.describe(AVR::OpcodeDecoder) do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }
 
-  BASIC_OPCODES = {
+  ALL_OPCODES = { # rubocop:disable RSpec/LeakyConstantDeclaration
     0b1001_0101_1001_1000 => "break",
     0b1111_0100_0000_1000 => "brbc 0, .+2",
     0b1111_0000_0000_1000 => "brbs 0, .+2",
@@ -35,9 +35,7 @@ RSpec.describe(AVR::OpcodeDecoder) do
     0b1001_0101_1110_1000 => "spm",
     0b1001_0101_1111_1000 => "spm Z+",
     0b1001_0101_1010_1000 => "wdr",
-  }
-
-  ALL_OPCODES = BASIC_OPCODES.merge(
+  }.merge(
     opcode_for_all_rd(0b1001_0100_0000_0101, "asr"),
     opcode_for_all_rd(0b1111_1000_0000_0000, "bld", after: "0"),
     opcode_for_all_rd(0b1111_1010_0000_0000, "bst", after: "0"),

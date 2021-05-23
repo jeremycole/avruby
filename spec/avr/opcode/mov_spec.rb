@@ -1,10 +1,12 @@
 # typed: false
 require "shared_examples_for_opcode"
 
-RSpec.describe([AVR::Opcode, :mov]) do
-  include_examples "opcode", :mov
+RSpec.describe(AVR::Opcode) do
+  describe "mov" do
+    let(:i) { cpu.instruction(:mov, cpu.r0, cpu.r1) }
 
-  context "decoder" do
+    include_examples "opcode", :mov
+
     it "extracts mnemonic and operands correctly" do
       d = cpu.decoder.decode(0b0010_1100_0000_0001)
       expect(d.opcode_definition.mnemonic).to(eq(:mov))
@@ -19,10 +21,6 @@ RSpec.describe([AVR::Opcode, :mov]) do
       expect(i.mnemonic).to(eq(:mov))
       expect(i.args).to(eq([cpu.r0, cpu.r1]))
     end
-  end
-
-  context "instruction" do
-    let(:i) { cpu.instruction(:mov, cpu.r0, cpu.r1) }
 
     it "copies the source register to the target register" do
       cpu.r0 = 0
