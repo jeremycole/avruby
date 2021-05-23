@@ -28,7 +28,7 @@ module AVR
       cpu.instruction(:cp, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:cp, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:cp, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cp)
     end
@@ -37,7 +37,7 @@ module AVR
       cpu.instruction(:cpc, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:cpc, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:cpc, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpc)
     end
@@ -46,7 +46,7 @@ module AVR
       cpu.instruction(:cpi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:cpi, [:register, :byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:cpi, [Arg.register, Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpi)
     end

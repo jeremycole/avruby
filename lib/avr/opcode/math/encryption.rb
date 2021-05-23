@@ -13,7 +13,7 @@ module AVR
       cpu.instruction(:des, operands.fetch(:k))
     end
 
-    opcode(:des, [:byte]) do |_cpu, _memory, _args|
+    opcode(:des, [Arg.byte]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "des"
     end
   end

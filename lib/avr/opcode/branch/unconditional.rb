@@ -13,7 +13,7 @@ module AVR
       cpu.instruction(:jmp, Value.new(operands.fetch(:k).value << 16 | k))
     end
 
-    opcode(:jmp, [:absolute_pc]) do |cpu, _memory, args|
+    opcode(:jmp, [Arg.absolute_pc]) do |cpu, _memory, args|
       cpu.next_pc = args.fetch(0).value
     end
 
@@ -27,7 +27,7 @@ module AVR
       cpu.instruction(:call, Value.new(operands.fetch(:k).value << 16 | k))
     end
 
-    opcode(:call, [:absolute_pc]) do |cpu, _memory, args|
+    opcode(:call, [Arg.absolute_pc]) do |cpu, _memory, args|
       stack_push_word(cpu, cpu.pc + 2)
       cpu.next_pc = args.fetch(0).value
     end
@@ -41,7 +41,7 @@ module AVR
       cpu.instruction(:rjmp, operands.fetch(:k))
     end
 
-    opcode(:rjmp, [:far_relative_pc]) do |cpu, _memory, args|
+    opcode(:rjmp, [Arg.far_relative_pc]) do |cpu, _memory, args|
       cpu.next_pc = cpu.pc + args.fetch(0).value + 1
     end
 
@@ -49,7 +49,7 @@ module AVR
       cpu.instruction(:rcall, operands.fetch(:k))
     end
 
-    opcode(:rcall, [:far_relative_pc]) do |cpu, _memory, args|
+    opcode(:rcall, [Arg.far_relative_pc]) do |cpu, _memory, args|
       stack_push_word(cpu, cpu.pc + 1)
       cpu.next_pc = cpu.pc + args.fetch(0).value + 1
     end

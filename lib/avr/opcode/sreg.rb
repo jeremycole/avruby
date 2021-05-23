@@ -11,7 +11,7 @@ module AVR
       cpu.instruction(:bset, sreg_bit)
     end
 
-    opcode(:bset, [:sreg_flag], [:I, :T, :H, :S, :V, :N, :Z, :C]) do |_cpu, _memory, args|
+    opcode(:bset, [Arg.sreg_flag], [:I, :T, :H, :S, :V, :N, :Z, :C]) do |_cpu, _memory, args|
       args.fetch(0).value = 1
     end
 
@@ -23,7 +23,7 @@ module AVR
       cpu.instruction(:bclr, sreg_bit)
     end
 
-    opcode(:bclr, [:sreg_flag], [:I, :T, :H, :S, :V, :N, :Z, :C]) do |_cpu, _memory, args|
+    opcode(:bclr, [Arg.sreg_flag], [:I, :T, :H, :S, :V, :N, :Z, :C]) do |_cpu, _memory, args|
       args.fetch(0).value = 0
     end
 
@@ -38,7 +38,7 @@ module AVR
       cpu.instruction(:bld, operands.fetch(:Rd), operands.fetch(:b))
     end
 
-    opcode(:bld, [:register, :bit_number]) do |cpu, _memory, args|
+    opcode(:bld, [Arg.register, Arg.bit_number]) do |cpu, _memory, args|
       t_bit   = 1 << args.fetch(1).value
       t_value = cpu.sreg.T ? t_bit : 0
       t_mask  = ~t_bit & 0xff
@@ -49,7 +49,7 @@ module AVR
       cpu.instruction(:bst, operands.fetch(:Rd), operands.fetch(:b))
     end
 
-    opcode(:bst, [:register, :bit_number], [:T]) do |cpu, _memory, args|
+    opcode(:bst, [Arg.register, Arg.bit_number], [:T]) do |cpu, _memory, args|
       cpu.sreg.T = args.fetch(0).value & (1 << args.fetch(1).value) != 0
     end
   end

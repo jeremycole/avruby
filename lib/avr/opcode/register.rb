@@ -7,7 +7,7 @@ module AVR
       cpu.instruction(:mov, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:mov, [:register, :register]) do |_cpu, _memory, args|
+    opcode(:mov, [Arg.register, Arg.register]) do |_cpu, _memory, args|
       args.fetch(0).value = args.fetch(1).value
     end
 
@@ -15,7 +15,7 @@ module AVR
       cpu.instruction(:movw, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:movw, [:register_pair, :register_pair]) do |_cpu, _memory, args|
+    opcode(:movw, [Arg.register_pair, Arg.register_pair]) do |_cpu, _memory, args|
       args.fetch(0).value = args.fetch(1).value
     end
   end

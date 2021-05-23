@@ -14,7 +14,7 @@ module AVR
       cpu.instruction(:brbs, operands.fetch(:s), operands.fetch(:k))
     end
 
-    opcode(:brbs, [:sreg_flag, :near_relative_pc]) do |cpu, _memory, args|
+    opcode(:brbs, [Arg.sreg_flag, Arg.near_relative_pc]) do |cpu, _memory, args|
       cpu.next_pc = cpu.pc + args.fetch(1).value + 1 if args.fetch(0).value == 1
     end
 
@@ -22,7 +22,7 @@ module AVR
       cpu.instruction(:brbc, operands.fetch(:s), operands.fetch(:k))
     end
 
-    opcode(:brbc, [:sreg_flag, :near_relative_pc]) do |cpu, _memory, args|
+    opcode(:brbc, [Arg.sreg_flag, Arg.near_relative_pc]) do |cpu, _memory, args|
       cpu.next_pc = cpu.pc + args.fetch(1).value + 1 if args.fetch(0).value == 0
     end
 
@@ -30,7 +30,7 @@ module AVR
       cpu.instruction(:cpse, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:cpse, [:register, :register]) do |cpu, _memory, args|
+    opcode(:cpse, [Arg.register, Arg.register]) do |cpu, _memory, args|
       cpu.decode if args.fetch(0).value == args.fetch(1).value
     end
 
@@ -42,7 +42,7 @@ module AVR
       cpu.instruction(:sbrc, register_bit)
     end
 
-    opcode(:sbrc, [:register_with_bit_number]) do |cpu, _memory, args|
+    opcode(:sbrc, [Arg.register_with_bit_number]) do |cpu, _memory, args|
       cpu.decode if args.fetch(0).value == 0
     end
 
@@ -54,7 +54,7 @@ module AVR
       cpu.instruction(:sbrs, register_bit)
     end
 
-    opcode(:sbrs, [:register_with_bit_number]) do |cpu, _memory, args|
+    opcode(:sbrs, [Arg.register_with_bit_number]) do |cpu, _memory, args|
       cpu.decode if args.fetch(0).value == 1
     end
 
@@ -62,7 +62,7 @@ module AVR
       cpu.instruction(:sbic, operands.fetch(:A), operands.fetch(:b))
     end
 
-    opcode(:sbic, [:byte, :bit_number]) do |cpu, _memory, args|
+    opcode(:sbic, [Arg.byte, Arg.bit_number]) do |cpu, _memory, args|
       io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
       cpu.decode if io_register.value & (1 << args.fetch(1).value) == 0
     end
@@ -71,7 +71,7 @@ module AVR
       cpu.instruction(:sbis, operands.fetch(:A), operands.fetch(:b))
     end
 
-    opcode(:sbis, [:byte, :bit_number]) do |cpu, _memory, args|
+    opcode(:sbis, [Arg.byte, Arg.bit_number]) do |cpu, _memory, args|
       io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
       cpu.decode if io_register.value & (1 << args.fetch(1).value) != 0
     end

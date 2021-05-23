@@ -7,7 +7,7 @@ module AVR
       cpu.instruction(:push, operands.fetch(:Rr))
     end
 
-    opcode(:push, [:register]) do |cpu, _memory, args|
+    opcode(:push, [Arg.register]) do |cpu, _memory, args|
       stack_push(cpu, args.fetch(0).value)
     end
 
@@ -15,7 +15,7 @@ module AVR
       cpu.instruction(:pop, operands.fetch(:Rd))
     end
 
-    opcode(:pop, [:register]) do |cpu, _memory, args|
+    opcode(:pop, [Arg.register]) do |cpu, _memory, args|
       args.fetch(0).value = stack_pop(cpu)
     end
   end

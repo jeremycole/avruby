@@ -7,7 +7,7 @@ module AVR
       cpu.instruction(:cbi, operands.fetch(:A), operands.fetch(:b))
     end
 
-    opcode(:cbi, [:lower_io_address, :bit_number]) do |cpu, _memory, args|
+    opcode(:cbi, [Arg.lower_io_address, Arg.bit_number]) do |cpu, _memory, args|
       cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value).value &= ~(1 << args.fetch(1).value)
     end
 
@@ -15,7 +15,7 @@ module AVR
       cpu.instruction(:sbi, operands.fetch(:A), operands.fetch(:b))
     end
 
-    opcode(:sbi, [:lower_io_address, :bit_number]) do |cpu, _memory, args|
+    opcode(:sbi, [Arg.lower_io_address, Arg.bit_number]) do |cpu, _memory, args|
       cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value).value |= (1 << args.fetch(1).value)
     end
   end

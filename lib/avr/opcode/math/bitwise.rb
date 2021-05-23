@@ -18,13 +18,13 @@ module AVR
       end
     end
 
-    opcode(:and, [:register, :register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:and, [Arg.register, Arg.register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value & args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
     end
 
-    opcode(:tst, [:register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:tst, [Arg.register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       set_sreg_for_and_or(cpu, args.fetch(0).value)
     end
 
@@ -32,7 +32,7 @@ module AVR
       cpu.instruction(:andi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:andi, [:register, :byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:andi, [Arg.register, Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value & args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
@@ -42,7 +42,7 @@ module AVR
       cpu.instruction(:eor, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:eor, [:register, :register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:eor, [Arg.register, Arg.register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value ^ args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
@@ -52,7 +52,7 @@ module AVR
       cpu.instruction(:or, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:or, [:register, :register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:or, [Arg.register, Arg.register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value | args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
@@ -62,7 +62,7 @@ module AVR
       cpu.instruction(:ori, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:ori, [:register, :byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:ori, [Arg.register, Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value | args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
@@ -72,7 +72,7 @@ module AVR
       cpu.instruction(:swap, operands.fetch(:Rd))
     end
 
-    opcode(:swap, [:register]) do |_cpu, _memory, args|
+    opcode(:swap, [Arg.register]) do |_cpu, _memory, args|
       result = ((args.fetch(0).value & 0xf0) >> 4) | ((args.fetch(0).value & 0x0f) << 4)
       args.fetch(0).value = result
     end
@@ -81,7 +81,7 @@ module AVR
       cpu.instruction(:com, operands.fetch(:Rd))
     end
 
-    opcode(:com, [:register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:com, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = 0xff - args.fetch(0).value
 
       s = ((result & 0x80) != 0) ^ false
@@ -94,7 +94,7 @@ module AVR
     # There is no specific opcode for LSL Rd; it is encoded as ADD Rd, Rd.
     # decode('0000 11dd dddd dddd', :lsl) ...
 
-    opcode(:lsl, [:register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:lsl, [Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value << 1) & 0xff
 
       h = (args.fetch(0).value & (1 << 3)) != 0
@@ -111,7 +111,7 @@ module AVR
       cpu.instruction(:lsr, operands.fetch(:Rd))
     end
 
-    opcode(:lsr, [:register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:lsr, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = args.fetch(0).value >> 1
 
       n = false
@@ -126,7 +126,7 @@ module AVR
     # There is no specific opcode for ROL Rd; it is encoded as ADC Rd, Rd.
     # decode('0000 11dd dddd dddd', :rol) ...
 
-    opcode(:rol, [:register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:rol, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = args.fetch(0).value << 1 | (cpu.sreg.C ? 0x01 : 0)
 
       h = (result & (1 << 3)) != 0
@@ -143,7 +143,7 @@ module AVR
       cpu.instruction(:ror, operands.fetch(:Rd))
     end
 
-    opcode(:ror, [:register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:ror, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = args.fetch(0).value >> 1 | (cpu.sreg.C ? 0x80 : 0)
 
       n = (result & (1 << 7)) != 0
@@ -159,7 +159,7 @@ module AVR
       cpu.instruction(:asr, operands.fetch(:Rd))
     end
 
-    opcode(:asr, [:register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:asr, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value >> 1) | (args.fetch(0).value & 0x80)
 
       n = (result & (1 << 7)) != 0
@@ -175,7 +175,7 @@ module AVR
       cpu.instruction(:neg, operands.fetch(:Rd))
     end
 
-    opcode(:neg, [:register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:neg, [Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = ((0xff - args.fetch(0).value) + 1) & 0xff
 
       h = ((args.fetch(0).value & (1 << 3)) & (result & (1 << 3))) != 0 # ???

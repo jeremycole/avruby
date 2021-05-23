@@ -19,7 +19,7 @@ module AVR
       cpu.instruction(:lds, operands.fetch(:Rd), operands.fetch(:k))
     end
 
-    opcode(:lds, [:register, :word]) do |cpu, _memory, args|
+    opcode(:lds, [Arg.register, Arg.word]) do |cpu, _memory, args|
       cpu.next_pc += 1
       args.fetch(0).value = cpu.sram.memory.fetch(args.fetch(1).value).value
     end
@@ -60,7 +60,7 @@ module AVR
       cpu.instruction(:ld, operands.fetch(:Rd), RegisterWithModification.new(cpu.Z, :pre_decrement))
     end
 
-    opcode(:ld, [:register, :modifying_word_register]) do |cpu, _memory, args|
+    opcode(:ld, [Arg.register, Arg.modifying_word_register]) do |cpu, _memory, args|
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
       args.fetch(0).value = cpu.sram.memory.fetch(mwr.register.value).value
@@ -82,7 +82,7 @@ module AVR
       cpu.instruction(:ldd, operands.fetch(:Rd), RegisterWithDisplacement.new(cpu.Z, operands.fetch(:q).value))
     end
 
-    opcode(:ldd, [:register, :displaced_word_register]) do |cpu, _memory, args|
+    opcode(:ldd, [Arg.register, Arg.displaced_word_register]) do |cpu, _memory, args|
       dwr = T.cast(args.fetch(1), RegisterWithDisplacement)
       args.fetch(0).value = cpu.sram.memory.fetch(dwr.register.value + dwr.displacement).value
     end
@@ -106,7 +106,7 @@ module AVR
     #   cpu.instruction(:sts, operands.fetch(:k), operands.fetch(:Rr))
     # end
 
-    opcode(:sts, [:word, :register]) do |cpu, _memory, args|
+    opcode(:sts, [Arg.word, Arg.register]) do |cpu, _memory, args|
       cpu.next_pc += 1
       cpu.sram.memory.fetch(args.fetch(0).value).value = args.fetch(1).value
     end
@@ -147,7 +147,7 @@ module AVR
       cpu.instruction(:st, RegisterWithModification.new(cpu.Z, :pre_decrement), operands.fetch(:Rr))
     end
 
-    opcode(:st, [:modifying_word_register, :register]) do |cpu, _memory, args|
+    opcode(:st, [Arg.modifying_word_register, Arg.register]) do |cpu, _memory, args|
       mwr = T.cast(args.fetch(0), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
       cpu.sram.memory.fetch(mwr.register.value).value = args.fetch(1).value
@@ -169,7 +169,7 @@ module AVR
       cpu.instruction(:std, RegisterWithDisplacement.new(cpu.Z, operands.fetch(:q).value), operands.fetch(:Rr))
     end
 
-    opcode(:std, [:displaced_word_register, :register]) do |cpu, _memory, args|
+    opcode(:std, [Arg.displaced_word_register, Arg.register]) do |cpu, _memory, args|
       dwr = T.cast(args.fetch(0), RegisterWithDisplacement)
       cpu.sram.memory.fetch(dwr.register.value + dwr.displacement).value = args.fetch(1).value
     end
@@ -194,7 +194,7 @@ module AVR
       cpu.instruction(:xch, operands.fetch(:Rr))
     end
 
-    opcode(:xch, [:register]) do |cpu, _memory, args|
+    opcode(:xch, [Arg.register]) do |cpu, _memory, args|
       exchange_memory_byte_with_register(cpu.sram.memory.fetch(cpu.Z.value), args.fetch(0), :xch)
     end
 
@@ -202,7 +202,7 @@ module AVR
       cpu.instruction(:las, operands.fetch(:Rr))
     end
 
-    opcode(:las, [:register]) do |cpu, _memory, args|
+    opcode(:las, [Arg.register]) do |cpu, _memory, args|
       exchange_memory_byte_with_register(cpu.sram.memory.fetch(cpu.Z.value), args.fetch(0), :las)
     end
 
@@ -210,7 +210,7 @@ module AVR
       cpu.instruction(:lac, operands.fetch(:Rr))
     end
 
-    opcode(:lac, [:register]) do |cpu, _memory, args|
+    opcode(:lac, [Arg.register]) do |cpu, _memory, args|
       exchange_memory_byte_with_register(cpu.sram.memory.fetch(cpu.Z.value), args.fetch(0), :lac)
     end
 
@@ -218,7 +218,7 @@ module AVR
       cpu.instruction(:lat, operands.fetch(:Rr))
     end
 
-    opcode(:lat, [:register]) do |cpu, _memory, args|
+    opcode(:lat, [Arg.register]) do |cpu, _memory, args|
       exchange_memory_byte_with_register(cpu.sram.memory.fetch(cpu.Z.value), T.cast(args.fetch(0), Register), :lat)
     end
   end

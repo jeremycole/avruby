@@ -39,6 +39,68 @@ module AVR
 
     class ConstantOutOfRange < OpcodeException; end
 
+    module Arg
+      def self.register
+        :register
+      end
+
+      def self.register_pair
+        :register_pair
+      end
+
+      def self.sreg_flag
+        :sreg_flag
+      end
+
+      def self.near_relative_pc
+        :near_relative_pc
+      end
+
+      def self.far_relative_pc
+        :far_relative_pc
+      end
+
+      def self.absolute_pc
+        :absolute_pc
+      end
+
+      def self.byte
+        :byte
+      end
+
+      def self.word
+        :word
+      end
+
+      def self.word_register
+        :word_register
+      end
+
+      def self.modifying_word_register
+        :modifying_word_register
+      end
+
+      def self.displaced_word_register
+        :displaced_word_register
+      end
+
+      def self.register_with_bit_number
+        :register_with_bit_number
+      end
+
+      def self.io_address
+        :io_address
+      end
+
+      def self.lower_io_address
+        :lower_io_address
+      end
+
+      def self.bit_number
+        :bit_number
+      end
+    end
+
     OPCODE_ARGUMENT_TYPES = T.let(
       {
         sreg_flag:          "%s",

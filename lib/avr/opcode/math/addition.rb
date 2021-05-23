@@ -14,7 +14,7 @@ module AVR
       cpu.instruction(:inc, operands.fetch(:Rd))
     end
 
-    opcode(:inc, [:register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:inc, [Arg.register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value + 1) & 0xff
       set_sreg_for_inc(cpu, result, args.fetch(0).value)
       args.fetch(0).value = result
@@ -44,7 +44,7 @@ module AVR
       end
     end
 
-    opcode(:add, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:add, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value + args.fetch(1).value) & 0xff
       set_sreg_for_add_adc(cpu, result, args.fetch(0).value, args.fetch(1).value)
       args.fetch(0).value = result
@@ -58,7 +58,7 @@ module AVR
       end
     end
 
-    opcode(:adc, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:adc, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value + args.fetch(1).value + (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_add_adc(cpu, result, args.fetch(0).value, args.fetch(1).value)
       args.fetch(0).value = result
@@ -80,7 +80,7 @@ module AVR
       cpu.instruction(:adiw, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:adiw, [:word_register, :byte], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:adiw, [Arg.word_register, Arg.byte], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value + args.fetch(1).value) & 0xffff
       set_sreg_for_adiw(cpu, result, args.fetch(0).value)
       args.fetch(0).value = result

@@ -7,7 +7,7 @@ module AVR
       cpu.instruction(:mul, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:mul, [:register, :register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:mul, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value * args.fetch(1).value)
       set_sreg_for_inc(cpu, result, args.fetch(0).value)
       cpu.sreg.from_h({ Z: result.zero?, C: (result & 0x8000) != 0 })
@@ -19,7 +19,7 @@ module AVR
       cpu.instruction(:muls, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:muls, [:register, :register], [:Z, :C]) do |_cpu, _memory, _args|
+    opcode(:muls, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "muls"
     end
 
@@ -27,7 +27,7 @@ module AVR
       cpu.instruction(:mulsu, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:mulsu, [:register, :register], [:Z, :C]) do |_cpu, _memory, _args|
+    opcode(:mulsu, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "mulsu"
     end
 
@@ -35,7 +35,7 @@ module AVR
       cpu.instruction(:fmul, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmul, [:register, :register], [:Z, :C]) do |_cpu, _memory, _args|
+    opcode(:fmul, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "fmul"
     end
 
@@ -43,7 +43,7 @@ module AVR
       cpu.instruction(:fmuls, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmuls, [:register, :register], [:Z, :C]) do |_cpu, _memory, _args|
+    opcode(:fmuls, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "fmuls"
     end
 
@@ -51,7 +51,7 @@ module AVR
       cpu.instruction(:fmulsu, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmulsu, [:register, :register], [:Z, :C]) do |_cpu, _memory, _args|
+    opcode(:fmulsu, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "fmulsu"
     end
   end

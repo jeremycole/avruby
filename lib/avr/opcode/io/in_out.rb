@@ -14,7 +14,7 @@ module AVR
       cpu.instruction(:in, operands.fetch(:Rd), operands.fetch(:A))
     end
 
-    opcode(:in, [:register, :io_address]) do |cpu, _memory, args|
+    opcode(:in, [Arg.register, Arg.io_address]) do |cpu, _memory, args|
       reg = cpu.device.io_registers.fetch(args.fetch(1).value)
       args.fetch(0).value = cpu.send(T.must(reg)).value
     end
@@ -30,7 +30,7 @@ module AVR
       cpu.instruction(:out, operands.fetch(:A), operands.fetch(:Rr))
     end
 
-    opcode(:out, [:io_address, :register]) do |cpu, _memory, args|
+    opcode(:out, [Arg.io_address, Arg.register]) do |cpu, _memory, args|
       reg = cpu.device.io_registers.fetch(args.fetch(0).value)
       cpu.send(T.must(reg)).value = args.fetch(1).value
     end
