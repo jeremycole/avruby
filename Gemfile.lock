@@ -48,10 +48,10 @@ GEM
     rubocop-shopify (2.1.0)
       rubocop (~> 1.13)
     ruby-progressbar (1.11.0)
-    sorbet (0.5.6412)
-      sorbet-static (= 0.5.6412)
-    sorbet-runtime (0.5.6412)
-    sorbet-static (0.5.6412-universal-darwin-14)
+    sorbet (0.5.6424)
+      sorbet-static (= 0.5.6424)
+    sorbet-runtime (0.5.6424)
+    sorbet-static (0.5.6424-universal-darwin-14)
     unicode-display_width (2.0.0)
 
 PLATFORMS
