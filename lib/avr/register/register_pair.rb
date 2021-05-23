@@ -7,23 +7,23 @@ module AVR
     extend T::Sig
 
     sig { returns(MemoryByteRegister) }
-    attr_reader :l
+    attr_reader :h
 
     sig { returns(MemoryByteRegister) }
-    attr_reader :h
+    attr_reader :l
 
     sig do
       params(
         cpu: CPU,
-        l: MemoryByteRegister,
         h: MemoryByteRegister,
+        l: MemoryByteRegister,
         name: T.nilable(T.any(Symbol, String))
       ).void
     end
-    def initialize(cpu, l, h, name = nil)
-      super(cpu, name || "#{l.name}:#{h.name}")
-      @l = l
+    def initialize(cpu, h, l, name = nil)
+      super(cpu, name || "#{h.name}:#{l.name}")
       @h = h
+      @l = l
     end
 
     sig { returns(String) }

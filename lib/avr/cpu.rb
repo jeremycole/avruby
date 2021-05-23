@@ -94,7 +94,7 @@ module AVR
       end
 
       device.word_register_map.each do |name, map|
-        registers.add(RegisterPair.new(self, @registers[map[:l]], @registers[map[:h]], name))
+        registers.add(RegisterPair.new(self, @registers[map[:h]], @registers[map[:l]], name))
       end
 
       @io_registers = RegisterFile.new(self)
@@ -114,8 +114,8 @@ module AVR
 
       @sp = SP.new(
         self,
-        @sram.memory[device.data_memory_map[:SPL]],
         @sram.memory[device.data_memory_map[:SPH]],
+        @sram.memory[device.data_memory_map[:SPL]],
         device.ram_end
       )
 
