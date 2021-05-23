@@ -4,9 +4,14 @@
 module AVR
   class Opcode
     sig { params(value: Integer, bits: Integer).returns(Integer) }
-    def self.twos_complement(value, bits)
+    def self.from_twos_complement(value, bits)
       mask = (2**(bits - 1)).to_i
       -(value & mask) + (value & ~mask)
+    end
+
+    def self.to_twos_complement(value, bits)
+      return value unless value.negative?
+      ((value.magnitude) ^ ((1 << bits) - 1)) + 1
     end
 
     sig { params(k_in: Integer).returns(Integer) }

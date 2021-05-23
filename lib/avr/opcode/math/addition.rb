@@ -10,6 +10,7 @@ module AVR
 
       cpu.sreg.from_h({ S: n ^ v, V: v, N: n, Z: r.zero? })
     end
+
     decode("1001 010d dddd 0011", :inc) do |cpu, _opcode_definition, operands|
       cpu.instruction(:inc, operands.fetch(:Rd))
     end

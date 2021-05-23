@@ -5,7 +5,7 @@ module AVR
   class Opcode
     parse_operands("____ __kk kkkk ksss") do |_cpu, operands|
       {
-        k: Value.new(twos_complement(operands.fetch(:k).value, 7)),
+        k: Value.new(from_twos_complement(operands.fetch(:k).value, 7)),
         s: operands.fetch(:s),
       }
     end

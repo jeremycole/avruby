@@ -9,10 +9,8 @@ module AVR
 
     opcode(:mul, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value * args.fetch(1).value)
-      set_sreg_for_inc(cpu, result, args.fetch(0).value)
       cpu.sreg.from_h({ Z: result.zero?, C: (result & 0x8000) != 0 })
-      cpu.r0 = result & 0x00ff
-      cpu.r1 = (result & 0xff00) >> 8
+      cpu.r1r0.value = result
     end
 
     decode("0000 0010 dddd rrrr", :muls) do |cpu, _opcode_definition, operands|

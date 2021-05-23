@@ -29,7 +29,7 @@ module AVR
 
     sig { params(value: Integer).void }
     def r0=(value)
-      registers.fetch(:r0).value = value
+      r0.value = value
     end
 
     sig { returns(Register) }
@@ -39,7 +39,17 @@ module AVR
 
     sig { params(value: Integer).void }
     def r1=(value)
-      registers.fetch(:r1).value = value
+      r1.value = value
+    end
+
+    sig { returns(Register) }
+    def r1r0
+      @r1r0 ||= RegisterPair.new(self, r1, r0)
+    end
+
+    sig { params(value: Integer).void }
+    def r1r0=(value)
+      r1r0.value = value
     end
 
     sig { returns(Register) }

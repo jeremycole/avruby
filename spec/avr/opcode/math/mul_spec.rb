@@ -11,16 +11,14 @@ RSpec.describe(AVR::Opcode) do
       cpu.r16 = 17
       cpu.r17 = 19
       i.execute
-      expect(cpu.r0.value).to(eq(0x43))
-      expect(cpu.r1.value).to(eq(0x01))
+      expect(cpu.r1r0.value).to(eq(17 * 19))
     end
 
     it "sets the carry bit when appropriate" do
       cpu.r16 = 255
       cpu.r17 = 255
       i.execute
-      expect(cpu.r0.value).to(eq(0x01))
-      expect(cpu.r1.value).to(eq(0xfe))
+      expect(cpu.r1r0.value).to(eq(255 * 255))
       expect(cpu.sreg.C).to(eq(true))
     end
 

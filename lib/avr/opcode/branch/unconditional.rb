@@ -34,7 +34,7 @@ module AVR
 
     # rcall rjmp
     parse_operands("____ kkkk kkkk kkkk") do |_cpu, operands|
-      { k: Value.new(twos_complement(operands.fetch(:k).value, 12)) }
+      { k: Value.new(from_twos_complement(operands.fetch(:k).value, 12)) }
     end
 
     decode("1100 kkkk kkkk kkkk", :rjmp) do |cpu, _opcode_definition, operands|
