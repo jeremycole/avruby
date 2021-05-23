@@ -70,5 +70,21 @@ module AVR
       stack_push_word(cpu, cpu.pc + 1)
       cpu.next_pc = cpu.Z.value
     end
+
+    decode('1001 0100 0001 1001', :eijmp) do |cpu, _opcode_definition, _operands|
+      cpu.instruction(:eijmp)
+    end
+
+    opcode(:eijmp) do |_cpu, _memory, _args|
+      raise OpcodeNotImplementedError, "eijmp"
+    end
+
+    decode('1001 0101 0001 1001', :eicall) do |cpu, _opcode_definition, _operands|
+      cpu.instruction(:eicall)
+    end
+
+    opcode(:eicall) do |_cpu, _memory, _args|
+      raise OpcodeNotImplementedError, "eicall"
+    end
   end
 end

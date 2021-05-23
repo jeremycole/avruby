@@ -9,10 +9,10 @@ RSpec.describe AVR::OpcodeDecoder do
     0b1111_0000_0000_1000 => "brbs 0, .+2",
     0b1001_0100_0000_1110 => "call 0x2468", # address stored in next word in flash
     0b1001_1000_0000_0000 => "cbi 0x00, 0", # cbi $00, 0?
-    # 0b1001_0100_0000_1011 => "des 0x00", # not implemented
-    # 0b1001_0101_0001_1001 => "eicall", # not implemented
-    # 0b1001_0100_0001_1001 => "eijmp", # not implemented
-    # 0b1001_0101_1101_1000 => "elpm", # not implemented
+    0b1001_0100_0000_1011 => "des 0x00",
+    0b1001_0101_0001_1001 => "eicall",
+    0b1001_0100_0001_1001 => "eijmp",
+    0b1001_0101_1101_1000 => "elpm",
     0b1001_0101_0000_1001 => "icall",
     0b1001_0100_0000_1001 => "ijmp",
     0b1001_0100_0000_1100 => "jmp 0x2468", # address stored in next word in flash
@@ -27,13 +27,13 @@ RSpec.describe AVR::OpcodeDecoder do
     0b1100_1111_1111_1110 => "rjmp .-4", # TODO: Is .-4 correct?
     0b1100_0000_0000_0001 => "rjmp .+2",
     0b1001_1010_0000_0000 => "sbi 0x00, 0",
-    # 0b1001_1001_0000_0000 => "sbic 0x00, 0", # not implemented
-    # 0b1001_1011_0000_0000 => "sbis 0x00, 0", # not implemented
+    0b1001_1001_0000_0000 => "sbic 0x00, 0",
+    0b1001_1011_0000_0000 => "sbis 0x00, 0",
     0b1111_1100_0000_0000 => "sbrc r0.0",
     0b1111_1110_0000_0000 => "sbrs r0.0",
     0b1001_0101_1000_1000 => "sleep",
-    # 0b1001_0101_1110_1000 => "spm", # not implemented
-    # 0b1001_0101_1111_1000 => "spm Z+", # not implemented
+    0b1001_0101_1110_1000 => "spm",
+    0b1001_0101_1111_1000 => "spm Z+",
     0b1001_0101_1010_1000 => "wdr",
   }
 
@@ -43,8 +43,8 @@ RSpec.describe AVR::OpcodeDecoder do
     opcode_for_all_rd(0b1111_1010_0000_0000, "bst", after: "0"),
     opcode_for_all_rd(0b1001_0100_0000_0000, "com"),
     opcode_for_all_rd(0b1001_0100_0000_1010, "dec"),
-    # opcode_for_all_rd(0b1001_0000_0000_0110, "elpm", after: "Z"), # not implemented
-    # opcode_for_all_rd(0b1001_0000_0000_0111, "elpm", after: "Z+"), # not implemented
+    opcode_for_all_rd(0b1001_0000_0000_0110, "elpm", after: "Z"), # not implemented
+    opcode_for_all_rd(0b1001_0000_0000_0111, "elpm", after: "Z+"), # not implemented
     opcode_for_all_rd(0b1011_0110_0000_1111, "in", after: "0x3f"),
     opcode_for_all_rd(0b1001_0100_0000_0011, "inc"),
     opcode_for_all_rd(0b1001_0010_0000_0101, "las"),
@@ -99,13 +99,13 @@ RSpec.describe AVR::OpcodeDecoder do
     opcode_for_all_rd_rr_pairs(0b0000_0100_0000_0000, "cpc"),
     opcode_for_all_rd_rr_pairs(0b0001_0000_0000_0000, "cpse"),
     opcode_for_all_rd_rr_pairs(0b0010_0100_0000_0000, "eor"),
-    # opcode_for_all_rd_rr_pairs(0b0000_0011_0000_1000, "fmul", min: 16, max: 23), # not implemented
-    # opcode_for_all_rd_rr_pairs(0b0000_0011_1000_0000, "fmuls", min: 16, max: 23), # not implemented
-    # opcode_for_all_rd_rr_pairs(0b0000_0011_1000_1000, "fmulsu", min: 16, max: 23), # not implemented
+    opcode_for_all_rd_rr_pairs(0b0000_0011_0000_1000, "fmul", min: 16, max: 23),
+    opcode_for_all_rd_rr_pairs(0b0000_0011_1000_0000, "fmuls", min: 16, max: 23),
+    opcode_for_all_rd_rr_pairs(0b0000_0011_1000_1000, "fmulsu", min: 16, max: 23),
     opcode_for_all_rd_rr_pairs(0b0010_1100_0000_0000, "mov"),
     opcode_for_all_rd_rr_pairs(0b1001_1100_0000_0000, "mul"),
-    # opcode_for_all_rd_rr_pairs(0b0000_0010_0000_1111, "muls", min: 16, max: 31), # not implemented
-    # opcode_for_all_rd_rr_pairs(0b0000_0011_0000_0000, "mulsu", min: 16, max: 23), # not implemented
+    opcode_for_all_rd_rr_pairs(0b0000_0010_0000_0000, "muls", min: 16, max: 31),
+    opcode_for_all_rd_rr_pairs(0b0000_0011_0000_0000, "mulsu", min: 16, max: 23),
     opcode_for_all_rd_rr_pairs(0b0010_1000_0000_0000, "or"),
     opcode_for_all_rd_rr_pairs(0b0000_1000_0000_0000, "sbc"),
     opcode_for_all_rd_rr_pairs(0b0001_1000_0000_0000, "sub"),
@@ -122,7 +122,7 @@ RSpec.describe AVR::OpcodeDecoder do
   describe "all opcode decodes", opcode_decoder: :all do
     ALL_OPCODES.each do |word, code|
       binary = format("%016b", word).each_char.each_slice(4).map(&:join).join("_")
-      it "can decode 0b#{binary} = #{code}" do
+      it "can decode 0b#{binary} = #{code}", opcode: code.split(" ").first do
         device.flash.set_word(0, word)
         device.flash.set_word(1, 0x1234)
         expect(cpu.decode.to_s).to eq(code)

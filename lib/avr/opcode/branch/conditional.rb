@@ -57,5 +57,23 @@ module AVR
     opcode(:sbrs, %i[register_with_bit_number]) do |cpu, _memory, args|
       cpu.decode if args.fetch(0).value == 1
     end
+
+    decode('1001 1001 AAAA Abbb', :sbic) do |cpu, _opcode_definition, operands|
+      cpu.instruction(:sbic, operands.fetch(:A), operands.fetch(:b))
+    end
+
+    opcode(:sbic, %i[byte bit_number]) do |cpu, _memory, args|
+      io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
+      cpu.decode if io_register.value & (1 << args.fetch(1).value) == 0
+    end
+
+    decode('1001 1011 AAAA Abbb', :sbis) do |cpu, _opcode_definition, operands|
+      cpu.instruction(:sbis, operands.fetch(:A), operands.fetch(:b))
+    end
+
+    opcode(:sbis, %i[byte bit_number]) do |cpu, _memory, args|
+      io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
+      cpu.decode if io_register.value & (1 << args.fetch(1).value) != 0
+    end
   end
 end

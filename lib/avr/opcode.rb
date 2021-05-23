@@ -8,6 +8,7 @@ module AVR
     extend T::Sig
 
     class OpcodeException < RuntimeError; end
+    class OpcodeNotImplementedError < OpcodeException; end
     class IncorrectArgumentCount < OpcodeException; end
     class RegisterExpected < OpcodeException; end
     class UpperRegisterExpected < OpcodeException; end

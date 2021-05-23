@@ -26,11 +26,29 @@ module AVR
       }
     end
 
+    # muls
+    parse_operands('____ ____ dddd rrrr') do |cpu, operands|
+      {
+        Rd: cpu.registers.fetch(operands.fetch(:d).value + 16),
+        Rr: cpu.registers.fetch(operands.fetch(:r).value + 16),
+      }
+    end
+
     # fmul fmuls fmulsu mulsu
     parse_operands('____ ____ _ddd _rrr') do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
         Rr: cpu.registers.fetch(operands.fetch(:r).value | 0b10000),
+      }
+    end
+
+    # movw
+    parse_operands('____ ____ DDDD RRRR') do |cpu, operands|
+      d = operands.fetch(:D).value
+      r = operands.fetch(:R).value
+      {
+        Rd: RegisterPair.new(cpu, cpu.registers.fetch((d << 1) + 1), cpu.registers.fetch(d << 1)),
+        Rr: RegisterPair.new(cpu, cpu.registers.fetch((r << 1) + 1), cpu.registers.fetch(r << 1)),
       }
     end
 
@@ -74,6 +92,14 @@ module AVR
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
         K: Value.new(operands.fetch(:K).value),
+      }
+    end
+
+    # cbi sbi sbic sbis
+    parse_operands('____ ____ AAAA Abbb') do |_cpu, operands|
+      {
+        A: operands.fetch(:A),
+        b: operands.fetch(:b),
       }
     end
   end
