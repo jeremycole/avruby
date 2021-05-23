@@ -42,94 +42,184 @@ module AVR
     class ConstantOutOfRange < OpcodeException; end
 
     class OpcodeArgumentDefinition
-      attr_reader :type_name
-      attr_reader :formatter
+      extend T::Sig
 
-      def initialize(type_name, formatter = proc { |arg| Kernel.format("%s", arg) })
+      sig { returns(String) }
+      attr_reader :type_name
+
+      sig { params(type_name: Symbol, format: String).void }
+      def initialize(type_name, format: "%s")
         @required = true
         @type_name = type_name
-        @formatter = formatter.is_a?(String) ? proc { |arg| Kernel.format(formatter, arg) } : formatter
+        @formatter = proc { |arg| Kernel.format(format, arg) }
+        @validators = []
       end
 
-      def format(arg)
-        formatter.call(arg)
-      end
+      sig { params(block: T.proc.params(arg: Argument::ValueType).returns(String)).returns(OpcodeArgumentDefinition) }
+      def formatter(&block)
+        raise ArgumentError, "formatter proc expected" unless block_given?
 
-      def optional
-        @required = false
+        @formatter = block
+
         self
       end
 
+      sig { params(arg: Argument::ValueType).returns(String) }
+      def format(arg)
+        @formatter.call(arg)
+      end
+
+      sig do
+        params(block: T.proc.params(arg: Argument::ValueType).returns(T::Array[StandardError]))
+          .returns(OpcodeArgumentDefinition)
+      end
+      def validator(&block)
+        raise ArgumentError, "validator proc expected" unless block_given?
+
+        @validators << block
+
+        self
+      end
+
+      sig { params(arg: Argument::ValueType).returns(T.nilable(T::Array[StandardError])) }
+      def validate(arg)
+        @validators.map { |validator| validator.call(arg) }.compact
+      end
+
+      sig { returns(OpcodeArgumentDefinition) }
+      def optional
+        @required = false
+
+        self
+      end
+
+      sig { returns(T::Boolean) }
       def required?
         @required
       end
 
+      sig { returns(T::Boolean) }
       def optional?
         !required?
       end
     end
 
     module Arg
+      extend T::Sig
+
+      sig { returns(OpcodeArgumentDefinition) }
       def self.register
-        OpcodeArgumentDefinition.new(:register)
+        OpcodeArgumentDefinition
+          .new(:register)
+          .validator { |arg| RegisterExpected unless arg.is_a?(Register) }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.register_pair
-        OpcodeArgumentDefinition.new(:register_pair)
+        OpcodeArgumentDefinition
+          .new(:register_pair)
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.sreg_flag
-        OpcodeArgumentDefinition.new(:sreg_flag)
+        OpcodeArgumentDefinition
+          .new(:sreg_flag)
+          .validator { |arg| StatusRegisterBitExpected unless arg.is_a?(Value) }
+          .validator { |arg| StatusRegisterBitExpected unless arg.value == 0 || arg.value == 1 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.near_relative_pc
-        OpcodeArgumentDefinition.new(:near_relative_pc, proc { |arg| format(".%+d", 2 * arg.value) })
+        OpcodeArgumentDefinition
+          .new(:near_relative_pc)
+          .formatter { |arg| format(".%+d", 2 * arg.value) }
+          .validator { |arg| NearRelativePcExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= -64 && arg.value <= 63 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.far_relative_pc
-        OpcodeArgumentDefinition.new(:far_relative_pc, proc { |arg| format(".%+d", 2 * arg.value) })
+        OpcodeArgumentDefinition
+          .new(:far_relative_pc)
+          .formatter { |arg| format(".%+d", 2 * arg.value) }
+          .validator { |arg| FarRelativePcExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= -2048 && arg.value <= 2047 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.absolute_pc
-        OpcodeArgumentDefinition.new(:absolute_pc, proc { |arg| format("0x%04x", 2 * arg.value) })
+        OpcodeArgumentDefinition
+          .new(:absolute_pc)
+          .formatter { |arg| format("0x%04x", 2 * arg.value) }
+          .validator { |arg| AbsolutePcExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= (2**22).to_i - 1 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.byte
-        OpcodeArgumentDefinition.new(:byte, "0x%02x")
+        OpcodeArgumentDefinition
+          .new(:byte, format: "0x%02x")
+          .validator { |arg| ByteConstantExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= 0x00 && arg.value <= 0xff }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.word
-        OpcodeArgumentDefinition.new(:word, "0x%04x")
+        OpcodeArgumentDefinition
+          .new(:word, format: "0x%04x")
+          .validator { |arg| WordConstantExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= 0x0000 && arg.value <= 0xffff }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.word_register
-        OpcodeArgumentDefinition.new(:word_register)
+        OpcodeArgumentDefinition
+          .new(:word_register)
+          .validator { |arg| WordRegisterExpected unless arg.is_a?(RegisterPair) }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.modifying_word_register
-        OpcodeArgumentDefinition.new(:modifying_word_register)
+        OpcodeArgumentDefinition
+          .new(:modifying_word_register)
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.displaced_word_register
-        OpcodeArgumentDefinition.new(:displaced_word_register, proc { |arg|
-          format("%s%+d", arg.register.name, arg.displacement)
-        })
+        OpcodeArgumentDefinition
+          .new(:displaced_word_register)
+          .formatter { |arg| format("%s%+d", arg.register.name, arg.displacement) }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.register_with_bit_number
-        OpcodeArgumentDefinition.new(:register_with_bit_number)
+        OpcodeArgumentDefinition
+          .new(:register_with_bit_number)
+          .validator { |arg| RegisterExpected unless arg.register.is_a?(Register) }
+          .validator { |arg| BitNumberExpected unless arg.bit_number.is_a?(Integer) }
+          .validator { |arg| ConstantOutOfRange unless arg.bit_number >= 0 && arg.bit_number <= 7 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.io_address
-        OpcodeArgumentDefinition.new(:io_address, "0x%02x")
+        OpcodeArgumentDefinition
+          .new(:io_address, format: "0x%02x")
+          .validator { |arg| IoAddressExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= 63 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.lower_io_address
-        OpcodeArgumentDefinition.new(:lower_io_address, "0x%02x")
+        OpcodeArgumentDefinition
+          .new(:lower_io_address, format: "0x%02x")
+          .validator { |arg| IoAddressExpected unless arg.is_a?(Value) }
+          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= 31 }
       end
 
+      sig { returns(OpcodeArgumentDefinition) }
       def self.bit_number
-        OpcodeArgumentDefinition.new(:bit_number, "%d")
+        OpcodeArgumentDefinition
+          .new(:bit_number, format: "%d")
       end
     end
 
@@ -175,44 +265,7 @@ module AVR
       end
     end
 
-    sig { params(arg: T.untyped, arg_number: Integer).returns(T.nilable(T.class_of(OpcodeException))) }
-    def validate_arg(arg, arg_number)
-      case arg_types[arg_number]
-      when :register
-        return RegisterExpected unless arg.is_a?(Register)
-      when :word_register
-        return WordRegisterExpected unless arg.is_a?(RegisterPair)
-      when :byte
-        return ByteConstantExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= 0x00 && arg.value <= 0xff
-      when :word
-        return WordConstantExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= 0x0000 && arg.value <= 0xffff
-      when :absolute_pc
-        return AbsolutePcExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= 0 && arg.value <= (2**22).to_i - 1
-      when :near_relative_pc
-        return NearRelativePcExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= -64 && arg.value <= 63
-      when :far_relative_pc
-        return FarRelativePcExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= -2048 && arg.value <= 2047
-      when :io_address
-        return IoAddressExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= 0 && arg.value <= 63
-      when :lower_io_address
-        return IoAddressExpected unless arg.is_a?(Value)
-        return ConstantOutOfRange unless arg.value >= 0 && arg.value <= 31
-      when :register_with_bit_number
-        return RegisterExpected unless arg.register.is_a?(Register)
-        return BitNumberExpected unless arg.bit_number.is_a?(Integer)
-        return ConstantOutOfRange unless arg.bit_number >= 0 && arg.bit_number <= 7
-      when :sreg_flag
-        return StatusRegisterBitExpected unless arg.is_a?(Value)
-        return StatusRegisterBitExpected unless arg.value == 0 || arg.value == 1
-      end
-    end
-
+    sig { returns(Range) }
     def required_arg_count
       arg_types.select(&:required?).size..arg_types.size
     end
@@ -222,9 +275,9 @@ module AVR
       raise IncorrectArgumentCount unless required_arg_count.include?(args.size)
 
       args.each_with_index do |arg, i|
-        arg_exception = validate_arg(arg, i)
-
-        raise arg_exception, "Argument #{i} (#{arg}) invalid for #{arg_types[i]}" if arg_exception
+        arg_types[i].validate(arg)&.each do |arg_exception|
+          raise arg_exception, "Argument #{i} (#{arg}) invalid for #{arg_types[i].type_name}"
+        end
       end
 
       true
