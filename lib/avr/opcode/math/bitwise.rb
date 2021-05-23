@@ -25,8 +25,7 @@ module AVR
     end
 
     opcode(:tst, [:register], [:S, :V, :N, :Z]) do |cpu, _memory, args|
-      result = (args.fetch(0).value & args.fetch(0).value)
-      set_sreg_for_and_or(cpu, result)
+      set_sreg_for_and_or(cpu, args.fetch(0).value)
     end
 
     decode("0111 KKKK dddd KKKK", :andi) do |cpu, _opcode_definition, operands|
