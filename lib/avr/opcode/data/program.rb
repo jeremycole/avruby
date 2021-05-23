@@ -15,7 +15,7 @@ module AVR
       cpu.instruction(:lpm, operands.fetch(:Rd), RegisterWithModification.new(cpu.Z, :post_increment))
     end
 
-    opcode(:lpm, [Arg.register, Arg.modifying_word_register]) do |cpu, _memory, args|
+    opcode(:lpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.size.zero?
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
@@ -47,7 +47,7 @@ module AVR
       cpu.instruction(:spm, RegisterWithModification.new(cpu.Z, :post_increment))
     end
 
-    opcode(:spm, [Arg.modifying_word_register]) do |_cpu, _memory, _args|
+    opcode(:spm, [Arg.modifying_word_register.optional]) do |_cpu, _memory, _args|
       raise OpcodeNotImplementedError, "spm"
     end
   end
