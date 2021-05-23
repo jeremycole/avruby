@@ -1,7 +1,6 @@
 # typed: strict
 # frozen_string_literal: true
 
-# rubocop:disable Naming/MethodParameterName
 module AVR
   class RegisterPair < Register
     extend T::Sig
@@ -28,7 +27,7 @@ module AVR
 
     sig { returns(String) }
     def format
-      '%04x'
+      "%04x"
     end
 
     sig { returns(Integer) }
@@ -43,4 +42,3 @@ module AVR
     end
   end
 end
-# rubocop:enable Naming/MethodParameterName

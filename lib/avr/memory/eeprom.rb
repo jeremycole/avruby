@@ -12,7 +12,7 @@ module AVR
 
     sig { params(size: Integer, cpu: CPU).void }
     def initialize(size, cpu)
-      super('EEPROM', size, ERASED_VALUE)
+      super("EEPROM", size, ERASED_VALUE)
       attach(cpu)
     end
 

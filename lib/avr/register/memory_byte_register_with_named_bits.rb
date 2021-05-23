@@ -13,7 +13,7 @@ module AVR
       @bit_names_bv.each do |bit_name, bit_value|
         define_singleton_method(bit_name, proc { (value & bit_value) == bit_value })
 
-        define_singleton_method((bit_name.to_s + '=').to_sym, proc { |new_value|
+        define_singleton_method((bit_name.to_s + "=").to_sym, proc { |new_value|
           if [true, 1].include?(new_value)
             self.value |= bit_value
           elsif [false, 0].include?(new_value)
@@ -40,7 +40,7 @@ module AVR
     end
 
     def bit_values
-      @bit_names.reject(&:nil?).map { |name| name.to_s + '=' + (send(name) ? '1' : '0') }.join(', ')
+      @bit_names.reject(&:nil?).map { |name| name.to_s + "=" + (send(name) ? "1" : "0") }.join(", ")
     end
 
     def hash_for_value(value)
@@ -79,7 +79,7 @@ module AVR
         new_bit = (new_value & mask) != 0 ? 1 : 0
         diff_strings << "#{flag}=#{old_bit}->#{new_bit}" if diff_mask & mask != 0
       end
-      '[' + diff_strings.join(', ') + ']'
+      "[" + diff_strings.join(", ") + "]"
     end
   end
 end

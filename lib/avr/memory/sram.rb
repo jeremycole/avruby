@@ -7,7 +7,7 @@ module AVR
 
     sig { params(size: Integer).void }
     def initialize(size)
-      super('SRAM', size, 0)
+      super("SRAM", size, 0)
     end
   end
 end

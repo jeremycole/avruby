@@ -39,13 +39,13 @@ module AVR
     sig { returns(T::Hash[Integer, T.untyped]) }
     attr_reader :watches
 
-    sig { returns (Integer) }
+    sig { returns(Integer) }
     attr_accessor :count
 
-    sig { returns (Integer) }
+    sig { returns(Integer) }
     attr_accessor :ticks
 
-    sig { returns (Integer) }
+    sig { returns(Integer) }
     attr_accessor :scale
 
     sig { params(name: T.nilable(String)).void }

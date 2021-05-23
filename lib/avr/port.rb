@@ -55,7 +55,7 @@ module AVR
 
     sig { params(pin: Integer, state: Symbol).returns(Symbol) }
     def pin_input(pin, state)
-      raise unless %i[H L Z].include?(state)
+      raise unless [:H, :L, :Z].include?(state)
 
       @input[pin] = state
     end
@@ -89,7 +89,7 @@ module AVR
 
     sig { returns(String) }
     def value_pins
-      PINS.zip(pin_states).map { |n, s| "P#{n}=#{s}" }.join(', ')
+      PINS.zip(pin_states).map { |n, s| "P#{n}=#{s}" }.join(", ")
     end
 
     sig { returns(Integer) }

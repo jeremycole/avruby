@@ -23,7 +23,7 @@ module AVR
 
     sig { returns(String) }
     def format
-      '%02x'
+      "%02x"
     end
 
     sig { returns(Integer) }

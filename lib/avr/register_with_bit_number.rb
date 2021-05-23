@@ -18,7 +18,7 @@ module AVR
     def initialize(register, bit_number)
       @register = register
       @bit_number = bit_number
-      @bit_mask = T.let(1<<bit_number, Integer)
+      @bit_mask = T.let(1 << bit_number, Integer)
       super()
     end
 

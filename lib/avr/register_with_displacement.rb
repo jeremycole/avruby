@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module AVR
   class RegisterWithDisplacement < Value
@@ -25,7 +25,7 @@ module AVR
 
     sig { returns(String) }
     def name
-      "%s%+d" % [register.name, displacement]
+      format("%s%+d", register.name, displacement)
     end
   end
 end

@@ -3,7 +3,6 @@
 
 module AVR
   class Opcode
-    # rubocop:disable Naming/MethodParameterName
     # rubocop:disable Layout/SpaceAroundOperators
     sig { params(cpu: CPU, r: Integer, rd: Integer, rr_k: Integer, mnemonic: Symbol).void }
     def self.set_sreg_for_cp_cpi_cpc(cpu, r, rd, rr_k, mnemonic)
@@ -22,43 +21,32 @@ module AVR
       z = r.zero?
       z = r.zero? ? cpu.sreg.Z : false if mnemonic == :cpc
 
-      cpu.sreg.from_h(
-        {
-          H: h,
-          S: n ^ v,
-          V: v,
-          N: n,
-          Z: z,
-          C: c,
-        }
-      )
+      cpu.sreg.from_h({ H: h, S: n ^ v, V: v, N: n, Z: z, C: c })
     end
     # rubocop:enable Layout/SpaceAroundOperators
-    # rubocop:enable Naming/MethodParameterName
-
-    decode('0001 01rd dddd rrrr', :cp) do |cpu, _opcode_definition, operands|
+    decode("0001 01rd dddd rrrr", :cp) do |cpu, _opcode_definition, operands|
       cpu.instruction(:cp, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:cp, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
+    opcode(:cp, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cp)
     end
 
-    decode('0000 01rd dddd rrrr', :cpc) do |cpu, _opcode_definition, operands|
+    decode("0000 01rd dddd rrrr", :cpc) do |cpu, _opcode_definition, operands|
       cpu.instruction(:cpc, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:cpc, %i[register register], %i[H S V N Z C]) do |cpu, _memory, args|
+    opcode(:cpc, [:register, :register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpc)
     end
 
-    decode('0011 KKKK dddd KKKK', :cpi) do |cpu, _opcode_definition, operands|
+    decode("0011 KKKK dddd KKKK", :cpi) do |cpu, _opcode_definition, operands|
       cpu.instruction(:cpi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:cpi, %i[register byte], %i[H S V N Z C]) do |cpu, _memory, args|
+    opcode(:cpi, [:register, :byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpi)
     end

@@ -6,7 +6,7 @@ module AVR
     def add(register)
       @registers[register.name] = register
       @cpu.send(:define_singleton_method, register.name.to_sym, proc { register })
-      @cpu.send(:define_singleton_method, (register.name.to_s + '=').to_sym, proc { |value| register.value = value })
+      @cpu.send(:define_singleton_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
       @register_list << register.name
       return unless register.is_a?(RegisterPair)
 
@@ -31,12 +31,12 @@ module AVR
     end
 
     def register_values
-      @register_list.map { |name| @registers[name].to_s }.join(', ')
+      @register_list.map { |name| @registers[name].to_s }.join(", ")
     end
 
     def print_status
       @register_list.each_slice(8) do |slice|
-        puts slice.map { |name| '%10s' % ["#{name}=#{@registers[name].value_hex}"] }.join + "\n"
+        puts slice.map { |name| format("%10s", "#{name}=#{@registers[name].value_hex}") }.join + "\n"
       end
     end
 

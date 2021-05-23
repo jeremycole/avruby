@@ -8,47 +8,59 @@ module AVR
     extend T::Sig
 
     class OpcodeException < RuntimeError; end
+
     class OpcodeNotImplementedError < OpcodeException; end
+
     class IncorrectArgumentCount < OpcodeException; end
+
     class RegisterExpected < OpcodeException; end
+
     class UpperRegisterExpected < OpcodeException; end
+
     class WordRegisterExpected < OpcodeException; end
+
     class ByteConstantExpected < OpcodeException; end
+
     class WordConstantExpected < OpcodeException; end
+
     class IoAddressExpected < OpcodeException; end
+
     class LowerIoAddressExpected < OpcodeException; end
+
     class AbsolutePcExpected < OpcodeException; end
+
     class NearRelativePcExpected < OpcodeException; end
+
     class FarRelativePcExpected < OpcodeException; end
+
     class BitNumberExpected < OpcodeException; end
+
     class StatusRegisterBitExpected < OpcodeException; end
+
     class ConstantOutOfRange < OpcodeException; end
 
-    # rubocop:disable Layout/HashAlignment
     OPCODE_ARGUMENT_TYPES = T.let(
       {
-        sreg_flag:          '%s',
-        near_relative_pc:   proc { |arg| '.%+d' % [2 * arg.value] },
-        far_relative_pc:    proc { |arg| '.%+d' % [2 * arg.value] },
-        absolute_pc:        proc { |arg| '0x%04x' % [2 * arg.value] },
-        byte:               '0x%02x',
-        word:               '0x%04x',
-        register:           '%s',
-        register_pair:      '%s',
-        word_register:      '%s',
-        modifying_word_register: '%s',
+        sreg_flag:          "%s",
+        near_relative_pc:   proc { |arg| format(".%+d", 2 * arg.value) },
+        far_relative_pc:    proc { |arg| format(".%+d", 2 * arg.value) },
+        absolute_pc:        proc { |arg| format("0x%04x", 2 * arg.value) },
+        byte:               "0x%02x",
+        word:               "0x%04x",
+        register:           "%s",
+        register_pair:      "%s",
+        word_register:      "%s",
+        modifying_word_register: "%s",
         displaced_word_register: proc { |arg|
-          '%s%+d' % [arg.register.name, arg.displacement]
+          format("%s%+d", arg.register.name, arg.displacement)
         },
-        register_with_bit_number: '%s',
-        io_address:         '0x%02x',
-        lower_io_address:   '0x%02x',
-        bit_number:         '%d',
+        register_with_bit_number: "%s",
+        io_address:         "0x%02x",
+        lower_io_address:   "0x%02x",
+        bit_number:         "%d",
       }.freeze,
       T::Hash[Symbol, T.any(String, T.proc.params(arg: T::Array[Integer]).returns(String))]
     )
-    # rubocop:enable Layout/HashAlignment
-
     sig { returns(Symbol) }
     attr_reader :mnemonic
 
@@ -208,7 +220,7 @@ module AVR
       ).returns(Opcode)
     end
     def self.opcode(mnemonic, arg_types = [], sreg_flags = [], &block)
-      raise 'No block given' unless block_given?
+      raise "No block given" unless block_given?
 
       opcodes[mnemonic] = Opcode.new(mnemonic, arg_types, sreg_flags, block.to_proc)
     end

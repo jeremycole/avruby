@@ -1,8 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'avr/memory/memory_byte'
-require 'intel_hex'
+require "avr/memory/memory_byte"
+require "intel_hex"
 
 module AVR
   class Memory

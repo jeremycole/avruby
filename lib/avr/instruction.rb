@@ -40,10 +40,10 @@ module AVR
 
     sig { returns(T.nilable(String)) }
     def args_to_s
-      #return args.join(', ') unless opcode
+      # return args.join(', ') unless opcode
       return nil if opcode.arg_types.empty?
 
-      opcode.format_args(args).join(', ')
+      opcode.format_args(args).join(", ")
     end
 
     sig { returns(String) }
@@ -60,7 +60,7 @@ module AVR
 
     sig { void }
     def execute
-      raise 'Invalid instruction' unless valid?
+      raise "Invalid instruction" unless valid?
 
       cpu.next_pc = cpu.pc + 1
       opcode.execute(cpu, nil, args)

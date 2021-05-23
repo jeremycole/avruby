@@ -19,7 +19,7 @@ module AVR
     end
 
     # adc add and cp cpc cpse eor mov mul muls or sbc sub
-    parse_operands('____ __rd dddd rrrr') do |cpu, operands|
+    parse_operands("____ __rd dddd rrrr") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value),
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
@@ -27,7 +27,7 @@ module AVR
     end
 
     # muls
-    parse_operands('____ ____ dddd rrrr') do |cpu, operands|
+    parse_operands("____ ____ dddd rrrr") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value + 16),
         Rr: cpu.registers.fetch(operands.fetch(:r).value + 16),
@@ -35,7 +35,7 @@ module AVR
     end
 
     # fmul fmuls fmulsu mulsu
-    parse_operands('____ ____ _ddd _rrr') do |cpu, operands|
+    parse_operands("____ ____ _ddd _rrr") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
         Rr: cpu.registers.fetch(operands.fetch(:r).value | 0b10000),
@@ -43,7 +43,7 @@ module AVR
     end
 
     # movw
-    parse_operands('____ ____ DDDD RRRR') do |cpu, operands|
+    parse_operands("____ ____ DDDD RRRR") do |cpu, operands|
       d = operands.fetch(:D).value
       r = operands.fetch(:R).value
       {
@@ -53,21 +53,21 @@ module AVR
     end
 
     # asr com dec elpm inc ld lds lpm lsr neg pop ror swap
-    parse_operands('____ ___d dddd ____') do |cpu, operands|
+    parse_operands("____ ___d dddd ____") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value),
       }
     end
 
     # lac las lat push st xch
-    parse_operands('____ ___r rrrr ____') do |cpu, operands|
+    parse_operands("____ ___r rrrr ____") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
       }
     end
 
     # sbrc sbrs
-    parse_operands('____ ___r rrrr _bbb') do |cpu, operands|
+    parse_operands("____ ___r rrrr _bbb") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
         b: Value.new(operands.fetch(:b).value),
@@ -75,7 +75,7 @@ module AVR
     end
 
     # adiw sbiw
-    parse_operands('____ ____ KKdd KKKK') do |cpu, operands|
+    parse_operands("____ ____ KKdd KKKK") do |cpu, operands|
       register_base = (operands.fetch(:d).value << 1) | 0b11000
       {
         Rd: RegisterPair.new(
@@ -88,7 +88,7 @@ module AVR
     end
 
     # andi cpi ldi ori sbci sbr subi
-    parse_operands('____ KKKK dddd KKKK') do |cpu, operands|
+    parse_operands("____ KKKK dddd KKKK") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
         K: Value.new(operands.fetch(:K).value),
@@ -96,7 +96,7 @@ module AVR
     end
 
     # cbi sbi sbic sbis
-    parse_operands('____ ____ AAAA Abbb') do |_cpu, operands|
+    parse_operands("____ ____ AAAA Abbb") do |_cpu, operands|
       {
         A: operands.fetch(:A),
         b: operands.fetch(:b),

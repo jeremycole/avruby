@@ -44,7 +44,6 @@ module AVR
 
       sig { override.returns(T::Hash[Symbol, Integer]) }
       def data_memory_map
-        # rubocop:disable Layout/HashAlignment
         @data_memory_map ||= {
           # 32 registers, r0-r31
           PINB:               0x0023,
@@ -88,7 +87,6 @@ module AVR
           SREG:               0x005f,
           EICRA:              0x0069,
         }.freeze
-        # rubocop:enable Layout/HashAlignment
       end
 
       sig { override.returns(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]) }
@@ -141,40 +139,40 @@ module AVR
       sig { override.returns(T::Hash[Symbol, Integer]) }
       def interrupt_vector_map
         @interrupt_vector_map ||= sequential_interrupt_vectors(
-          %i[
-            RESET
-            INT0
-            INT1
-            PCINT0
-            PCINT1
-            PCINT2
-            WDT
-            TIMER2_COMPA
-            TIMER2_COMPB
-            TIMER2_OVF
-            TIMER1_CAPT
-            TIMER1_COMPA
-            TIMER1_COMPB
-            TIMER1_OVF
-            TIMER0_COMPA
-            TIMER0_COMPB
-            TIMER0_OVF
-            SPI_STC
-            USART_RX
-            USART_UDRE
-            USART_TX
-            ADC
-            EE_READY
-            ANALOG_COMP
-            TWI
-            SPM_READY
+          [
+            :RESET,
+            :INT0,
+            :INT1,
+            :PCINT0,
+            :PCINT1,
+            :PCINT2,
+            :WDT,
+            :TIMER2_COMPA,
+            :TIMER2_COMPB,
+            :TIMER2_OVF,
+            :TIMER1_CAPT,
+            :TIMER1_COMPA,
+            :TIMER1_COMPB,
+            :TIMER1_OVF,
+            :TIMER0_COMPA,
+            :TIMER0_COMPB,
+            :TIMER0_OVF,
+            :SPI_STC,
+            :USART_RX,
+            :USART_UDRE,
+            :USART_TX,
+            :ADC,
+            :EE_READY,
+            :ANALOG_COMP,
+            :TWI,
+            :SPM_READY,
           ]
         )
       end
 
       sig { override.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
       def port_map
-        @port_map ||= standard_ports(%i[B C D])
+        @port_map ||= standard_ports([:B, :C, :D])
       end
     end
   end

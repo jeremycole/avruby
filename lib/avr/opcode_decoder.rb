@@ -27,7 +27,7 @@ module AVR
 
       sig { params(pattern: String, mnemonic: Symbol, parse_proc: ProcType).void }
       def initialize(pattern, mnemonic, parse_proc)
-        @pattern = T.let(pattern.gsub(/[^01a-zA-Z]/, ''), String)
+        @pattern = T.let(pattern.gsub(/[^01a-zA-Z]/, ""), String)
         raise "Incorrect pattern length for #{pattern}" unless @pattern.size == 16
 
         @mnemonic = mnemonic
@@ -40,17 +40,17 @@ module AVR
 
       sig { returns(String) }
       def operand_pattern
-        @operand_pattern ||= pattern.gsub(/[01]/, '_')
+        @operand_pattern ||= pattern.gsub(/[01]/, "_")
       end
 
       sig { returns(Integer) }
       def match_value
-        @match_value ||= pattern.gsub(/[^01]/, '0').to_i(2)
+        @match_value ||= pattern.gsub(/[^01]/, "0").to_i(2)
       end
 
       sig { returns(Integer) }
       def match_mask
-        @match_mask ||= pattern.gsub(/[01]/, '1').gsub(/[^01]/, '0').to_i(2)
+        @match_mask ||= pattern.gsub(/[01]/, "1").gsub(/[^01]/, "0").to_i(2)
       end
 
       sig { params(word: Integer).returns(T::Boolean) }
@@ -62,9 +62,9 @@ module AVR
       def extract_operands(word)
         operands = Hash.new(0)
         mask = 0x10000
-        pattern.split('').each do |operand|
+        pattern.split("").each do |operand|
           mask >>= 1
-          next if %w[0 1].include?(operand)
+          next if ["0", "1"].include?(operand)
 
           operands[operand.to_sym] <<= 1
           operands[operand.to_sym] |= 1 if (word & mask) != 0
@@ -99,7 +99,7 @@ module AVR
 
       sig { params(pattern: String, parse_proc: OperandParser::ProcType).void }
       def initialize(pattern, parse_proc)
-        @pattern = T.let(pattern.gsub(/[^01a-zA-Z_]/, ''), String)
+        @pattern = T.let(pattern.gsub(/[^01a-zA-Z_]/, ""), String)
         @parse_proc = T.let(parse_proc, OperandParser::ProcType)
       end
 
@@ -189,12 +189,10 @@ module AVR
     def print_cache
       puts "Opcode decoder cache (#{cache.size} opcodes cached):"
       cache.sort.each do |word, decoded_opcode|
-        puts '  %04x = %17s = %-6s (%s)' % [
-          word,
-          word.to_s(2).rjust(16, '0').split('').each_slice(8).map(&:join).join(' '),
-          decoded_opcode.opcode_definition.mnemonic,
-          decoded_opcode.operands.map { |k, v| '%s = %5d' % [k, v] }.join(', '),
-        ]
+        code = word.to_s(2).rjust(16, "0").split("").each_slice(8).map(&:join).join(" ")
+        mnemonic = decoded_opcode.opcode_definition.mnemonic
+        operands = decoded_opcode.operands.map { |k, v| format("%s = %5d", k, v) }.join(", ")
+        puts format("  %04x = %17s = %-6s (%s)", word, code, mnemonic, operands)
       end
       nil
     end

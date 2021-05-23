@@ -43,17 +43,17 @@ module AVR
     end
 
     sig { returns(Register) }
-    def X
+    def X # rubocop:disable Naming/MethodName
       registers.fetch(:X)
     end
 
     sig { returns(Register) }
-    def Y
+    def Y # rubocop:disable Naming/MethodName
       registers.fetch(:Y)
     end
 
     sig { returns(Register) }
-    def Z
+    def Z # rubocop:disable Naming/MethodName
       registers.fetch(:Z)
     end
 
@@ -126,8 +126,8 @@ module AVR
         @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port])
       end
 
-      @clock = Clock.new('cpu')
-      @clock.push_sink(Clock::Sink.new('cpu') { step })
+      @clock = Clock.new("cpu")
+      @clock.push_sink(Clock::Sink.new("cpu") { step })
 
       @tracer = nil
     end
@@ -144,27 +144,27 @@ module AVR
 
     sig { void }
     def print_status
-      puts 'Status:'
-      puts '%8s = %d' % ['Ticks', clock.ticks]
-      puts '%8s = %d opcodes' % ['Cache', decoder.cache.size]
-      puts '%8s = 0x%04x words' % ['PC', pc]
-      puts '%8s = 0x%04x bytes' % ['PC', pc * 2]
-      puts '%8s = 0x%04x (%d bytes used)' % ['SP', sp.value, device.ram_end - sp.value]
-      puts '%8s = 0x%02x [%s]' % ['SREG', sreg.value, sreg.bit_values]
+      puts "Status:"
+      puts format("%8s = %d", "Ticks", clock.ticks)
+      puts format("%8s = %d opcodes", "Cache", decoder.cache.size)
+      puts format("%8s = 0x%04x words", "PC", pc)
+      puts format("%8s = 0x%04x bytes", "PC", pc * 2)
+      puts format("%8s = 0x%04x (%d bytes used)", "SP", sp.value, device.ram_end - sp.value)
+      puts format("%8s = 0x%02x [%s]", "SREG", sreg.value, sreg.bit_values)
       puts
-      puts 'Registers:'
+      puts "Registers:"
       registers.print_status
       puts
-      puts 'IO Registers:'
+      puts "IO Registers:"
       io_registers.print_status
       puts
-      puts 'IO Ports:'
-      puts '%4s  %s' % ['', Port::PINS.join(' ')]
+      puts "IO Ports:"
+      puts format("%4s  %s", "", Port::PINS.join(" "))
       ports.each do |name, port|
-        puts '%4s: %s' % [name, port.pin_states.join(' ')]
+        puts format("%4s: %s", name, port.pin_states.join(" "))
       end
       puts
-      puts 'Next instruction:'
+      puts "Next instruction:"
       begin
         puts "  #{peek}"
       rescue AVR::CPU::DecodeError => e
@@ -220,11 +220,8 @@ module AVR
       word = fetch
       decoded_opcode = decoder.decode(word)
       unless decoded_opcode
-        raise DecodeError, format('Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)',
-          word,
-          offset,
-          offset * 2
-        )
+        raise DecodeError,
+          format("Unable to decode 0x%04x at offset 0x%04x words (0x%04x bytes)", word, offset, offset * 2)
       end
 
       decoded_opcode.opcode_definition.parse(

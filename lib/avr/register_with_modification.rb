@@ -1,7 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module AVR
   class RegisterWithModification < Value
@@ -25,11 +25,11 @@ module AVR
 
     sig { returns(String) }
     def name
-      '%s%s%s' % [
-        modification == :pre_decrement ? '-' : '',
+      [
+        (modification == :pre_decrement ? "-" : ""),
         register.to_s,
-        modification == :post_increment ? '+' : '',
-      ]
+        (modification == :post_increment ? "+" : ""),
+      ].join
     end
   end
 end

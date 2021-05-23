@@ -7,7 +7,7 @@ module AVR
 
     sig { params(size: Integer).void }
     def initialize(size)
-      super('Flash', size, 0xff)
+      super("Flash", size, 0xff)
     end
   end
 end

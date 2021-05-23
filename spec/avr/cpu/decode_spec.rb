@@ -1,5 +1,5 @@
 # typed: false
-RSpec.describe AVR::OpcodeDecoder do
+RSpec.describe(AVR::OpcodeDecoder) do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }
 
@@ -125,7 +125,7 @@ RSpec.describe AVR::OpcodeDecoder do
       it "can decode 0b#{binary} = #{code}", opcode: code.split(" ").first do
         device.flash.set_word(0, word)
         device.flash.set_word(1, 0x1234)
-        expect(cpu.decode.to_s).to eq(code)
+        expect(cpu.decode.to_s).to(eq(code))
       end
     end
   end
@@ -136,7 +136,7 @@ RSpec.describe AVR::OpcodeDecoder do
       it "(sample) can decode 0b#{binary} = #{code}" do
         device.flash.set_word(0, word)
         device.flash.set_word(1, 0x1234)
-        expect(cpu.decode.to_s).to eq(code)
+        expect(cpu.decode.to_s).to(eq(code))
       end
     end
   end

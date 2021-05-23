@@ -1,21 +1,21 @@
 # typed: false
-require 'shared_examples_for_opcode'
+require "shared_examples_for_opcode"
 
-RSpec.describe [AVR::Opcode, :dec] do
-  include_examples 'opcode', :dec
-
+RSpec.describe([AVR::Opcode, :dec]) do
   let(:i) { cpu.instruction(:dec, cpu.r0) }
 
-  it 'decrements correctly' do
+  include_examples "opcode", :dec
+
+  it "decrements correctly" do
     cpu.r0 = 1
     i.execute
-    expect(cpu.r0.value).to eq 0
+    expect(cpu.r0.value).to(eq(0))
   end
 
-  it 'underflows to 255 and does not set the carry flag' do
+  it "underflows to 255 and does not set the carry flag" do
     cpu.r0 = 0
     i.execute
-    expect(cpu.r0.value).to eq 255
-    expect(cpu.sreg.C).to be false
+    expect(cpu.r0.value).to(eq(255))
+    expect(cpu.sreg.C).to(be(false))
   end
 end

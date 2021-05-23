@@ -113,10 +113,10 @@ module AVR
       @flash = T.let(Flash.new(flash_size), Flash)
       @eeprom = T.let(EEPROM.new(eeprom_size, cpu), EEPROM)
 
-      @system_clock = T.let(Clock.new('system'), Clock)
+      @system_clock = T.let(Clock.new("system"), Clock)
       @system_clock.push_sink(cpu.clock)
 
-      @oscillator = T.let(Oscillator.new('oscillator'), Oscillator)
+      @oscillator = T.let(Oscillator.new("oscillator"), Oscillator)
       @oscillator.push_sink(system_clock)
 
       @data_memory_map_by_address = T.let(nil, T.nilable(T::Hash[Integer, Symbol]))
@@ -126,11 +126,7 @@ module AVR
     sig { void }
     def trace_cpu
       cpu.trace do |instruction|
-        puts '*** %20s: %04x %s' % [
-          'INSTRUCTION TRACE',
-          cpu.pc * 2,
-          instruction,
-        ]
+        puts format("*** %20s: %04x %s", "INSTRUCTION TRACE", cpu.pc * 2, instruction)
       end
     end
 
@@ -152,12 +148,11 @@ module AVR
       cpu.sram.watch do |memory_byte, old_value, _new_value|
         registers = register_addresses[memory_byte.address]
         registers&.each do |register|
-          puts '*** %20s: %12s: %4s -> %4s' % [
-            'REGISTER TRACE',
+          puts format("*** %20s: %12s: %4s -> %4s",
+            "REGISTER TRACE",
             register.name,
-            register.is_a?(MemoryByteRegister) ? register.format % old_value : '',
-            register.format % register.value,
-          ]
+            register.is_a?(MemoryByteRegister) ? register.format % old_value : "",
+            register.format % register.value)
         end
       end
     end
@@ -166,10 +161,7 @@ module AVR
     def trace_sreg
       cpu.sram.watch do |memory_byte, old_value, new_value|
         if memory_byte.address == cpu.sreg.memory_byte.address
-          puts '*** %20s: %s' % [
-            'SREG TRACE',
-            cpu.sreg.diff_values(old_value, new_value),
-          ]
+          puts format("*** %20s: %s", "SREG TRACE", cpu.sreg.diff_values(old_value, new_value))
         end
       end
     end
@@ -177,47 +169,41 @@ module AVR
     sig { void }
     def trace_sram
       cpu.sram.watch do |memory_byte, old_value, new_value|
-        puts '*** %20s: %12s: %4s -> %4s' % [
-          'MEMORY TRACE',
-          '%s[%04x]' % [memory_byte.memory.name, memory_byte.address],
-          memory_byte.format % old_value,
-          memory_byte.format % new_value,
-        ]
+        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
+          format(memory_byte.format, old_value),
+          format(memory_byte.format, new_value))
       end
     end
 
     sig { void }
     def trace_flash
       flash.watch do |memory_byte, old_value, new_value|
-        puts '*** %20s: %12s: %4s -> %4s' % [
-          'MEMORY TRACE',
-          '%s[%04x]' % [memory_byte.memory.name, memory_byte.address],
-          memory_byte.format % old_value,
-          memory_byte.format % new_value,
-        ]
+        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
+          format(memory_byte.format, old_value),
+          format(memory_byte.format, new_value))
       end
     end
 
     sig { void }
     def trace_eeprom
       eeprom.watch do |memory_byte, old_value, new_value|
-        puts '*** %20s: %12s: %4s -> %4s' % [
-          'MEMORY TRACE',
-          '%s[%04x]' % [memory_byte.memory.name, memory_byte.address],
-          memory_byte.format % old_value,
-          memory_byte.format % new_value,
-        ]
+        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
+          format(memory_byte.format, old_value),
+          format(memory_byte.format, new_value))
       end
     end
 
     sig { void }
     def trace_status_pre_tick
       oscillator.unshift_sink(
-        Clock::Sink.new('pre-execution status') do
+        Clock::Sink.new("pre-execution status") do
           puts
           puts
-          puts 'PRE-EXECUTION STATUS'
-          puts '********************'
+          puts "PRE-EXECUTION STATUS"
+          puts "********************"
           cpu.print_status
         end
       )
@@ -226,10 +212,10 @@ module AVR
     sig { void }
     def trace_status_post_tick
       oscillator.push_sink(
-        Clock::Sink.new('post-execution status') do
+        Clock::Sink.new("post-execution status") do
           puts
-          puts 'POST-EXECUTION STATUS'
-          puts '*********************'
+          puts "POST-EXECUTION STATUS"
+          puts "*********************"
           cpu.print_status
         end
       )

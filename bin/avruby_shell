@@ -2,88 +2,83 @@
 # typed: strict
 # frozen_string_literal: true
 
-require 'optparse'
-require 'avr'
-require 'irb'
-require 'irb/completion'
-require 'pp'
+require "optparse"
+require "avr"
+require "irb"
+require "irb/completion"
+require "pp"
 
 def initialize_device
-  print 'Initializing device... '
+  print("Initializing device... ")
   @device = AVR::Device::Atmel_ATmega328p.new
   @cpu = @device.cpu
-  puts 'OK.'
+  puts "OK."
 end
 
 def load_intel_hex_files(files)
-  puts 'Loading Intel hex firmware into Flash...'
+  puts "Loading Intel hex firmware into Flash..."
   files.each do |hex_file|
-    print "- Loading #{hex_file}... "
+    print("- Loading #{hex_file}... ")
     bytes_loaded = @device.flash.load_from_intel_hex(hex_file)
     puts "OK, loaded #{bytes_loaded} bytes."
   end
 end
 
 def enable_tracing
-  print 'Setting up tracing... '
+  print("Setting up tracing... ")
   @device.trace_all
-  puts 'OK.'
+  puts "OK."
 end
 
 def shell
-  puts 'Typically, you should:'
-  puts '  Use @device to access the entire device.'
-  puts '  Use @cpu (or @device.cpu) to access the CPU.'
-  puts '  Some useful things to run:'
-  puts '    @device.oscillator.tick to single step.'
-  puts '    @device.oscillator.run(5.times) to run for 5 ticks.'
-  puts '    @device.oscillator.run to run indefinitely.'
-  puts 'Ready. Have fun!'
+  puts "Typically, you should:"
+  puts "  Use @device to access the entire device."
+  puts "  Use @cpu (or @device.cpu) to access the CPU."
+  puts "  Some useful things to run:"
+  puts "    @device.oscillator.tick to single step."
+  puts "    @device.oscillator.run(5.times) to run for 5 ticks."
+  puts "    @device.oscillator.run to run indefinitely."
+  puts "Ready. Have fun!"
   puts
 
   irb = IRB::Irb.new
   irb.run(IRB.conf)
 
-  puts 'Stopped.'
+  puts "Stopped."
   puts
 end
 
 def benchmark_warmup
-  print 'Warming up for %0.1f seconds... ' % [@options[:benchmark_warmup_time]]
+  print(format("Warming up for %0.1f seconds... ", @options[:benchmark_warmup_time]))
   warmup_ticks = @device.oscillator.run_timed(@options[:benchmark_warmup_time])
-  puts 'OK.'
+  puts "OK."
 
-  puts 'Execution speed during warmup: %.2f kHz' % [
-    warmup_ticks.to_f / @options[:benchmark_warmup_time] / 1000.0,
-  ]
+  puts format("Execution speed during warmup: %.2f kHz",
+    warmup_ticks.to_f / @options[:benchmark_warmup_time] / 1000.0)
   puts
 end
 
 def benchmark_time
-  print 'Benchmarking for %0.1f seconds... ' % [@options[:benchmark_time]]
+  print(format("Benchmarking for %0.1f seconds... ", @options[:benchmark_time]))
   benchmark_ticks = @device.oscillator.run_timed(@options[:benchmark_time])
-  puts 'OK.'
+  puts "OK."
 
-  puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
-    benchmark_ticks.to_f / @options[:benchmark_time] / 1000.0,
-    @options[:benchmark_time],
-  ]
+  puts format("Execution speed: %.2f kHz over %0.2f seconds",
+    benchmark_ticks.to_f / @options[:benchmark_time] / 1000.0, @options[:benchmark_time])
   puts
 end
 
 def benchmark_ticks
-  print 'Benchmarking for %d ticks... ' % [@options[:benchmark_ticks]]
+  print(format("Benchmarking for %d ticks... ", @options[:benchmark_ticks]))
   start_time = Time.now.to_f
   @device.oscillator.run(@options[:benchmark_ticks].times)
   end_time = Time.now.to_f
-  puts 'OK.'
+  puts "OK."
 
   benchmark_time = end_time - start_time
 
-  puts 'Execution speed: %.2f kHz over %0.2f seconds' % [
-    @options[:benchmark_ticks].to_f / benchmark_time / 1000.0,
-    benchmark_time,
-  ]
+  puts format("Execution speed: %.2f kHz over %0.2f seconds",
+    @options[:benchmark_ticks].to_f / benchmark_time / 1000.0, benchmark_time)
   puts
 end
 
@@ -98,11 +93,11 @@ def print_opcode_decoder_cache
   puts
 end
 
-IRB.setup(nil, argv: ['-f'])
+IRB.setup(nil, argv: ["-f"])
 
-IRB.conf[:IRB_NAME] = 'avr'
+IRB.conf[:IRB_NAME] = "avr"
 IRB.conf[:SAVE_HISTORY] = 1000
-IRB.conf[:HISTORY_FILE] = File.join(ENV['HOME'], '.avruby_shell_history')
+IRB.conf[:HISTORY_FILE] = File.join(ENV["HOME"], ".avruby_shell_history")
 IRB.conf[:PROMPT][:avruby_shell] = {
   PROMPT_I: "\u001b[0;34;1m%N>\u001b[0m ",
   PROMPT_N: "\u001b[0;34;1m%N>\u001b[0m ",
@@ -122,27 +117,27 @@ IRB.conf[:PROMPT_MODE] = :avruby_shell
 }
 
 OptionParser.new do |opts|
-  opts.on('-h', '--help', 'Show this help.') do
+  opts.on("-h", "--help", "Show this help.") do
     puts opts
     puts
     exit
   end
-  opts.on('-b', '--benchmark-time=TIME', 'Specify the run time, in seconds.') do |o|
+  opts.on("-b", "--benchmark-time=TIME", "Specify the run time, in seconds.") do |o|
     @options[:benchmark_time] = o.to_f
   end
-  opts.on('-B', '--benchmark-ticks=TICKS', 'Specify the run time, in ticks.') do |o|
+  opts.on("-B", "--benchmark-ticks=TICKS", "Specify the run time, in ticks.") do |o|
     @options[:benchmark_ticks] = o.to_i
   end
-  opts.on('-w', '--benchmark-warmup-time=TIME', 'Specify the warmup time, in seconds.') do |o|
+  opts.on("-w", "--benchmark-warmup-time=TIME", "Specify the warmup time, in seconds.") do |o|
     @options[:benchmark_warmup_time] = o.to_f
   end
-  opts.on('-d', '--[no-]benchmark-print-opcode-cache', 'Enable print of opcode decoder cache after benchmark.') do |o|
+  opts.on("-d", "--[no-]benchmark-print-opcode-cache", "Enable print of opcode decoder cache after benchmark.") do |o|
     @options[:benchmark_print_opcode_cache] = o
   end
-  opts.on('-t', '--[no-]trace', 'Enable tracing.') do |o|
+  opts.on("-t", "--[no-]trace", "Enable tracing.") do |o|
     @options[:trace] = o
   end
-  opts.on('-I', '--intel-hex-file=FILE', 'Load Intel hex file.') do |o|
+  opts.on("-I", "--intel-hex-file=FILE", "Load Intel hex file.") do |o|
     @options[:intel_hex_files] << o
   end
 end.parse!

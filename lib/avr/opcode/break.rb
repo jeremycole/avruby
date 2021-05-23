@@ -3,7 +3,7 @@
 
 module AVR
   class Opcode
-    decode('1001 0101 1001 1000', :break) do |cpu, _opcode_definition, _operands|
+    decode("1001 0101 1001 1000", :break) do |cpu, _opcode_definition, _operands|
       cpu.instruction(:break)
     end
 
