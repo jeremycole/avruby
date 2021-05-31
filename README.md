@@ -1,8 +1,8 @@
 # AVRuby
 
-![rspec test status](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml/badge.svg)
-![rubocop style check status](https://github.com/jeremycole/avruby/actions/workflows/rubocop.yml/badge.svg)
-![sorbet type check status](https://github.com/jeremycole/avruby/actions/workflows/sorbet.yml/badge.svg)
+[![rspec test status](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml/badge.svg)](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml)
+[![rubocop style check status](https://github.com/jeremycole/avruby/actions/workflows/rubocop.yml/badge.svg)](https://github.com/jeremycole/avruby/actions/workflows/rubocop.yml)
+[![sorbet type check status](https://github.com/jeremycole/avruby/actions/workflows/sorbet.yml/badge.svg)](https://github.com/jeremycole/avruby/actions/workflows/sorbet.yml)
 
 ## tl;dr
 
