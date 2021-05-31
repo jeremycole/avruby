@@ -1,6 +1,7 @@
 # AVRuby
 
-[![Build Status](https://travis-ci.org/jeremycole/avruby.svg?branch=master)](https://travis-ci.org/jeremycole/avruby)
+![Build Status](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml/badge.svg
+)
 
 ## tl;dr
 
