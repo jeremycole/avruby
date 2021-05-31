@@ -1,7 +1,8 @@
 # AVRuby
 
-![Build Status](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml/badge.svg
-)
+![rspec test status](https://github.com/jeremycole/avruby/actions/workflows/rspec.yml/badge.svg)
+![rubocop style check status](https://github.com/jeremycole/avruby/actions/workflows/rubocop.yml/badge.svg)
+![sorbet type check status](https://github.com/jeremycole/avruby/actions/workflows/sorbet.yml/badge.svg)
 
 ## tl;dr
 
