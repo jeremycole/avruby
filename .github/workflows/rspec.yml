@@ -7,13 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
-
+  rspec:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ruby-version: ['2.7.2']
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -21,5 +19,5 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
-    - name: Run tests
+    - name: Run rspec tests
       run: bundle exec rspec spec
