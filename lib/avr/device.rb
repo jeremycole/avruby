@@ -72,8 +72,8 @@ module AVR
     sig { params(port: T.any(Symbol, String)).returns(T::Hash[Symbol, Integer]) }
     def standard_port(port)
       {
-        pin: data_memory_map["PIN#{port}".to_sym],
-        ddr: data_memory_map["DDR#{port}".to_sym],
+        pin:  data_memory_map["PIN#{port}".to_sym],
+        ddr:  data_memory_map["DDR#{port}".to_sym],
         port: data_memory_map["PORT#{port}".to_sym],
       }
     end

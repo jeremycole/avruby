@@ -11,7 +11,7 @@ module AVR
     parse_operands("____ _kkk dddd kkkk") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value + 16),
-        k: Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
+        k:  Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
       }
     end
 
@@ -70,7 +70,7 @@ module AVR
     parse_operands("__q_ qq_d dddd _qqq") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value),
-        q: operands.fetch(:q),
+        q:  operands.fetch(:q),
       }
     end
 
@@ -95,7 +95,7 @@ module AVR
     parse_operands("____ _kkk rrrr kkkk") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value + 16),
-        k: Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
+        k:  Value.new(bit_jumble_for_lds_sts(operands.fetch(:k).value)),
       }
     end
 
@@ -157,7 +157,7 @@ module AVR
     parse_operands("__q_ qq_r rrrr _qqq") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
-        q: operands.fetch(:q),
+        q:  operands.fetch(:q),
       }
     end
 

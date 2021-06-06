@@ -30,7 +30,7 @@ module AVR
     parse_operands("____ ___d dddd _bbb") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value),
-        b: operands.fetch(:b),
+        b:  operands.fetch(:b),
       }
     end
 

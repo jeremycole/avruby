@@ -7,3 +7,6 @@ AllCops:
   Include:
     - 'bin/**/*.rb'
     - 'lib/**/*.rb'
+
+Layout/HashAlignment:
+  EnforcedColonStyle: table
