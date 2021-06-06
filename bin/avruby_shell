@@ -103,17 +103,17 @@ IRB.conf[:PROMPT][:avruby_shell] = {
   PROMPT_N: "\u001b[0;34;1m%N>\u001b[0m ",
   PROMPT_S: "\u001b[0;33;1m%N+\u001b[0m ",
   PROMPT_C: "\u001b[0;35;1m%N*\u001b[0m ",
-  RETURN: "\u001b[0;31;1m=>\u001b[0m \u001b[32m%s\u001b[0m\n\n",
+  RETURN:   "\u001b[0;31;1m=>\u001b[0m \u001b[32m%s\u001b[0m\n\n",
 }
 IRB.conf[:PROMPT_MODE] = :avruby_shell
 
 @options = {
-  trace: false,
-  benchmark_time: nil,
-  benchmark_ticks: nil,
-  benchmark_warmup_time: nil,
+  trace:                        false,
+  benchmark_time:               nil,
+  benchmark_ticks:              nil,
+  benchmark_warmup_time:        nil,
   benchmark_print_opcode_cache: false,
-  intel_hex_files: [],
+  intel_hex_files:              [],
 }
 
 OptionParser.new do |opts|

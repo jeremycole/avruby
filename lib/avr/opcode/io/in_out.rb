@@ -6,7 +6,7 @@ module AVR
     parse_operands("____ _AAd dddd AAAA") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value),
-        A: operands.fetch(:A),
+        A:  operands.fetch(:A),
       }
     end
 
@@ -22,7 +22,7 @@ module AVR
     parse_operands("____ _AAr rrrr AAAA") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
-        A: operands.fetch(:A),
+        A:  operands.fetch(:A),
       }
     end
 
