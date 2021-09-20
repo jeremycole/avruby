@@ -52,7 +52,7 @@ def opcode_for_all_high_rd(opcode_base, mnemonic, before: nil, after: nil)
 end
 
 def opcode_for_all_word_registers(opcode_base, mnemonic, before: nil, after: nil)
-  (0..3).map { |n| [n, 24 + n * 2] }.map { |n, l| [n, l + 1, l] }.map do |n, h, l|
+  (0..3).map { |n| [n, 24 + (n * 2)] }.map { |n, l| [n, l + 1, l] }.map do |n, h, l|
     [
       opcode_base | (n << 4),
       "#{mnemonic} " + [before, "r#{h}:r#{l}", after].flatten.compact.join(", "),

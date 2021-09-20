@@ -127,7 +127,7 @@ module AVR
     # decode('0000 11dd dddd dddd', :rol) ...
 
     opcode(:rol, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
-      result = args.fetch(0).value << 1 | (cpu.sreg.C ? 0x01 : 0)
+      result = (args.fetch(0).value << 1) | (cpu.sreg.C ? 0x01 : 0)
 
       h = (result & (1 << 3)) != 0
       n = (result & (1 << 7)) != 0
@@ -144,7 +144,7 @@ module AVR
     end
 
     opcode(:ror, [Arg.register], [:S, :V, :N, :Z, :C]) do |cpu, _memory, args|
-      result = args.fetch(0).value >> 1 | (cpu.sreg.C ? 0x80 : 0)
+      result = (args.fetch(0).value >> 1) | (cpu.sreg.C ? 0x80 : 0)
 
       n = (result & (1 << 7)) != 0
       c = (args.fetch(0).value & 0x01) != 0

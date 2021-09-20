@@ -10,7 +10,7 @@ module AVR
 
     decode("1001 010k kkkk 110k", :jmp) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:jmp, Value.new(operands.fetch(:k).value << 16 | k))
+      cpu.instruction(:jmp, Value.new((operands.fetch(:k).value << 16) | k))
     end
 
     opcode(:jmp, [Arg.absolute_pc]) do |cpu, _memory, args|
@@ -24,7 +24,7 @@ module AVR
 
     decode("1001 010k kkkk 111k", :call) do |cpu, _opcode_definition, operands|
       k = cpu.fetch
-      cpu.instruction(:call, Value.new(operands.fetch(:k).value << 16 | k))
+      cpu.instruction(:call, Value.new((operands.fetch(:k).value << 16) | k))
     end
 
     opcode(:call, [Arg.absolute_pc]) do |cpu, _memory, args|
