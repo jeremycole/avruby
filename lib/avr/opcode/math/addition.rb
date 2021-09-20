@@ -31,9 +31,9 @@ module AVR
       rd3 = (rd & b7) != 0
       rr3 = (rr & b7) != 0
       n   = r7
-      v   = rd7 & rr7 & !r7 | !rd7 & !rr7 & r7
-      c   = rd7 & rr7 | rr7 & !r7 | !r7 & rd7
-      h   = rd3 & rr3 | rr3 & !r3 | !r3 & rd3
+      v   = (rd7 & rr7 & !r7) | (!rd7 & !rr7 & r7)
+      c   = (rd7 & rr7) | (rr7 & !r7) | (!r7 & rd7)
+      h   = (rd3 & rr3) | (rr3 & !r3) | (!r3 & rd3)
 
       cpu.sreg.from_h({ H: h, S: n ^ v, V: v, N: n, Z: r.zero?, C: c })
     end

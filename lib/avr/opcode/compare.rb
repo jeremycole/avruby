@@ -14,9 +14,9 @@ module AVR
       rd3   = (rd & b7) != 0
       rr_k3 = (rr_k & b7) != 0
       n     = r7
-      v     = rd7 & rr_k7 & r7 | !rd7 & rr_k7 & r7
-      c     = !rd7 & rr_k7 | rr_k7 & r7 | r7 & !rd7
-      h     = !rd3 & rr_k3 | rr_k3 & r3 | r3 & !rd3
+      v     = (rd7 & rr_k7 & r7) | (!rd7 & rr_k7 & r7)
+      c     = (!rd7 & rr_k7) | (rr_k7 & r7) | (r7 & !rd7)
+      h     = (!rd3 & rr_k3) | (rr_k3 & r3) | (r3 & !rd3)
 
       z = r.zero?
       z = r.zero? ? cpu.sreg.Z : false if mnemonic == :cpc
