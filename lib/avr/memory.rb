@@ -60,6 +60,7 @@ module AVR
       def include?(address)
         if filter
           return true if filter&.include?(address)
+
           false
         end
         true
