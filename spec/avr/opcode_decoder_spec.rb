@@ -81,7 +81,6 @@ RSpec.describe(AVR::OpcodeDecoder) do
     opcode_for_all_rd(0b1001_0010_0000_0000, "sts", before: "0x1234"), # address from next word in flash
     opcode_for_all_rd(0b1001_0100_0000_0010, "swap"),
     opcode_for_all_rd(0b1001_0010_0000_0100, "xch"),
-
     opcode_for_all_high_rd(0b0111_1111_0000_1111, "andi", after: "0xff"),
     opcode_for_all_high_rd(0b0011_1111_0000_1111, "cpi", after: "0xff"),
     opcode_for_all_high_rd(0b1110_1111_0000_1111, "ldi", after: "0xff"),
@@ -89,7 +88,6 @@ RSpec.describe(AVR::OpcodeDecoder) do
     opcode_for_all_high_rd(0b0110_1111_0000_1111, "ori", after: "0xff"),
     opcode_for_all_high_rd(0b0100_1111_0000_1111, "sbci", after: "0xff"),
     opcode_for_all_high_rd(0b0101_1111_0000_1111, "subi", after: "0xff"),
-
     opcode_for_all_rd_rr_pairs(0b0000_1100_0000_0000, "add", alternate: "lsl"),
     opcode_for_all_rd_rr_pairs(0b0001_1100_0000_0000, "adc", alternate: "rol"),
     opcode_for_all_rd_rr_pairs(0b0010_0000_0000_0000, "and", alternate: "tst"),
@@ -107,12 +105,9 @@ RSpec.describe(AVR::OpcodeDecoder) do
     opcode_for_all_rd_rr_pairs(0b0010_1000_0000_0000, "or"),
     opcode_for_all_rd_rr_pairs(0b0000_1000_0000_0000, "sbc"),
     opcode_for_all_rd_rr_pairs(0b0001_1000_0000_0000, "sub"),
-
     opcode_for_all_word_registers(0b1001_0110_1100_1111, "adiw", after: "0x3f"),
     opcode_for_all_word_registers(0b1001_0111_1100_1111, "sbiw", after: "0x3f"),
-
     opcode_for_all_word_register_pairs(0b0000_0001_0000_0000, "movw"),
-
     opcode_for_all_sreg_flags(0b1001_0100_0000_1000, "bset"),
     opcode_for_all_sreg_flags(0b1001_0100_1000_1000, "bclr"),
   )

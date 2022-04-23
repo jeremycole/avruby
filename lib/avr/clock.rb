@@ -17,6 +17,7 @@ module AVR
       end
       def initialize(name = nil, sink_proc = nil, &block)
         raise unless sink_proc || block_given?
+
         @name = name
         @sink_proc = T.let(
           sink_proc || block.to_proc,
