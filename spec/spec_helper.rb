@@ -34,30 +34,32 @@ def mix_dr(d, r = 0)
 end
 
 def opcode_for_all_rd(opcode_base, mnemonic, before: nil, after: nil)
-  (0..31).map do |d|
+  (0..31).to_h do |d|
     [
       opcode_base | mix_dr(d),
       "#{mnemonic} " + [before, "r#{d}", after].flatten.compact.join(", "),
     ]
-  end.to_h
+  end
 end
 
 def opcode_for_all_high_rd(opcode_base, mnemonic, before: nil, after: nil)
-  (16..31).map do |d|
+  (16..31).to_h do |d|
     [
       opcode_base | mix_dr(d - 16),
       "#{mnemonic} " + [before, "r#{d}", after].flatten.compact.join(", "),
     ]
-  end.to_h
+  end
 end
 
 def opcode_for_all_word_registers(opcode_base, mnemonic, before: nil, after: nil)
-  (0..3).map { |n| [n, 24 + (n * 2)] }.map { |n, l| [n, l + 1, l] }.map do |n, h, l|
+  # rubocop:disable Style/MapToHash
+  (0..3).map { |n| [n, 24 + (n * 2)] }.map { |n, l| [n, l + 1, l] }.to_h do |n, h, l|
     [
       opcode_base | (n << 4),
       "#{mnemonic} " + [before, "r#{h}:r#{l}", after].flatten.compact.join(", "),
     ]
-  end.to_h
+  end
+  # rubocop:enable Style/MapToHash
 end
 
 def word_registers(min: 0, max: 31)
@@ -66,29 +68,29 @@ end
 
 def opcode_for_all_word_register_pairs(opcode_base, mnemonic, min: 0, max: 31, before: nil, after: nil)
   wr = word_registers(min: min, max: max)
-  wr.product(wr).map do |(dh, dl), (rh, rl)|
+  wr.product(wr).to_h do |(dh, dl), (rh, rl)|
     [
       opcode_base | mix_dr(dl >> 1, rl >> 1),
       "#{mnemonic} " + [before, "r#{dh}:r#{dl}, r#{rh}:r#{rl}", after].flatten.compact.join(", "),
     ]
-  end.to_h
+  end
 end
 
 def opcode_for_all_rd_rr_pairs(opcode_base, mnemonic, min: 0, max: 31, alternate: nil)
-  (min..max).to_a.product((min..max).to_a).map do |d, r|
+  (min..max).to_a.product((min..max).to_a).to_h do |d, r|
     if alternate && d == r
       [opcode_base | mix_dr(d - min, r - min), "#{alternate} r#{r}"]
     else
       [opcode_base | mix_dr(d - min, r - min), "#{mnemonic} r#{d}, r#{r}"]
     end
-  end.to_h
+  end
 end
 
 def opcode_for_all_sreg_flags(opcode_base, mnemonic, before: nil, after: nil)
-  AVR::SREG::STATUS_BITS.each_with_index.map do |name, i|
+  AVR::SREG::STATUS_BITS.each_with_index.to_h do |name, i|
     [
       opcode_base | (i << 4),
       "#{mnemonic} " + [before, "SREG.#{name}", after].flatten.compact.join(", "),
     ]
-  end.to_h
+  end
 end
