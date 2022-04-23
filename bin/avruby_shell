@@ -97,7 +97,7 @@ IRB.setup(nil, argv: ["-f"])
 
 IRB.conf[:IRB_NAME] = "avr"
 IRB.conf[:SAVE_HISTORY] = 1000
-IRB.conf[:HISTORY_FILE] = File.join(ENV["HOME"], ".avruby_shell_history")
+IRB.conf[:HISTORY_FILE] = File.join(ENV.fetch("HOME", nil), ".avruby_shell_history")
 IRB.conf[:PROMPT][:avruby_shell] = {
   PROMPT_I: "\u001b[0;34;1m%N>\u001b[0m ",
   PROMPT_N: "\u001b[0;34;1m%N>\u001b[0m ",
