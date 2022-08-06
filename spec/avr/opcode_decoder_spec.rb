@@ -1,4 +1,5 @@
 # typed: false
+
 RSpec.describe(AVR::OpcodeDecoder) do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }

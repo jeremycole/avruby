@@ -1,4 +1,5 @@
 # typed: false
+
 RSpec.describe(AVR::Clock) do
   let(:clock) { described_class.new }
   let(:other_clock) { described_class.new }
