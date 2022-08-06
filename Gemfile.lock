@@ -46,8 +46,8 @@ GEM
       parser (>= 3.1.1.0)
     rubocop-rspec (2.11.1)
       rubocop (~> 1.19)
-    rubocop-shopify (2.5.0)
-      rubocop (~> 1.25)
+    rubocop-shopify (2.9.0)
+      rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
     sorbet (0.5.9928)
       sorbet-static (= 0.5.9928)
@@ -72,8 +72,8 @@ DEPENDENCIES
   rspec
   rubocop
   rubocop-rspec
-  rubocop-shopify
+  rubocop-shopify (~> 2.9.0)
   sorbet
 
 BUNDLED WITH
-   2.1.4
+   2.2.22
