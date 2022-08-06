@@ -11,3 +11,6 @@ AllCops:
 
 Layout/HashAlignment:
   EnforcedColonStyle: table
+
+Style/ClassMethodsDefinitions:
+  Enabled: false
