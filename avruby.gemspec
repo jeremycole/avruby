@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec")
   s.add_development_dependency("rubocop")
   s.add_development_dependency("rubocop-rspec")
-  s.add_development_dependency("rubocop-shopify", "~> 2.9.0")
+  s.add_development_dependency("rubocop-shopify", "~> 2.10.1")
   s.add_development_dependency("sorbet")
 
   s.add_dependency("intel_hex", "~> 0.5.3")
