@@ -17,7 +17,7 @@ GEM
     parser (3.1.2.1)
       ast (~> 2.4.1)
     rainbow (3.1.1)
-    regexp_parser (2.5.0)
+    regexp_parser (2.6.0)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
@@ -42,30 +42,21 @@ GEM
       rubocop-ast (>= 1.20.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.21.0)
+    rubocop-ast (1.23.0)
       parser (>= 3.1.1.0)
-    rubocop-rspec (2.12.1)
-      rubocop (~> 1.31)
+    rubocop-rspec (2.14.2)
+      rubocop (~> 1.33)
     rubocop-shopify (2.9.0)
       rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
     sorbet (0.5.10285)
       sorbet-static (= 0.5.10285)
     sorbet-runtime (0.5.10285)
-    sorbet-static (0.5.10285-universal-darwin-14)
-    sorbet-static (0.5.10285-universal-darwin-15)
-    sorbet-static (0.5.10285-universal-darwin-16)
-    sorbet-static (0.5.10285-universal-darwin-17)
-    sorbet-static (0.5.10285-universal-darwin-18)
-    sorbet-static (0.5.10285-universal-darwin-19)
-    sorbet-static (0.5.10285-universal-darwin-20)
-    sorbet-static (0.5.10285-universal-darwin-21)
-    sorbet-static (0.5.10285-universal-darwin-22)
     sorbet-static (0.5.10285-x86_64-linux)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   avruby!
