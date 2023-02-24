@@ -49,23 +49,14 @@ GEM
     rubocop-shopify (2.9.0)
       rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
-    sorbet (0.5.10285)
-      sorbet-static (= 0.5.10285)
+    sorbet (0.5.10685)
+      sorbet-static (= 0.5.10685)
     sorbet-runtime (0.5.10285)
-    sorbet-static (0.5.10285-universal-darwin-14)
-    sorbet-static (0.5.10285-universal-darwin-15)
-    sorbet-static (0.5.10285-universal-darwin-16)
-    sorbet-static (0.5.10285-universal-darwin-17)
-    sorbet-static (0.5.10285-universal-darwin-18)
-    sorbet-static (0.5.10285-universal-darwin-19)
-    sorbet-static (0.5.10285-universal-darwin-20)
-    sorbet-static (0.5.10285-universal-darwin-21)
-    sorbet-static (0.5.10285-universal-darwin-22)
-    sorbet-static (0.5.10285-x86_64-linux)
+    sorbet-static (0.5.10685-x86_64-linux)
     unicode-display_width (2.2.0)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   avruby!
