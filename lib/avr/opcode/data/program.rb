@@ -16,7 +16,7 @@ module AVR
     end
 
     opcode(:lpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
-      args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.size.zero?
+      args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
       args.fetch(0).value = cpu.device.flash.memory.fetch(mwr.register.value).value

@@ -89,7 +89,7 @@ module AVR
 
     sig { params(interrupts: T::Array[T.any(Symbol, String)]).returns(T::Hash[Symbol, Integer]) }
     def sequential_interrupt_vectors(interrupts)
-      interrupts.each_with_index.each_with_object({}) { |(name, i), h| h[name.to_sym] = i * 2 }
+      interrupts.each_with_index.with_object({}) { |(name, i), h| h[name.to_sym] = i * 2 }
     end
 
     sig { returns(CPU) }

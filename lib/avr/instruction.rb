@@ -58,7 +58,7 @@ module AVR
       "#<#{self.class.name} {#{self}}>"
     end
 
-    sig { void }
+    sig { returns(NilClass) }
     def execute
       raise "Invalid instruction" unless valid?
 

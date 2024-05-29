@@ -8,7 +8,7 @@ module AVR
     def initialize(cpu, name, memory_byte, bit_names)
       super(cpu, name, memory_byte)
       @bit_names = bit_names
-      @bit_names_bv = @bit_names.each_with_index.each_with_object({}) { |(b, i), h| h[b] = 2**i if b }
+      @bit_names_bv = @bit_names.each_with_index.with_object({}) { |(b, i), h| h[b] = 2**i if b }
 
       @bit_names_bv.each do |bit_name, bit_value|
         define_singleton_method(bit_name, proc { (value & bit_value) == bit_value })

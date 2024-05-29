@@ -7,7 +7,7 @@ RSpec.describe(AVR::Opcode) do
     include_examples "opcode", :nop
 
     it "does nothing" do
-      cpu.instruction(:nop).execute
+      expect(cpu.instruction(:nop).execute).to(be_nil)
     end
   end
 end

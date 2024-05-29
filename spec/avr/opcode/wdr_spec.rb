@@ -7,7 +7,7 @@ RSpec.describe(AVR::Opcode) do
     include_examples "opcode", :wdr
 
     it "does nothing" do
-      cpu.instruction(:wdr).execute
+      expect(cpu.instruction(:wdr).execute).to(be_nil)
     end
   end
 end

@@ -8,7 +8,7 @@ RSpec.describe(AVR::Opcode) do
 
     context "when called with no operands" do
       it "can execute" do
-        cpu.instruction(:lpm).execute
+        expect(cpu.instruction(:lpm).execute).to(be_nil)
       end
     end
 
