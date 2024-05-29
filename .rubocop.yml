@@ -14,3 +14,9 @@ Layout/HashAlignment:
 
 Style/ClassMethodsDefinitions:
   Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec
