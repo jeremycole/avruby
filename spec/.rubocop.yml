@@ -13,6 +13,6 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: false
 
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Exclude:
     - avr/opcode/**/*.rb
