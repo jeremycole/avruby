@@ -21,6 +21,3 @@ Style/BitwisePredicate:
 
 RSpec/SpecFilePathFormat:
   Enabled: false
-
-Gemspec/DevelopmentDependencies:
-  EnforcedStyle: gemspec
