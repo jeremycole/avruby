@@ -15,6 +15,10 @@ Layout/HashAlignment:
 Style/ClassMethodsDefinitions:
   Enabled: false
 
+# Not sure if this improves readability or not...
+Style/BitwisePredicate:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   Enabled: false
 

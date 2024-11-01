@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rubocop-shopify", "~> 2.9.0")
   s.add_development_dependency("sorbet")
 
-  s.add_dependency("intel_hex", "~> 0.5.3")
+  s.add_dependency("intel_hex", "~> 0.6.0")
   s.add_dependency("sorbet-runtime", "~> 0.5.3")
   s.metadata["rubygems_mfa_required"] = "true"
 end
