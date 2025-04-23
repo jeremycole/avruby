@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "spm" do
-    include_examples "opcode", :spm
+    it_behaves_like "opcode", :spm
 
     context "when called with no operands" do
       it "is not implemented" do

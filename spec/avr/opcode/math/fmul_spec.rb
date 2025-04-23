@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "fmul" do
-    include_examples "opcode", :fmul
+    it_behaves_like "opcode", :fmul
 
     it "is not implemented" do
       expect do

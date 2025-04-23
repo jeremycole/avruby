@@ -135,7 +135,7 @@ module AVR
           .new(:near_relative_pc)
           .formatter { |arg| format(".%+d", 2 * arg.value) }
           .validator { |arg| NearRelativePcExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= -64 && arg.value <= 63 }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(-64, 63) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -144,7 +144,7 @@ module AVR
           .new(:far_relative_pc)
           .formatter { |arg| format(".%+d", 2 * arg.value) }
           .validator { |arg| FarRelativePcExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= -2048 && arg.value <= 2047 }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(-2048, 2047) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -153,7 +153,7 @@ module AVR
           .new(:absolute_pc)
           .formatter { |arg| format("0x%04x", 2 * arg.value) }
           .validator { |arg| AbsolutePcExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= (2**22).to_i - 1 }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(0, (2**22).to_i - 1) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -161,7 +161,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:byte, format: "0x%02x")
           .validator { |arg| ByteConstantExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= 0x00 && arg.value <= 0xff }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(0x00, 0xff) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -169,7 +169,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:word, format: "0x%04x")
           .validator { |arg| WordConstantExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= 0x0000 && arg.value <= 0xffff }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(0x0000, 0xffff) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -198,7 +198,7 @@ module AVR
           .new(:register_with_bit_number)
           .validator { |arg| RegisterExpected unless arg.register.is_a?(Register) }
           .validator { |arg| BitNumberExpected unless arg.bit_number.is_a?(Integer) }
-          .validator { |arg| ConstantOutOfRange unless arg.bit_number >= 0 && arg.bit_number <= 7 }
+          .validator { |arg| ConstantOutOfRange unless arg.bit_number.between?(0, 7) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -206,7 +206,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:io_address, format: "0x%02x")
           .validator { |arg| IoAddressExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= 63 }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(0, 63) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -214,7 +214,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:lower_io_address, format: "0x%02x")
           .validator { |arg| IoAddressExpected unless arg.is_a?(Value) }
-          .validator { |arg| ConstantOutOfRange unless arg.value >= 0 && arg.value <= 31 }
+          .validator { |arg| ConstantOutOfRange unless arg.value.between?(0, 31) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -316,7 +316,7 @@ module AVR
     sig { params(cpu: CPU, word: Integer).returns(Integer) }
     def self.stack_push_word(cpu, word)
       stack_push(cpu, (word & 0xff00) >> 8)
-      stack_push(cpu, (word & 0x00ff))
+      stack_push(cpu, word & 0x00ff)
     end
 
     sig { params(cpu: CPU).returns(Integer) }

@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "or" do
     let(:i) { cpu.instruction(:or, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :or
+    it_behaves_like "opcode", :or
 
     it "performs bitwise OR correctly" do
       cpu.r0 = 0

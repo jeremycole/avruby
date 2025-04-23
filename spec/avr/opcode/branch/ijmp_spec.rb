@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "ijmp" do
-    include_examples "opcode", :ijmp
+    it_behaves_like "opcode", :ijmp
 
     it "sets PC to the specified constant" do
       cpu.Z = 0x0500

@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "bset" do
-    include_examples "opcode", :bset
+    it_behaves_like "opcode", :bset
 
     it "sets the correct SREG bit" do
       cpu.sreg.value = 0x00

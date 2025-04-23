@@ -13,7 +13,7 @@ module AVR
     def self.to_twos_complement(value, bits)
       return value unless value.negative?
 
-      ((value.magnitude) ^ ((1 << bits) - 1)) + 1
+      (value.magnitude ^ ((1 << bits) - 1)) + 1
     end
 
     sig { params(k_in: Integer).returns(Integer) }

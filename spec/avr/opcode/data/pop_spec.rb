@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "push" do
-    include_examples "opcode", :push
+    it_behaves_like "opcode", :push
 
     it "pops the the stack into a register" do
       cpu.sram.memory[cpu.sp.value].value = 1

@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "cpse" do
-    include_examples "opcode", :cpse
+    it_behaves_like "opcode", :cpse
 
     it "compares r0 == r1, with 1-word instruction" do
       cpu.r0 = 5

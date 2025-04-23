@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "sts" do
-    include_examples "opcode", :sts
+    it_behaves_like "opcode", :sts
 
     it "stores the contents of the register into data memory pointed to by an immediate" do
       cpu.r0 = 0xaf

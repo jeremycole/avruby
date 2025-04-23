@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "nop" do
-    include_examples "opcode", :nop
+    it_behaves_like "opcode", :nop
 
     it "does nothing" do
       expect(cpu.instruction(:nop).execute).to(be_nil)

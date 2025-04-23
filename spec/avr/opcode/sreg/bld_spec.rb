@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "bld" do
-    include_examples "opcode", :bld
+    it_behaves_like "opcode", :bld
 
     it "sets the bit in the register when the T flag is set" do
       cpu.r0 = 0b00000000

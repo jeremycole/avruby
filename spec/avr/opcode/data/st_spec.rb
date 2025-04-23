@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "st" do
-    include_examples "opcode", :st
+    it_behaves_like "opcode", :st
 
     it "stores the register into the SRAM pointed to by X" do
       cpu.X = 0x0200

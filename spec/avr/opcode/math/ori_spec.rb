@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "ori" do
-    include_examples "opcode", :ori
+    it_behaves_like "opcode", :ori
 
     it "performs bitwise OR correctly" do
       cpu.r0 = 0b01010101

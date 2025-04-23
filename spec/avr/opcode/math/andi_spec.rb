@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "andi" do
-    include_examples "opcode", :andi
+    it_behaves_like "opcode", :andi
 
     it "performs bitwise AND correctly" do
       cpu.r0 = 0b01010101
