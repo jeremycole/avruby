@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "mov" do
     let(:i) { cpu.instruction(:mov, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :mov
+    it_behaves_like "opcode", :mov
 
     it "extracts mnemonic and operands correctly" do
       d = cpu.decoder.decode(0b0010_1100_0000_0001)

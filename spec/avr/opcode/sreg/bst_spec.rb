@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "bst" do
-    include_examples "opcode", :bst
+    it_behaves_like "opcode", :bst
 
     it "sets the T flag when the bit from the register is one" do
       cpu.sreg.T = false

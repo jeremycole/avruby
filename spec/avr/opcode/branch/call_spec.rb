@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "call" do
-    include_examples "opcode", :call
+    it_behaves_like "opcode", :call
 
     it "pushes the current PC onto the stack" do
       previous_sp = cpu.sp.value

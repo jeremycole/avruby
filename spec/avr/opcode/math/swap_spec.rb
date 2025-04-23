@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "swap" do
     let(:i) { cpu.instruction(:swap, cpu.r0) }
 
-    include_examples "opcode", :swap
+    it_behaves_like "opcode", :swap
 
     it "performs nibble swap correctly" do
       cpu.r0 = 0xf0

@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "las" do
-    include_examples "opcode", :las
+    it_behaves_like "opcode", :las
 
     it "exchanges the contents of the SRAM pointed to by Z with the register ORed with the register" do
       cpu.Z = 0x0500

@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "neg" do
     let(:i) { cpu.instruction(:neg, cpu.r0) }
 
-    include_examples "opcode", :neg
+    it_behaves_like "opcode", :neg
 
     it "performs twos complement correctly" do
       cpu.r0 = 0b10101010

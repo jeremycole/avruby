@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "ldi" do
-    include_examples "opcode", :ldi
+    it_behaves_like "opcode", :ldi
 
     it "loads the constant into the register" do
       cpu.r0 = 0

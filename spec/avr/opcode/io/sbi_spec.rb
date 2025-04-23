@@ -7,7 +7,7 @@ RSpec.describe(AVR::Opcode) do
     let(:portb_io_address) { AVR::Value.new(cpu.PORTB.memory_byte.address - device.io_register_start) }
     let(:portb) { cpu.PORTB.memory_byte }
 
-    include_examples "opcode", :sbi
+    it_behaves_like "opcode", :sbi
 
     it "sets the bit in the IO register" do
       cpu.instruction(:sbi, portb_io_address, AVR::Value.new(1)).execute

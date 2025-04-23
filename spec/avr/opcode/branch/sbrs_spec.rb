@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "sbrs" do
-    include_examples "opcode", :sbrs
+    it_behaves_like "opcode", :sbrs
 
     it "skips if bit in r0 is set, with 1-word instruction" do
       cpu.r0 = 128

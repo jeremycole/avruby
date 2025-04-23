@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "lpm" do
-    include_examples "opcode", :lpm
+    it_behaves_like "opcode", :lpm
 
     context "when called with no operands" do
       it "can execute" do

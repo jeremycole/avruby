@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "elpm" do
-    include_examples "opcode", :elpm
+    it_behaves_like "opcode", :elpm
 
     it "is not implemented" do
       expect do

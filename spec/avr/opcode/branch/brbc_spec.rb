@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "brbc" do
-    include_examples "opcode", :brbc
+    it_behaves_like "opcode", :brbc
 
     it "branches if the bit is set" do
       cpu.sreg.Z = true

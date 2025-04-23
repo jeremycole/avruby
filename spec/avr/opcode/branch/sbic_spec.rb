@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "sbic" do
-    include_examples "opcode", :sbic
+    it_behaves_like "opcode", :sbic
 
     it "skips if bit in io register 0 is cleared, with 1-word instruction" do
       cpu.sram.memory.fetch(device.io_register_start + 0x00).value = 0

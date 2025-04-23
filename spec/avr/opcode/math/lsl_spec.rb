@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "lsl" do
     let(:i) { cpu.instruction(:lsl, cpu.r0) }
 
-    include_examples "opcode", :lsl
+    it_behaves_like "opcode", :lsl
 
     it "performs left-shift correctly" do
       cpu.r0 = 0b101

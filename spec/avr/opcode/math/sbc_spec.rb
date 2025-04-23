@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "sbc" do
     let(:i) { cpu.instruction(:sbc, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :sbc
+    it_behaves_like "opcode", :sbc
 
     it "subtracts correctly" do
       cpu.r0 = 3

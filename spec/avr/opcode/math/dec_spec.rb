@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "dec" do
     let(:i) { cpu.instruction(:dec, cpu.r0) }
 
-    include_examples "opcode", :dec
+    it_behaves_like "opcode", :dec
 
     it "decrements correctly" do
       cpu.r0 = 1

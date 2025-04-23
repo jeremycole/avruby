@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "eor" do
     let(:i) { cpu.instruction(:eor, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :eor
+    it_behaves_like "opcode", :eor
 
     it "performs bitwise XOR correctly" do
       cpu.r0 = 0

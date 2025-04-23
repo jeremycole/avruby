@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "cp" do
     let(:i) { cpu.instruction(:cp, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :cp
+    it_behaves_like "opcode", :cp
 
     it "compares r0 == r1" do
       cpu.r0 = 5

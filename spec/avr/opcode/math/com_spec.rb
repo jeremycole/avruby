@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "com" do
     let(:i) { cpu.instruction(:com, cpu.r0) }
 
-    include_examples "opcode", :com
+    it_behaves_like "opcode", :com
 
     it "performs ones complement correctly" do
       cpu.r0 = 0xaa

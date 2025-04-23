@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "and" do
     let(:i) { cpu.instruction(:and, cpu.r0, cpu.r1) }
 
-    include_examples "opcode", :and
+    it_behaves_like "opcode", :and
 
     it "performs bitwise AND correctly" do
       cpu.r0 = 0

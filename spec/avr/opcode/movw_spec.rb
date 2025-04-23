@@ -12,7 +12,7 @@ RSpec.describe(AVR::Opcode) do
       )
     end
 
-    include_examples "opcode", :movw
+    it_behaves_like "opcode", :movw
 
     it "copies the source word register to the target word register" do
       cpu.Y = 0

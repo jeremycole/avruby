@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "ret" do
-    include_examples "opcode", :ret
+    it_behaves_like "opcode", :ret
 
     it "sets PC to the value from the stack" do
       described_class.stack_push_word(cpu, 0x0500)
