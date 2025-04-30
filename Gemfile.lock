@@ -16,7 +16,7 @@ GEM
     date (3.4.1)
     diff-lcs (1.6.1)
     erubi (1.13.1)
-    intel_hex (0.6.0)
+    intel_hex (0.6.1)
     json (2.11.3)
     language_server-protocol (3.17.0.4)
     lint_roller (1.1.0)
