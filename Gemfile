@@ -12,3 +12,5 @@ group :development do
 end
 
 gemspec
+
+gem "tapioca", "~> 0.16.11"
