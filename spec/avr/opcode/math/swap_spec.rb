@@ -6,14 +6,14 @@ RSpec.describe(AVR::Opcode) do
   describe "swap" do
     let(:i) { cpu.instruction(:swap, cpu.r0) }
 
-    it_behaves_like "opcode", :swap
-
-    it "performs nibble swap correctly" do
-      cpu.r0 = 0xf0
-      i.execute
-      expect(cpu.r0.value).to(eq(0x0f))
-      i.execute
-      expect(cpu.r0.value).to(eq(0xf0))
+    it_behaves_like "opcode", :swap do
+      it "performs nibble swap correctly" do
+        cpu.r0 = 0xf0
+        i.execute
+        expect(cpu.r0.value).to(eq(0x0f))
+        i.execute
+        expect(cpu.r0.value).to(eq(0xf0))
+      end
     end
   end
 end
