@@ -6,25 +6,25 @@ RSpec.describe(AVR::Opcode) do
   describe "lsl" do
     let(:i) { cpu.instruction(:lsl, cpu.r0) }
 
-    it_behaves_like "opcode", :lsl
+    it_behaves_like "opcode", :lsl do
+      it "performs left-shift correctly" do
+        cpu.r0 = 0b101
+        i.execute
+        expect(cpu.r0.value).to(eq(0b1010))
+      end
 
-    it "performs left-shift correctly" do
-      cpu.r0 = 0b101
-      i.execute
-      expect(cpu.r0.value).to(eq(0b1010))
-    end
+      it "sets the carry bit when appropriate" do
+        cpu.r0 = 0x80
+        i.execute
+        expect(cpu.r0.value).to(eq(0x00))
+        expect(cpu.sreg.C).to(be(true))
+      end
 
-    it "sets the carry bit when appropriate" do
-      cpu.r0 = 0x80
-      i.execute
-      expect(cpu.r0.value).to(eq(0x00))
-      expect(cpu.sreg.C).to(be(true))
-    end
-
-    it "sets the Z bit when the result is zero" do
-      cpu.r0 = 0
-      i.execute
-      expect(cpu.sreg.Z).to(be(true))
+      it "sets the Z bit when the result is zero" do
+        cpu.r0 = 0
+        i.execute
+        expect(cpu.sreg.Z).to(be(true))
+      end
     end
   end
 end

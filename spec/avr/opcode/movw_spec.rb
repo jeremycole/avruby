@@ -12,19 +12,19 @@ RSpec.describe(AVR::Opcode) do
       )
     end
 
-    it_behaves_like "opcode", :movw
-
-    it "copies the source word register to the target word register" do
-      cpu.Y = 0
-      cpu.Z = 1
-      i.execute
-      expect(cpu.Y.value).to(eq(1))
-      expect(cpu.Z.value).to(eq(1))
-      cpu.Y = 1
-      cpu.Z = 0
-      i.execute
-      expect(cpu.Y.value).to(eq(0))
-      expect(cpu.Z.value).to(eq(0))
+    it_behaves_like "opcode", :movw do
+      it "copies the source word register to the target word register" do
+        cpu.Y = 0
+        cpu.Z = 1
+        i.execute
+        expect(cpu.Y.value).to(eq(1))
+        expect(cpu.Z.value).to(eq(1))
+        cpu.Y = 1
+        cpu.Z = 0
+        i.execute
+        expect(cpu.Y.value).to(eq(0))
+        expect(cpu.Z.value).to(eq(0))
+      end
     end
   end
 end

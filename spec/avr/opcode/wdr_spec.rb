@@ -4,10 +4,10 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "wdr" do
-    it_behaves_like "opcode", :wdr
-
-    it "does nothing" do
-      expect(cpu.instruction(:wdr).execute).to(be_nil)
+    it_behaves_like "opcode", :wdr do
+      it "does nothing" do
+        expect(cpu.instruction(:wdr).execute).to(be_nil)
+      end
     end
   end
 end

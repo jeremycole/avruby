@@ -3,17 +3,17 @@
 require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
-  describe "push" do
-    it_behaves_like "opcode", :push
+  describe "pop" do
+    it_behaves_like "opcode", :pop do
+      it "pops the the stack into a register" do
+        cpu.sram.memory[cpu.sp.value].value = 1
+        cpu.sp.value -= 1
+        previous_sp = cpu.sp.value
+        cpu.instruction(:pop, cpu.r0).execute
 
-    it "pops the the stack into a register" do
-      cpu.sram.memory[cpu.sp.value].value = 1
-      cpu.sp.value -= 1
-      previous_sp = cpu.sp.value
-      cpu.instruction(:pop, cpu.r0).execute
-
-      expect(cpu.r0.value).to(eq(1))
-      expect(cpu.sp.value).to(eq(previous_sp + 1))
+        expect(cpu.r0.value).to(eq(1))
+        expect(cpu.sp.value).to(eq(previous_sp + 1))
+      end
     end
   end
 end

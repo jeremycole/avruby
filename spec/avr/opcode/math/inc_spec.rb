@@ -6,19 +6,19 @@ RSpec.describe(AVR::Opcode) do
   describe "inc" do
     let(:i) { cpu.instruction(:inc, cpu.r0) }
 
-    it_behaves_like "opcode", :inc
+    it_behaves_like "opcode", :inc do
+      it "increments correctly" do
+        cpu.r0 = 0
+        i.execute
+        expect(cpu.r0.value).to(eq(1))
+      end
 
-    it "increments correctly" do
-      cpu.r0 = 0
-      i.execute
-      expect(cpu.r0.value).to(eq(1))
-    end
-
-    it "overflows to zero and does not set the carry flag" do
-      cpu.r0 = 255
-      i.execute
-      expect(cpu.r0.value).to(eq(0))
-      expect(cpu.sreg.C).to(be(false))
+      it "overflows to zero and does not set the carry flag" do
+        cpu.r0 = 255
+        i.execute
+        expect(cpu.r0.value).to(eq(0))
+        expect(cpu.sreg.C).to(be(false))
+      end
     end
   end
 end
