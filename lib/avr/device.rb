@@ -80,7 +80,7 @@ module AVR
 
     sig do
       params(
-        ports: T::Array[T.any(Symbol, String)]
+        ports: T::Array[Symbol]
       ).returns(T::Hash[Symbol, T::Hash[Symbol, Integer]])
     end
     def standard_ports(ports)
