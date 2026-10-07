@@ -84,7 +84,7 @@ module AVR
       ).returns(T::Hash[Symbol, T::Hash[Symbol, Integer]])
     end
     def standard_ports(ports)
-      ports.each_with_object({}) { |m, h| h[m] = standard_port(m) }
+      ports.to_h { |m| [m, standard_port(m)] }
     end
 
     sig { params(interrupts: T::Array[T.any(Symbol, String)]).returns(T::Hash[Symbol, Integer]) }

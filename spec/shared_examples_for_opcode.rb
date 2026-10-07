@@ -10,7 +10,7 @@ RSpec.shared_examples("opcode") do |opcode, *_args|
   end
 
   after do
-    expect(cpu.sreg.value & ~sreg_mask).to(eq(0)) # rubocop:disable RSpec/ExpectInHook
+    expect(cpu.sreg.value & ~sreg_mask).to(eq(0))
   end
 
   it "is a known opcode" do
