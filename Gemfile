@@ -7,10 +7,8 @@ group :development do
   gem "rspec", require: false
   gem "rubocop", require: false
   gem "rubocop-rspec", require: false
-  gem "rubocop-shopify", "~> 2.9.0", require: false
+  gem "rubocop-shopify", "~> 3.0.2", require: false
   gem "sorbet", require: false
 end
 
 gemspec
-
-gem "tapioca", "~> 0.16.11"

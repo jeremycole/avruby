@@ -18,8 +18,11 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
 
   s.add_dependency("benchmark", "~> 0.4.0")
-  s.add_dependency("intel_hex", "~> 0.6.0")
+  s.add_dependency("irb", "~> 1.18.0")
+  s.add_dependency("intel_hex", "~> 0.6.2")
   s.add_dependency("rdoc", "~> 6.13.1")
   s.add_dependency("sorbet-runtime", "~> 0.5.3")
+  s.add_dependency("tapioca", "~> 0.16.11")
+
   s.metadata["rubygems_mfa_required"] = "true"
 end
