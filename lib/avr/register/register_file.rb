@@ -3,6 +3,9 @@
 
 module AVR
   class RegisterFile
+    attr_reader :registers
+    attr_reader :word_register_map
+
     def add(register)
       @registers[register.name] = register
       @cpu.send(:define_singleton_method, register.name.to_sym, proc { register })
@@ -13,9 +16,6 @@ module AVR
       @word_register_map[register.l] = register
       @word_register_map[register.h] = register
     end
-
-    attr_reader :registers
-    attr_reader :word_register_map
 
     def initialize(cpu)
       @cpu = cpu

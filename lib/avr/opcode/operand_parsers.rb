@@ -77,7 +77,7 @@ module AVR
     parse_operands("____ ___r rrrr _bbb") do |cpu, operands|
       {
         Rr: cpu.registers.fetch(operands.fetch(:r).value),
-        b:  Value.new(operands.fetch(:b).value),
+        b: Value.new(operands.fetch(:b).value),
       }
     end
 
@@ -90,7 +90,7 @@ module AVR
           cpu.registers.fetch(register_base + 1),
           cpu.registers.fetch(register_base)
         ),
-        K:  Value.new(operands.fetch(:K).value),
+        K: Value.new(operands.fetch(:K).value),
       }
     end
 
@@ -98,7 +98,7 @@ module AVR
     parse_operands("____ KKKK dddd KKKK") do |cpu, operands|
       {
         Rd: cpu.registers.fetch(operands.fetch(:d).value | 0b10000),
-        K:  Value.new(operands.fetch(:K).value),
+        K: Value.new(operands.fetch(:K).value),
       }
     end
 

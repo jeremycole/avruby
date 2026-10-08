@@ -126,7 +126,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:sreg_flag)
           .validator { |arg| StatusRegisterBitExpected unless arg.is_a?(Value) }
-          .validator { |arg| StatusRegisterBitExpected unless arg.value == 0 || arg.value == 1 }
+          .validator { |arg| StatusRegisterBitExpected unless arg.value.between?(0, 1) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -272,11 +272,11 @@ module AVR
     end
 
     sig { params(args: T::Array[T.untyped]).returns(T::Boolean) }
-    def validate(args)
+    def validate(args) # rubocop:disable Naming/PredicateMethod
       raise IncorrectArgumentCount unless required_arg_count.include?(args.size)
 
       args.each_with_index do |arg, i|
-        T.must(arg_types[i]).validate(arg)&.each do |arg_exception|
+        T.must(arg_types[i]).validate(arg)&.each do |arg_exception| # rubocop:disable Lint/UnreachableLoop
           raise arg_exception, "Argument #{i} (#{arg}) invalid for #{T.must(arg_types[i]).type_name}"
         end
       end
@@ -303,6 +303,7 @@ module AVR
 
     class << self
       extend T::Sig
+
       sig { returns(T::Hash[Symbol, Opcode]) }
       attr_reader :opcodes
     end

@@ -8,6 +8,7 @@ module AVR
   class Memory
     extend T::Sig
     extend T::Helpers
+
     abstract!
 
     class Watch
@@ -105,9 +106,7 @@ module AVR
     sig { params(memory_byte: MemoryByte, old_value: Integer, new_value: Integer).void }
     def notify(memory_byte, old_value, new_value)
       watches.each do |watch|
-        if watch.include?(memory_byte.address)
-          watch.watch.notify(memory_byte, old_value, new_value)
-        end
+        watch.watch.notify(memory_byte, old_value, new_value) if watch.include?(memory_byte.address)
       end
     end
 

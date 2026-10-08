@@ -40,7 +40,7 @@ module AVR
     end
 
     def bit_values
-      @bit_names.reject(&:nil?).map { |name| name.to_s + "=" + (send(name) ? "1" : "0") }.join(", ")
+      @bit_names.compact.map { |name| name.to_s + "=" + (send(name) ? "1" : "0") }.join(", ")
     end
 
     def hash_for_value(value)
@@ -79,7 +79,7 @@ module AVR
         new_bit = (new_value & mask) != 0 ? 1 : 0
         diff_strings << "#{flag}=#{old_bit}->#{new_bit}" if diff_mask & mask != 0
       end
-      "[" + diff_strings.join(", ") + "]"
+      "[#{diff_strings.join(', ')}]"
     end
   end
 end

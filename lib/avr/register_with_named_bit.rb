@@ -25,7 +25,7 @@ module AVR
 
     sig { params(new_value: Integer).void }
     def value=(new_value)
-      register.send("#{named_bit}=".to_sym, new_value)
+      register.send(:"#{named_bit}=", new_value)
     end
 
     sig { returns(String) }

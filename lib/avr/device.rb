@@ -5,6 +5,7 @@ module AVR
   class Device
     extend T::Sig
     extend T::Helpers
+
     abstract!
 
     sig { abstract.returns(Integer) }
@@ -72,9 +73,9 @@ module AVR
     sig { params(port: T.any(Symbol, String)).returns(T::Hash[Symbol, Integer]) }
     def standard_port(port)
       {
-        pin:  data_memory_map["PIN#{port}".to_sym],
-        ddr:  data_memory_map["DDR#{port}".to_sym],
-        port: data_memory_map["PORT#{port}".to_sym],
+        pin:  data_memory_map[:"PIN#{port}"],
+        ddr:  data_memory_map[:"DDR#{port}"],
+        port: data_memory_map[:"PORT#{port}"],
       }
     end
 
@@ -133,7 +134,7 @@ module AVR
     sig { void }
     def trace_registers
       register_addresses = {}
-      cpu.registers.registers.each do |_name, register|
+      cpu.registers.registers.each_value do |register|
         case register
         when MemoryByteRegister
           register_addresses[register.memory_byte.address] ||= []
