@@ -62,7 +62,7 @@ module AVR
       def extract_operands(word)
         operands = Hash.new(0)
         mask = 0x10000
-        pattern.split("").each do |operand|
+        pattern.chars.each do |operand|
           mask >>= 1
           next if ["0", "1"].include?(operand)
 
@@ -189,7 +189,7 @@ module AVR
     def print_cache
       puts "Opcode decoder cache (#{cache.size} opcodes cached):"
       cache.sort.each do |word, decoded_opcode|
-        code = word.to_s(2).rjust(16, "0").split("").each_slice(8).map(&:join).join(" ")
+        code = word.to_s(2).rjust(16, "0").chars.each_slice(8).map(&:join).join(" ")
         mnemonic = decoded_opcode.opcode_definition.mnemonic
         operands = decoded_opcode.operands.map { |k, v| format("%s = %5d", k, v) }.join(", ")
         puts format("  %04x = %17s = %-6s (%s)", word, code, mnemonic, operands)

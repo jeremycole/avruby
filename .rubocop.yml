@@ -1,6 +1,3 @@
-inherit_gem:
-  rubocop-shopify: rubocop.yml
-
 plugins: rubocop-rspec
 
 AllCops:
@@ -9,8 +6,29 @@ AllCops:
     - 'lib/**/*.rb'
   NewCops: enable
 
-Layout/HashAlignment:
-  EnforcedColonStyle: table
+Metrics/AbcSize:
+  Max: 100
+
+Metrics/ClassLength:
+  Max: 1000
+
+Metrics/MethodLength:
+  Max: 100
+
+Metrics/ModuleLength:
+  Max: 150
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 20
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
 
 Style/ClassMethodsDefinitions:
   Enabled: false
@@ -18,6 +36,45 @@ Style/ClassMethodsDefinitions:
 # Not sure if this improves readability or not...
 Style/BitwisePredicate:
   Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/StringConcatenation:
+  Mode: conservative
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/WordArray:
+  EnforcedStyle: brackets
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: diff_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: diff_comma
+
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/NegatedIfElseCondition:
+  Enabled: false
+
+Naming/MethodParameterName:
+  MinNameLength: 1
+
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
 
 RSpec/SpecFilePathFormat:
   Enabled: false
