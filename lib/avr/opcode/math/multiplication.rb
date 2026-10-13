@@ -39,8 +39,10 @@ module AVR
       cpu.instruction(:fmul, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmul, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
-      raise OpcodeNotImplementedError, "fmul"
+    opcode(:fmul, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+      result = (args.fetch(0).value * args.fetch(1).value) << 1
+      cpu.sreg.from_h({ Z: (result & 0xffff).zero?, C: (result & 0x10000) != 0 })
+      cpu.r1r0.value = result & 0xffff
     end
 
     decode("0000 0011 1ddd 0rrr", :fmuls) do |cpu, _opcode_definition, operands|
