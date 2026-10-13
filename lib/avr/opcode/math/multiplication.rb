@@ -60,8 +60,11 @@ module AVR
       cpu.instruction(:fmulsu, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmulsu, [Arg.register, Arg.register], [:Z, :C]) do |_cpu, _memory, _args|
-      raise OpcodeNotImplementedError, "fmulsu"
+    opcode(:fmulsu, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+      result = from_twos_complement(args.fetch(0).value, 8) * args.fetch(1).value
+      result_twos_comp = to_twos_complement(result, 16) << 1
+      cpu.sreg.from_h({ Z: (result_twos_comp & 0xffff).zero?, C: (result_twos_comp & 0x10000) != 0 })
+      cpu.r1r0.value = result_twos_comp & 0xffff
     end
   end
 end
