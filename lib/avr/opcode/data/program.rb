@@ -35,8 +35,14 @@ module AVR
       cpu.instruction(:elpm, operands.fetch(:Rd), RegisterWithModification.new(cpu.Z, :post_increment))
     end
 
-    opcode(:elpm, [Arg.register, Arg.modifying_word_register]) do |_cpu, _memory, _args|
-      raise OpcodeNotImplementedError, "elpm"
+    opcode(:elpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
+      args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
+      mwr = T.cast(args.fetch(1), RegisterWithModification)
+      mwr.register.value -= 1 if mwr.modification == :pre_decrement
+      rampz = cpu.io_registers.registers["RAMPZ"]&.value || cpu.registers.registers["RAMPZ"]&.value || 0
+      address = (rampz << 16) | mwr.register.value
+      args.fetch(0).value = cpu.device.flash.memory.fetch(address).value
+      mwr.register.value += 1 if mwr.modification == :post_increment
     end
 
     decode("1001 0101 1110 1000", :spm) do |cpu, _opcode_definition, _operands|
