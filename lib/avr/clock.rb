@@ -8,21 +8,22 @@ module AVR
     class Sink
       extend T::Sig
 
+      SinkCallback = T.type_alias do
+        T.nilable(T.proc.params(source: Clock, ticks: Integer).void)
+      end
+
       sig do
         params(
           name: T.nilable(String),
-          sink_proc: T.nilable(T.proc.params(source: Clock, ticks: Integer).void),
-          block: T.nilable(T.proc.params(source: Clock, ticks: Integer).void)
+          sink_proc: SinkCallback,
+          block: SinkCallback
         ).void
       end
       def initialize(name = nil, sink_proc = nil, &block)
         raise unless sink_proc || block_given?
 
         @name = name
-        @sink_proc = T.let(
-          sink_proc || block.to_proc,
-          T.nilable(T.proc.params(source: Clock, ticks: Integer).void)
-        )
+        @sink_proc = T.let(sink_proc || block.to_proc, SinkCallback)
       end
 
       sig { params(source: Clock, ticks: Integer).void }

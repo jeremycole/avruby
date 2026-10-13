@@ -14,22 +14,20 @@ module AVR
     class Watch
       extend T::Sig
 
+      WatchCallback = T.type_alias do
+        T.nilable(
+          T.proc.params(
+            memory_byte: MemoryByte,
+            old_value: Integer,
+            new_value: Integer,
+          ).void
+        )
+      end
+
       sig do
         params(
-          proc: T.nilable(
-            T.proc.params(
-              memory_byte: MemoryByte,
-              old_value: Integer,
-              new_value: Integer,
-            ).void
-          ),
-          block: T.nilable(
-            T.proc.params(
-              memory_byte: MemoryByte,
-              old_value: Integer,
-              new_value: Integer,
-            ).void
-          )
+          proc: WatchCallback,
+          block: WatchCallback
         ).void
       end
       def initialize(proc = nil, &block)
