@@ -84,8 +84,10 @@ module AVR
       cpu.instruction(:eicall)
     end
 
-    opcode(:eicall) do |_cpu, _memory, _args|
-      raise OpcodeNotImplementedError, "eicall"
+    opcode(:eicall) do |cpu, _memory, _args|
+      stack_push_word(cpu, cpu.pc + 1)
+      eind = cpu.io_registers.registers["EIND"]&.value || cpu.registers.registers["EIND"]&.value || 0
+      cpu.next_pc = (eind << 16) | cpu.Z.value
     end
   end
 end
