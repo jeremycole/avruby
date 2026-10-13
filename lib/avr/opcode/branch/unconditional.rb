@@ -75,8 +75,9 @@ module AVR
       cpu.instruction(:eijmp)
     end
 
-    opcode(:eijmp) do |_cpu, _memory, _args|
-      raise OpcodeNotImplementedError, "eijmp"
+    opcode(:eijmp) do |cpu, _memory, _args|
+      eind = cpu.io_registers.registers["EIND"]&.value || cpu.registers.registers["EIND"]&.value || 0
+      cpu.next_pc = (eind << 16) | cpu.Z.value
     end
 
     decode("1001 0101 0001 1001", :eicall) do |cpu, _opcode_definition, _operands|
