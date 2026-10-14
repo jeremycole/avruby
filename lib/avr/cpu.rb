@@ -173,9 +173,6 @@ module AVR
       puts "IO Registers:"
       io_registers.print_status
       puts
-      puts "Fuses:"
-      fuses.registers.print_status
-      puts
       puts "IO Ports:"
       puts format("%4s  %s", "", Port::PINS.join(" "))
       ports.each do |name, port|
