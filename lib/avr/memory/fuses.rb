@@ -40,16 +40,20 @@ module AVR
         setup_multi_bit_fuse_extractors(reg, bit_names)
       end
 
-      reset
+      reset_to_defaults
+    end
+
+    sig { params(values: T::Array[Integer]).void }
+    def set(values)
+      values.each_with_index do |value, address|
+        byte = memory[address]
+        byte.value = value if byte
+      end
     end
 
     sig { void }
-    def reset
-      super
-      device.fuse_default_values.each do |name, default_val|
-        addr = device.fuse_memory_map[name]
-        T.must(memory[addr]).value = default_val if addr
-      end
+    def reset_to_defaults
+      set(device.fuse_default_values.values)
     end
 
     def [](key)

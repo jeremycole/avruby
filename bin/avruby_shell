@@ -15,6 +15,12 @@ def initialize_device
   puts "OK."
 end
 
+def apply_fuses(fuses)
+  print("Setting fuses... ")
+  @device.fuses.set(fuses)
+  puts "OK."
+end
+
 def load_intel_hex_files(files)
   puts "Loading Intel hex firmware into Flash..."
   files.each do |hex_file|
@@ -114,6 +120,7 @@ IRB.conf[:PROMPT_MODE] = :avruby_shell
   benchmark_warmup_time:        nil,
   benchmark_print_opcode_cache: false,
   intel_hex_files:              [],
+  fuses:                        nil,
 }
 
 OptionParser.new do |opts|
@@ -121,6 +128,9 @@ OptionParser.new do |opts|
     puts opts
     puts
     exit
+  end
+  opts.on("-F", "--fuses=FUSES", "Specify the fuse values, in hexadecimal.") do |o|
+    @options[:fuses] = o.split(/[,\s]+/).map { |v| v.to_i(16) }
   end
   opts.on("-b", "--benchmark-time=TIME", "Specify the run time, in seconds.") do |o|
     @options[:benchmark_time] = o.to_f
@@ -134,15 +144,12 @@ OptionParser.new do |opts|
   opts.on("-d", "--[no-]benchmark-print-opcode-cache", "Enable print of opcode decoder cache after benchmark.") do |o|
     @options[:benchmark_print_opcode_cache] = o
   end
-  opts.on("-t", "--[no-]trace", "Enable tracing.") do |o|
-    @options[:trace] = o
-  end
-  opts.on("-I", "--intel-hex-file=FILE", "Load Intel hex file.") do |o|
-    @options[:intel_hex_files] << o
-  end
+  opts.on("-t", "--[no-]trace", "Enable tracing.") { |o| @options[:trace] = o }
+  opts.on("-I", "--intel-hex-file=FILE", "Load Intel hex file.") { |o| @options[:intel_hex_files] << o }
 end.parse!
 
 initialize_device
+apply_fuses(@options[:fuses]) if @options[:fuses]
 load_intel_hex_files(@options[:intel_hex_files]) unless @options[:intel_hex_files].empty?
 enable_tracing if @options[:trace]
 
