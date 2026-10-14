@@ -35,6 +35,11 @@ module AVR
         define_singleton_method(:"#{name}=") { |value| reg.value = value }
         define_singleton_method(name.to_s.downcase.to_sym) { reg }
         define_singleton_method(:"#{name.to_s.downcase}=") { |value| reg.value = value }
+
+        bit_names&.compact&.each do |bit_name|
+          define_singleton_method(:"#{bit_name}?") { !reg.send(bit_name) }
+          define_singleton_method(:"#{bit_name.to_s.downcase}?") { !reg.send(bit_name) }
+        end
       end
 
       reset
