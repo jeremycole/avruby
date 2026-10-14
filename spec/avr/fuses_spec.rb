@@ -123,4 +123,44 @@ RSpec.describe(AVR::Fuses) do
     fuses.LOW.value = 0xff
     expect(observed).to(eq([[0, 0x62, 0xff]]))
   end
+
+  it "defines predicate methods reflecting reversed fuse logic (0 = true/enabled)" do
+    # Low fuse: 0x62 (0b01100010) -> bits 0, 2, 3, 4, 7 are 0 (true), bits 1, 5, 6 are 1 (false)
+    expect(fuses.cksel0?).to(be(true))
+    expect(fuses.cksel1?).to(be(false))
+    expect(fuses.cksel2?).to(be(true))
+    expect(fuses.cksel3?).to(be(true))
+    expect(fuses.sut0?).to(be(true))
+    expect(fuses.sut1?).to(be(false))
+    expect(fuses.ckout?).to(be(false))
+    expect(fuses.ckdiv8?).to(be(true))
+
+    # Also supports uppercase predicate methods
+    expect(fuses.CKOUT?).to(be(false))
+    expect(fuses.CKDIV8?).to(be(true))
+
+    # High fuse: 0xd9 (0b11011001) -> bits 1, 2, 5 are 0 (true), bits 0, 3, 4, 6, 7 are 1 (false)
+    expect(fuses.bootrst?).to(be(false))
+    expect(fuses.bootsz0?).to(be(true))
+    expect(fuses.bootsz1?).to(be(true))
+    expect(fuses.eesave?).to(be(false))
+    expect(fuses.wdton?).to(be(false))
+    expect(fuses.spien?).to(be(true))
+    expect(fuses.dwen?).to(be(false))
+    expect(fuses.rstdisbl?).to(be(false))
+
+    # Extended fuse: 0xff (0b11111111) -> bits 0..2 are 1 (false)
+    expect(fuses.bodlevel0?).to(be(false))
+    expect(fuses.bodlevel1?).to(be(false))
+    expect(fuses.bodlevel2?).to(be(false))
+
+    # Changing a fuse bit updates predicate methods
+    fuses.LOW.CKOUT = false # 0 bit -> enabled
+    expect(fuses.ckout?).to(be(true))
+    expect(fuses.CKOUT?).to(be(true))
+
+    fuses.LOW.CKOUT = true # 1 bit -> disabled
+    expect(fuses.ckout?).to(be(false))
+    expect(fuses.CKOUT?).to(be(false))
+  end
 end
