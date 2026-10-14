@@ -102,13 +102,20 @@ RSpec.describe(AVR::Fuses) do
     expect(fuses.memory[0].value).to(eq(0x62))
   end
 
+  it "allows setting fuses from an array of integers" do
+    fuses.set([0x11, 0x22, 0x33])
+    expect(fuses.LOW.value).to(eq(0x11))
+    expect(fuses.HIGH.value).to(eq(0x22))
+    expect(fuses.EXTENDED.value).to(eq(0x33))
+  end
+
   it "allows resetting fuses to default values" do
     fuses.LOW.value = 0x00
     fuses.HIGH.value = 0x00
     fuses.EXTENDED.value = 0x00
     expect(fuses.LOW.value).to(eq(0x00))
 
-    fuses.reset
+    fuses.reset_to_defaults
     expect(fuses.LOW.value).to(eq(0x62))
     expect(fuses.HIGH.value).to(eq(0xd9))
     expect(fuses.EXTENDED.value).to(eq(0xff))
