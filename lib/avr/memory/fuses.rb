@@ -49,6 +49,7 @@ module AVR
         byte = memory[address]
         byte.value = value if byte
       end
+      device.cpu.reset if @device.instance_variable_defined?(:@fuses) && @device.instance_variable_get(:@fuses)
     end
 
     sig { void }

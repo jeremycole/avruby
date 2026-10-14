@@ -202,8 +202,8 @@ module AVR
 
     sig { void }
     def reset
-      @pc = 0
-      @next_pc = 0
+      @pc = device.reset_address
+      @next_pc = @pc
       sreg.reset
     end
 
