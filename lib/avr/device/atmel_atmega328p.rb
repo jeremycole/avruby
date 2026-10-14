@@ -17,6 +17,7 @@ module AVR
         @data_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_default_values = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
+        @boot_size_map = T.let(nil, T.nilable(T::Hash[Integer, Integer]))
         @interrupt_vector_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @port_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Hash[Symbol, Integer]]))
       end
@@ -208,6 +209,16 @@ module AVR
       sig { override.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
       def port_map
         @port_map ||= standard_ports([:B, :C, :D])
+      end
+
+      sig { override.returns(T::Hash[Integer, Integer]) }
+      def boot_size_map
+        @boot_size_map ||= {
+          3 => 256,
+          2 => 512,
+          1 => 1024,
+          0 => 2048,
+        }.freeze
       end
     end
   end

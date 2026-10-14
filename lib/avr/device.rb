@@ -68,6 +68,29 @@ module AVR
     sig { abstract.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
     def port_map; end
 
+    sig { abstract.returns(T::Hash[Integer, Integer]) }
+    def boot_size_map; end
+
+    sig { returns(Integer) }
+    def boot_reset_address
+      bootsz = T.unsafe(fuses).BOOTSZ if fuses.respond_to?(:BOOTSZ)
+      return 0 unless bootsz
+
+      boot_size = boot_size_map[bootsz]
+      return 0 unless boot_size
+
+      (flash_size / 2) - boot_size
+    end
+
+    sig { returns(Integer) }
+    def reset_address
+      if fuses.respond_to?(:bootrst?) && T.unsafe(fuses).bootrst?
+        boot_reset_address
+      else
+        0
+      end
+    end
+
     sig { returns(T::Hash[Integer, Symbol]) }
     def data_memory_map_by_address
       @data_memory_map_by_address ||= data_memory_map.each_with_object({}) do |(n, a), h|
@@ -129,6 +152,7 @@ module AVR
       @flash = T.let(Flash.new(flash_size), Flash)
       @eeprom = T.let(EEPROM.new(eeprom_size, cpu), EEPROM)
       @fuses = T.let(Fuses.new(self), Fuses)
+      @cpu.reset
 
       @system_clock = T.let(Clock.new("system"), Clock)
       @system_clock.push_sink(cpu.clock)
