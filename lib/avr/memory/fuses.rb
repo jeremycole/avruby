@@ -36,10 +36,8 @@ module AVR
         define_singleton_method(name.to_s.downcase.to_sym) { reg }
         define_singleton_method(:"#{name.to_s.downcase}=") { |value| reg.value = value }
 
-        bit_names&.compact&.each do |bit_name|
-          define_singleton_method(:"#{bit_name}?") { !reg.send(bit_name) }
-          define_singleton_method(:"#{bit_name.to_s.downcase}?") { !reg.send(bit_name) }
-        end
+        setup_named_bits_methods(reg, bit_names)
+        setup_multi_bit_fuse_extractors(reg, bit_names)
       end
 
       reset
@@ -69,6 +67,50 @@ module AVR
 
     def inspect
       "#<#{self.class.name} #{registers.register_values}>"
+    end
+
+    private
+
+    sig { params(reg: MemoryByteRegister, bit_names: T.nilable(T::Array[T.nilable(Symbol)])).void }
+    def setup_named_bits_methods(reg, bit_names)
+      return unless bit_names
+
+      bit_names.compact.each do |bit_name|
+        define_singleton_method(:"#{bit_name}?") { !reg.send(bit_name) }
+        define_singleton_method(:"#{bit_name.to_s.downcase}?") { !reg.send(bit_name) }
+      end
+    end
+
+    sig { params(reg: MemoryByteRegister, bit_names: T.nilable(T::Array[T.nilable(Symbol)])).void }
+    def setup_multi_bit_fuse_extractors(reg, bit_names)
+      return unless bit_names
+
+      multi_bit_fuses = {}
+      bit_names.compact.each do |bit_name|
+        next unless (match = bit_name.to_s.match(/\A(.+?)(\d+)\z/))
+
+        prefix = match[1]
+        index = match[2].to_i
+        multi_bit_fuses[prefix] ||= {}
+        multi_bit_fuses[prefix][index] = bit_name
+      end
+
+      multi_bit_fuses.each do |prefix, bits_map|
+        count = bits_map.length
+        next unless count > 1 && bits_map.keys.sort == (0...count).to_a
+
+        ordered_bits = (0...count).map { |i| bits_map[i] }
+        extractor = proc do
+          ordered_bits.each_with_index.reduce(0) do |val, (bit_name, idx)|
+            val | ((reg.send(bit_name) ? 1 : 0) << idx)
+          end
+        end
+
+        define_singleton_method(prefix.to_sym, &extractor)
+        define_singleton_method(prefix.downcase.to_sym, &extractor)
+        reg.define_singleton_method(prefix.to_sym, &extractor)
+        reg.define_singleton_method(prefix.downcase.to_sym, &extractor)
+      end
     end
   end
 end
