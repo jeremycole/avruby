@@ -163,4 +163,51 @@ RSpec.describe(AVR::Fuses) do
     expect(fuses.ckout?).to(be(false))
     expect(fuses.CKOUT?).to(be(false))
   end
+
+  it "extracts 0-based sequentially-numbered multi-bit fuses into Integer values" do
+    # Default LOW: 0x62 (CKSEL3..0 = 0010b = 2, SUT1..0 = 10b = 2)
+    expect(fuses.CKSEL).to(eq(2))
+    expect(fuses.cksel).to(eq(2))
+    expect(fuses.LOW.CKSEL).to(eq(2))
+    expect(fuses.LOW.cksel).to(eq(2))
+
+    expect(fuses.SUT).to(eq(2))
+    expect(fuses.sut).to(eq(2))
+    expect(fuses.LOW.SUT).to(eq(2))
+    expect(fuses.LOW.sut).to(eq(2))
+
+    # Default HIGH: 0xd9 (BOOTSZ1..0 = 00b = 0)
+    expect(fuses.BOOTSZ).to(eq(0))
+    expect(fuses.bootsz).to(eq(0))
+    expect(fuses.HIGH.BOOTSZ).to(eq(0))
+    expect(fuses.HIGH.bootsz).to(eq(0))
+
+    # Default EXTENDED: 0xff (BODLEVEL2..0 = 111b = 7)
+    expect(fuses.BODLEVEL).to(eq(7))
+    expect(fuses.bodlevel).to(eq(7))
+    expect(fuses.EXTENDED.BODLEVEL).to(eq(7))
+    expect(fuses.EXTENDED.bodlevel).to(eq(7))
+
+    # Modifying bits dynamically updates multi-bit fuse value
+    fuses.LOW.CKSEL0 = true
+    fuses.LOW.CKSEL1 = true
+    fuses.LOW.CKSEL2 = false
+    fuses.LOW.CKSEL3 = true
+    expect(fuses.CKSEL).to(eq(11)) # 1011b = 11
+
+    fuses.HIGH.BOOTSZ0 = true
+    fuses.HIGH.BOOTSZ1 = true
+    expect(fuses.BOOTSZ).to(eq(3)) # 11b = 3
+
+    fuses.EXTENDED.BODLEVEL0 = false
+    fuses.EXTENDED.BODLEVEL1 = true
+    fuses.EXTENDED.BODLEVEL2 = false
+    expect(fuses.BODLEVEL).to(eq(2)) # 010b = 2
+
+    # Does not create multi-bit helper for CKDIV8
+    expect(fuses).not_to(respond_to(:CKDIV))
+    expect(fuses).not_to(respond_to(:ckdiv))
+    expect(fuses.LOW).not_to(respond_to(:CKDIV))
+    expect(fuses.LOW).not_to(respond_to(:ckdiv))
+  end
 end
