@@ -114,7 +114,7 @@ module AVR
 
       @io_registers = RegisterFile.new(self)
       device.io_registers.each do |name|
-        address = device.data_memory_map[name]
+        address = device.register_memory_map[name]
         next unless address
 
         bit_names = device.register_bit_names_map[name]
@@ -129,8 +129,8 @@ module AVR
 
       @sp = SP.new(
         self,
-        @sram.memory[device.data_memory_map[:SPH]],
-        @sram.memory[device.data_memory_map[:SPL]],
+        @sram.memory[device.register_memory_map[:SPH]],
+        @sram.memory[device.register_memory_map[:SPL]],
         device.ram_end
       )
 

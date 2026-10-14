@@ -21,7 +21,7 @@ module AVR
     def fuse_size; end
 
     sig { abstract.returns(T::Hash[Symbol, Integer]) }
-    def data_memory_map; end
+    def register_memory_map; end
 
     sig { abstract.returns(T::Hash[Symbol, Integer]) }
     def fuse_memory_map; end
@@ -93,7 +93,7 @@ module AVR
 
     sig { returns(T::Hash[Integer, Symbol]) }
     def data_memory_map_by_address
-      @data_memory_map_by_address ||= data_memory_map.each_with_object({}) do |(n, a), h|
+      @data_memory_map_by_address ||= register_memory_map.each_with_object({}) do |(n, a), h|
         h[a] = n unless n =~ /^_/
       end
     end
@@ -108,9 +108,9 @@ module AVR
     sig { params(port: T.any(Symbol, String)).returns(T::Hash[Symbol, Integer]) }
     def standard_port(port)
       {
-        pin:  data_memory_map[:"PIN#{port}"],
-        ddr:  data_memory_map[:"DDR#{port}"],
-        port: data_memory_map[:"PORT#{port}"],
+        pin:  register_memory_map[:"PIN#{port}"],
+        ddr:  register_memory_map[:"DDR#{port}"],
+        port: register_memory_map[:"PORT#{port}"],
       }
     end
 

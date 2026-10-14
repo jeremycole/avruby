@@ -14,7 +14,7 @@ module AVR
         @register_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
         @fuse_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
         @word_register_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Hash[Symbol, Integer]]))
-        @data_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
+        @register_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_default_values = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @boot_size_map = T.let(nil, T.nilable(T::Hash[Integer, Integer]))
@@ -79,8 +79,8 @@ module AVR
       end
 
       sig { override.returns(T::Hash[Symbol, Integer]) }
-      def data_memory_map
-        @data_memory_map ||= {
+      def register_memory_map
+        @register_memory_map ||= {
           # 32 registers, r0-r31
           PINA:   0x0020,
           DDRA:   0x0021,
