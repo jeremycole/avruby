@@ -238,16 +238,6 @@ module AVR
     end
 
     sig { void }
-    def trace_fuses
-      fuses.watch do |memory_byte, old_value, new_value|
-        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
-          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
-          format(memory_byte.format, old_value),
-          format(memory_byte.format, new_value))
-      end
-    end
-
-    sig { void }
     def trace_status_pre_tick
       oscillator.unshift_sink(
         Clock::Sink.new("pre-execution status") do
@@ -278,7 +268,6 @@ module AVR
       trace_sram
       trace_flash
       trace_eeprom
-      trace_fuses
       trace_sreg
       trace_registers
       trace_status_pre_tick
