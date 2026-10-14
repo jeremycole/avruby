@@ -70,6 +70,11 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :io_registers
 
+    sig { returns(Fuses) }
+    def fuses
+      device.fuses
+    end
+
     # SREG uses metaprogramming that Sorbet doesn't understand
     # sig { returns(SREG) }
     sig { returns(T.untyped) }
@@ -167,6 +172,9 @@ module AVR
       puts
       puts "IO Registers:"
       io_registers.print_status
+      puts
+      puts "Fuses:"
+      fuses.registers.print_status
       puts
       puts "IO Ports:"
       puts format("%4s  %s", "", Port::PINS.join(" "))

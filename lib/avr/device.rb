@@ -17,8 +17,14 @@ module AVR
     sig { abstract.returns(Integer) }
     def eeprom_size; end
 
+    sig { abstract.returns(Integer) }
+    def fuse_size; end
+
     sig { abstract.returns(T::Hash[Symbol, Integer]) }
     def data_memory_map; end
+
+    sig { abstract.returns(T::Hash[Symbol, Integer]) }
+    def fuse_memory_map; end
 
     sig { abstract.returns(Integer) }
     def register_start; end
@@ -28,6 +34,12 @@ module AVR
 
     sig { abstract.returns(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]) }
     def register_bit_names_map; end
+
+    sig { abstract.returns(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]) }
+    def fuse_bit_names_map; end
+
+    sig { abstract.returns(T::Hash[Symbol, Integer]) }
+    def fuse_default_values; end
 
     sig { abstract.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
     def word_register_map; end
@@ -108,11 +120,15 @@ module AVR
     sig { returns(EEPROM) }
     attr_reader :eeprom
 
+    sig { returns(Fuses) }
+    attr_reader :fuses
+
     sig { void }
     def initialize
       @cpu = T.let(CPU.new(self), CPU)
       @flash = T.let(Flash.new(flash_size), Flash)
       @eeprom = T.let(EEPROM.new(eeprom_size, cpu), EEPROM)
+      @fuses = T.let(Fuses.new(self), Fuses)
 
       @system_clock = T.let(Clock.new("system"), Clock)
       @system_clock.push_sink(cpu.clock)
@@ -198,6 +214,16 @@ module AVR
     end
 
     sig { void }
+    def trace_fuses
+      fuses.watch do |memory_byte, old_value, new_value|
+        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
+          format(memory_byte.format, old_value),
+          format(memory_byte.format, new_value))
+      end
+    end
+
+    sig { void }
     def trace_status_pre_tick
       oscillator.unshift_sink(
         Clock::Sink.new("pre-execution status") do
@@ -228,6 +254,7 @@ module AVR
       trace_sram
       trace_flash
       trace_eeprom
+      trace_fuses
       trace_sreg
       trace_registers
       trace_status_pre_tick
