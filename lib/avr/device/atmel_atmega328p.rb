@@ -12,8 +12,11 @@ module AVR
 
         # Type annotations for variables used in memoization.
         @register_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
+        @fuse_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
         @word_register_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Hash[Symbol, Integer]]))
         @data_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
+        @fuse_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
+        @fuse_default_values = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @interrupt_vector_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @port_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Hash[Symbol, Integer]]))
       end
@@ -31,6 +34,38 @@ module AVR
       sig { override.returns(Integer) }
       def eeprom_size
         512
+      end
+
+      sig { override.returns(Integer) }
+      def fuse_size
+        3
+      end
+
+      sig { override.returns(T::Hash[Symbol, Integer]) }
+      def fuse_memory_map
+        @fuse_memory_map ||= {
+          LOW:      0,
+          HIGH:     1,
+          EXTENDED: 2,
+        }.freeze
+      end
+
+      sig { override.returns(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]) }
+      def fuse_bit_names_map
+        @fuse_bit_names_map ||= {
+          LOW:      [:CKSEL0, :CKSEL1, :CKSEL2, :CKSEL3, :SUT0, :SUT1, :CKOUT, :CKDIV8],
+          HIGH:     [:BOOTRST, :BOOTSZ0, :BOOTSZ1, :EESAVE, :WDTON, :SPIEN, :DWEN, :RSTDISBL],
+          EXTENDED: [:BODLEVEL0, :BODLEVEL1, :BODLEVEL2, nil, nil, nil, nil, nil],
+        }.freeze
+      end
+
+      sig { override.returns(T::Hash[Symbol, Integer]) }
+      def fuse_default_values
+        @fuse_default_values ||= {
+          LOW:      0x62,
+          HIGH:     0xd9,
+          EXTENDED: 0xff,
+        }.freeze
       end
 
       sig { override.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
