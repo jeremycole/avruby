@@ -79,6 +79,39 @@ RSpec.describe(AVR::Device) do
       expect(device.register_memory_map[:UDR0]).to(eq(0x00c6))
     end
 
+    it "has all expected register bit names map entries" do
+      expect(device.register_bit_names_map[:TIMSK0]).to(eq([:TOIE0, :OCIE0A, :OCIE0B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIMSK1]).to(eq([:TOIE1, :OCIE1A, :OCIE1B, nil, nil, :ICIE1, nil, nil]))
+      expect(device.register_bit_names_map[:TIMSK2]).to(eq([:TOIE2, :OCIE2A, :OCIE2B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR0]).to(eq([:TOV0, :OCF0A, :OCF0B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR1]).to(eq([:TOV1, :OCF1A, :OCF1B, nil, nil, :ICF1, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR2]).to(eq([:TOV2, :OCF2A, :OCF2B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:GTCCR]).to(eq([:PSRSYNC, :PSRASY, nil, nil, nil, nil, nil, :TSM]))
+      expect(device.register_bit_names_map[:PRR]).to(eq(
+        [:PRADC, :PRUSART0, :PRSPI, :PRTIM1, nil, :PRTIM0, :PRTIM2, :PRTWI]
+      ))
+      expect(device.register_bit_names_map[:ADMUX]).to(eq([:MUX0, :MUX1, :MUX2, :MUX3, nil, :ADLAR, :REFS0, :REFS1]))
+      expect(device.register_bit_names_map[:DIDR0]).to(eq([:ADC0D, :ADC1D, :ADC2D, :ADC3D, :ADC4D, :ADC5D, nil, nil]))
+      expect(device.register_bit_names_map[:PCIFR]).to(eq([:PCIF0, :PCIF1, :PCIF2, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EIFR]).to(eq([:INTF0, :INTF1, nil, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EIMSK]).to(eq([:INT0, :INT1, nil, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EICRA]).to(eq([:ISC00, :ISC01, :ISC10, :ISC11, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:MCUCR]).to(eq([:IVCE, :IVSEL, nil, nil, :PUD, :BODSE, :BODS, nil]))
+      expect(device.register_bit_names_map[:MCUSR]).to(eq([:PORF, :EXTRF, :BORF, :WDRF, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:SPMCSR]).to(eq(
+        [:SPMEN, :PGERS, :PGWRT, :BLBSET, :RWWSRE, :SIGRD, :RWWSB, :SPMIE]
+      ))
+      expect(device.register_bit_names_map[:UCSR0A]).to(eq(
+        [:MPCM0, :U2X0, :UPE0, :DOR0, :FE0, :UDRE0, :TXC0, :RXC0]
+      ))
+      expect(device.register_bit_names_map[:UCSR0B]).to(eq(
+        [:TXB80, :RXB80, :UCSZ02, :TXEN0, :RXEN0, :UDRIE0, :TXCIE0, :RXCIE0]
+      ))
+      expect(device.register_bit_names_map[:UCSR0C]).to(eq(
+        [:UCPOL0, :UCSZ00, :UCSZ01, :USBS0, :UPM00, :UPM01, :UMSEL00, :UMSEL01]
+      ))
+    end
+
     it "calculates correct boot reset address for each BOOTSZ setting" do
       # Flash size = 32768 bytes = 16384 words (0x4000)
       # BOOTSZ = 3 -> 256 words -> 0x3F00 (16128)
@@ -208,6 +241,50 @@ RSpec.describe(AVR::Device) do
       expect(device.register_memory_map[:UBRR1L]).to(eq(0x00cc))
       expect(device.register_memory_map[:UBRR1H]).to(eq(0x00cd))
       expect(device.register_memory_map[:UDR1]).to(eq(0x00ce))
+    end
+
+    it "has all expected register bit names map entries" do
+      expect(device.register_bit_names_map[:TIMSK0]).to(eq([:TOIE0, :OCIE0A, :OCIE0B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIMSK1]).to(eq([:TOIE1, :OCIE1A, :OCIE1B, nil, nil, :ICIE1, nil, nil]))
+      expect(device.register_bit_names_map[:TIMSK2]).to(eq([:TOIE2, :OCIE2A, :OCIE2B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR0]).to(eq([:TOV0, :OCF0A, :OCF0B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR1]).to(eq([:TOV1, :OCF1A, :OCF1B, nil, nil, :ICF1, nil, nil]))
+      expect(device.register_bit_names_map[:TIFR2]).to(eq([:TOV2, :OCF2A, :OCF2B, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:GTCCR]).to(eq([:PSR10, :PSR2, nil, nil, nil, nil, nil, :TSM]))
+      expect(device.register_bit_names_map[:PRR0]).to(eq(
+        [:PRADC, :PRUSART0, :PRSPI, :PRTIM1, :PRUSART1, :PRTIM0, :PRTIM2, :PRTWI]
+      ))
+      expect(device.register_bit_names_map[:ADMUX]).to(eq([:MUX0, :MUX1, :MUX2, :MUX3, :MUX4, :ADLAR, :REFS0, :REFS1]))
+      expect(device.register_bit_names_map[:DIDR0]).to(eq(
+        [:ADC0D, :ADC1D, :ADC2D, :ADC3D, :ADC4D, :ADC5D, :ADC6D, :ADC7D]
+      ))
+      expect(device.register_bit_names_map[:PCIFR]).to(eq([:PCIF0, :PCIF1, :PCIF2, :PCIF3, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EIFR]).to(eq([:INTF0, :INTF1, :INTF2, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EIMSK]).to(eq([:INT0, :INT1, :INT2, nil, nil, nil, nil, nil]))
+      expect(device.register_bit_names_map[:EICRA]).to(eq([:ISC00, :ISC01, :ISC10, :ISC11, :ISC20, :ISC21, nil, nil]))
+      expect(device.register_bit_names_map[:MCUCR]).to(eq([:IVCE, :IVSEL, nil, nil, :PUD, :BODSE, :BODS, :JTD]))
+      expect(device.register_bit_names_map[:MCUSR]).to(eq([:PORF, :EXTRF, :BORF, :WDRF, :JTRF, nil, nil, nil]))
+      expect(device.register_bit_names_map[:SPMCSR]).to(eq(
+        [:SPMEN, :PGERS, :PGWRT, :BLBSET, :RWWSRE, :SIGRD, :RWWSB, :SPMIE]
+      ))
+      expect(device.register_bit_names_map[:UCSR0A]).to(eq(
+        [:MPCM0, :U2X0, :UPE0, :DOR0, :FE0, :UDRE0, :TXC0, :RXC0]
+      ))
+      expect(device.register_bit_names_map[:UCSR0B]).to(eq(
+        [:TXB80, :RXB80, :UCSZ02, :TXEN0, :RXEN0, :UDRIE0, :TXCIE0, :RXCIE0]
+      ))
+      expect(device.register_bit_names_map[:UCSR0C]).to(eq(
+        [:UCPOL0, :UCSZ00, :UCSZ01, :USBS0, :UPM00, :UPM01, :UMSEL00, :UMSEL01]
+      ))
+      expect(device.register_bit_names_map[:UCSR1A]).to(eq(
+        [:MPCM1, :U2X1, :UPE1, :DOR1, :FE1, :UDRE1, :TXC1, :RXC1]
+      ))
+      expect(device.register_bit_names_map[:UCSR1B]).to(eq(
+        [:TXB81, :RXB81, :UCSZ12, :TXEN1, :RXEN1, :UDRIE1, :TXCIE1, :RXCIE1]
+      ))
+      expect(device.register_bit_names_map[:UCSR1C]).to(eq(
+        [:UCPOL1, :UCSZ10, :UCSZ11, :USBS1, :UPM10, :UPM11, :UMSEL10, :UMSEL11]
+      ))
     end
 
     it "calculates correct boot reset address for each BOOTSZ setting" do
