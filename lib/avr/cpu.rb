@@ -113,7 +113,9 @@ module AVR
       end
 
       @io_registers = RegisterFile.new(self)
-      device.io_registers.each do |name|
+      (device.io_registers + device.ext_io_registers).each do |name|
+        next unless name
+
         address = device.register_memory_map[name]
         next unless address
 
@@ -190,10 +192,10 @@ module AVR
 
     sig { void }
     def reset_to_clean_state
-      reset
       registers.reset
       io_registers.reset
       sram.reset
+      reset
       sp.value = device.ram_end
     end
 
@@ -202,6 +204,24 @@ module AVR
       @pc = device.reset_address
       @next_pc = @pc
       sreg.reset
+      reset_clkpr
+    end
+
+    sig { void }
+    def reset_clkpr
+      return unless io_registers.registers.key?("CLKPR")
+
+      clkpr = io_registers.registers["CLKPR"]
+      clkdiv8 = device.fuses.respond_to?(:ckdiv8?) && T.unsafe(device.fuses).ckdiv8?
+
+      if clkpr.is_a?(MemoryByteRegisterWithNamedBits)
+        clkpr.CLKPS0 = clkdiv8
+        clkpr.CLKPS1 = clkdiv8
+        clkpr.CLKPS2 = false
+        clkpr.CLKPS3 = false
+      else
+        clkpr.value = (clkpr.value & ~0x0f) | (clkdiv8 ? 0x03 : 0x00)
+      end
     end
 
     sig { returns(Integer) }
