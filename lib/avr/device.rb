@@ -105,6 +105,13 @@ module AVR
       end
     end
 
+    sig { returns(T::Array[T.nilable(Symbol)]) }
+    def ext_io_registers
+      @ext_io_registers ||= (0...ext_io_register_count).map do |i|
+        data_memory_map_by_address[ext_io_register_start + i]
+      end
+    end
+
     sig { params(port: T.any(Symbol, String)).returns(T::Hash[Symbol, Integer]) }
     def standard_port(port)
       {
@@ -162,6 +169,7 @@ module AVR
 
       @data_memory_map_by_address = T.let(nil, T.nilable(T::Hash[Integer, Symbol]))
       @io_registers = T.let(nil, T.nilable(T::Array[T.nilable(Symbol)]))
+      @ext_io_registers = T.let(nil, T.nilable(T::Array[T.nilable(Symbol)]))
     end
 
     sig { void }
