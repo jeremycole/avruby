@@ -112,7 +112,7 @@ module AVR
     end
 
     decode("1001 001r rrrr 1100", :st) do |cpu, _opcode_definition, operands|
-      cpu.instruction(:st, cpu.X, operands.fetch(:Rr))
+      cpu.instruction(:st, RegisterWithModification.new(cpu.X), operands.fetch(:Rr))
     end
 
     decode("1001 001r rrrr 1101", :st) do |cpu, _opcode_definition, operands|
