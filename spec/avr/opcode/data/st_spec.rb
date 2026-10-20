@@ -44,6 +44,15 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.sram.memory[0x0200].value).to(eq(0xaf))
         expect(cpu.Z.value).to(eq(0x0201))
       end
+
+      it "executes correctly when decoded from flash (ST X, Rr)" do
+        cpu.X = 0x0200
+        cpu.r0 = 0xaf
+        device.flash.set_word(0, 0b1001_0010_0000_1100)
+        cpu.step
+        expect(cpu.sram.memory[0x0200].value).to(eq(0xaf))
+        expect(cpu.X.value).to(eq(0x0200))
+      end
     end
   end
 end
