@@ -181,16 +181,20 @@ module AVR
       subkeys = des_generate_subkeys(key64)
       subkey = decrypt ? T.must(subkeys[15 - k]) : T.must(subkeys[k])
 
-      ip_val = des_permute(data64, DES_IP, 64)
-      l = (ip_val >> 32) & 0xffffffff
-      r = ip_val & 0xffffffff
+      state = k.zero? ? des_permute(data64, DES_IP, 64) : data64
+      l = (state >> 32) & 0xffffffff
+      r = state & 0xffffffff
 
       f_val = des_feistel(r, subkey)
       next_l = r
       next_r = l ^ f_val
 
-      combined = k == 15 ? ((next_r << 32) | next_l) : ((next_l << 32) | next_r)
-      des_permute(combined, DES_FP, 64)
+      if k == 15
+        combined = (next_r << 32) | next_l
+        des_permute(combined, DES_FP, 64)
+      else
+        (next_l << 32) | next_r
+      end
     end
 
     parse_operands("____ ____ KKKK ____") do |_cpu, operands|
