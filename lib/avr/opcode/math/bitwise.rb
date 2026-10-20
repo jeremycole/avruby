@@ -32,7 +32,7 @@ module AVR
       cpu.instruction(:andi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:andi, [Arg.register, Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:andi, [Arg.register(16..31), Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value & args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result
@@ -62,7 +62,7 @@ module AVR
       cpu.instruction(:ori, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:ori, [Arg.register, Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
+    opcode(:ori, [Arg.register(16..31), Arg.byte], [:S, :V, :N, :Z]) do |cpu, _memory, args|
       result = (args.fetch(0).value | args.fetch(1).value)
       set_sreg_for_and_or(cpu, result)
       args.fetch(0).value = result

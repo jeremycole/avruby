@@ -19,7 +19,7 @@ module AVR
       cpu.instruction(:lds, operands.fetch(:Rd), operands.fetch(:k))
     end
 
-    opcode(:lds, [Arg.register, Arg.word]) do |cpu, _memory, args|
+    opcode(:lds, [Arg.register(16..31), Arg.word]) do |cpu, _memory, args|
       cpu.next_pc += 1
       args.fetch(0).value = cpu.sram.memory.fetch(args.fetch(1).value).value
     end
@@ -106,7 +106,7 @@ module AVR
     #   cpu.instruction(:sts, operands.fetch(:k), operands.fetch(:Rr))
     # end
 
-    opcode(:sts, [Arg.word, Arg.register]) do |cpu, _memory, args|
+    opcode(:sts, [Arg.word, Arg.register(16..31)]) do |cpu, _memory, args|
       cpu.next_pc += 1
       cpu.sram.memory.fetch(args.fetch(0).value).value = args.fetch(1).value
     end

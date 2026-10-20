@@ -51,7 +51,7 @@ module AVR
       cpu.instruction(:subi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:subi, [Arg.register, Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:subi, [Arg.register(16..31), Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
       args.fetch(0).value = result
@@ -71,7 +71,7 @@ module AVR
       cpu.instruction(:sbci, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:sbci, [Arg.register, Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:sbci, [Arg.register(16..31), Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
       set_sreg_for_sub_sbc(cpu, result, args.fetch(0).value, args.fetch(1).value)
       args.fetch(0).value = result
