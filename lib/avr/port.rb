@@ -6,6 +6,7 @@ module AVR
     extend T::Sig
 
     PINS = T.let((0..7).to_a.freeze, T::Array[Integer])
+    STATES = T.let([:H, :L, :Z].freeze, T::Array[Symbol])
 
     sig { returns(CPU) }
     attr_reader :cpu
@@ -29,13 +30,6 @@ module AVR
       @pin_address = pin_address
       @ddr_address = ddr_address
       @port_address = port_address
-      @sram_watch = T.let(
-        Memory::Watch.new do |_memory_byte, _old_value, _new_value|
-          # puts "Port watch fired"
-        end,
-        Memory::Watch
-      )
-      @cpu.sram.push_watch(@sram_watch, [@ddr_address, @port_address])
     end
 
     sig { returns(MemoryByte) }
@@ -55,7 +49,7 @@ module AVR
 
     sig { params(pin: Integer, state: Symbol).returns(Symbol) }
     def pin_input(pin, state)
-      raise unless [:H, :L, :Z].include?(state)
+      raise unless STATES.include?(state)
 
       @input[pin] = state
     end
