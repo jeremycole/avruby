@@ -17,7 +17,7 @@ module AVR
 
     class RegisterExpected < OpcodeException; end
 
-    class UpperRegisterExpected < OpcodeException; end
+    class RegisterOutOfRange < OpcodeException; end
 
     class WordRegisterExpected < OpcodeException; end
 
@@ -108,11 +108,19 @@ module AVR
     module Arg
       extend T::Sig
 
-      sig { returns(OpcodeArgumentDefinition) }
-      def self.register
-        OpcodeArgumentDefinition
-          .new(:register)
-          .validator { |arg| RegisterExpected unless arg.is_a?(Register) }
+      sig { params(range: T.nilable(T::Range[Integer])).returns(OpcodeArgumentDefinition) }
+      def self.register(range = nil)
+        argument = OpcodeArgumentDefinition
+                   .new(:register)
+                   .validator { |arg| RegisterExpected unless arg.is_a?(GeneralPurposeRegister) }
+
+        if range
+          argument.validator do |arg|
+            RegisterOutOfRange unless range.cover?(arg.number)
+          end
+        end
+
+        argument
       end
 
       sig { returns(OpcodeArgumentDefinition) }

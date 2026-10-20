@@ -105,7 +105,7 @@ module AVR
       @registers = RegisterFile.new(self)
 
       device.register_count.times do |n|
-        registers.add(MemoryByteRegister.new(self, "r#{n}", @sram.memory[n]))
+        registers.add(GeneralPurposeRegister.new(self, n, @sram.memory[n]))
       end
 
       device.word_register_map.each do |name, map|

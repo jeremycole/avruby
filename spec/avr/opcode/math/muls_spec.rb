@@ -98,6 +98,14 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.sreg.Z).to(be(true))
         expect(cpu.sreg.C).to(be(false))
       end
+
+      it "validates that Rd and Rr are within r16..r31" do
+        expect(cpu.instruction(:muls, cpu.r16, cpu.r31).valid?).to(be(true))
+        expect { cpu.instruction(:muls, cpu.r0, cpu.r16).execute }.to(raise_error(AVR::Opcode::RegisterOutOfRange))
+        expect { cpu.instruction(:muls, cpu.r15, cpu.r16).execute }.to(raise_error(AVR::Opcode::RegisterOutOfRange))
+        expect { cpu.instruction(:muls, cpu.r16, cpu.r0).execute }.to(raise_error(AVR::Opcode::RegisterOutOfRange))
+        expect { cpu.instruction(:muls, cpu.r16, cpu.r15).execute }.to(raise_error(AVR::Opcode::RegisterOutOfRange))
+      end
     end
   end
 end

@@ -17,7 +17,7 @@ module AVR
       cpu.instruction(:muls, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:muls, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:muls, [Arg.register(16..31), Arg.register(16..31)], [:Z, :C]) do |cpu, _memory, args|
       result = from_twos_complement(args.fetch(0).value, 8) * from_twos_complement(args.fetch(1).value, 8)
       result_twos_comp = to_twos_complement(result, 16)
       cpu.sreg.from_h({ Z: result.zero?, C: (result_twos_comp & 0x8000) != 0 })
@@ -28,7 +28,7 @@ module AVR
       cpu.instruction(:mulsu, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:mulsu, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:mulsu, [Arg.register(16..23), Arg.register(16..23)], [:Z, :C]) do |cpu, _memory, args|
       result = from_twos_complement(args.fetch(0).value, 8) * args.fetch(1).value
       result_twos_comp = to_twos_complement(result, 16)
       cpu.sreg.from_h({ Z: result.zero?, C: (result_twos_comp & 0x8000) != 0 })
@@ -39,7 +39,7 @@ module AVR
       cpu.instruction(:fmul, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmul, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:fmul, [Arg.register(16..23), Arg.register(16..23)], [:Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value * args.fetch(1).value) << 1
       cpu.sreg.from_h({ Z: (result & 0xffff).zero?, C: (result & 0x10000) != 0 })
       cpu.r1r0.value = result & 0xffff
@@ -49,7 +49,7 @@ module AVR
       cpu.instruction(:fmuls, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmuls, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:fmuls, [Arg.register(16..23), Arg.register(16..23)], [:Z, :C]) do |cpu, _memory, args|
       result = from_twos_complement(args.fetch(0).value, 8) * from_twos_complement(args.fetch(1).value, 8)
       result_twos_comp = to_twos_complement(result, 16) << 1
       cpu.sreg.from_h({ Z: (result_twos_comp & 0xffff).zero?, C: (result_twos_comp & 0x10000) != 0 })
@@ -60,7 +60,7 @@ module AVR
       cpu.instruction(:fmulsu, operands.fetch(:Rd), operands.fetch(:Rr))
     end
 
-    opcode(:fmulsu, [Arg.register, Arg.register], [:Z, :C]) do |cpu, _memory, args|
+    opcode(:fmulsu, [Arg.register(16..23), Arg.register(16..23)], [:Z, :C]) do |cpu, _memory, args|
       result = from_twos_complement(args.fetch(0).value, 8) * args.fetch(1).value
       result_twos_comp = to_twos_complement(result, 16) << 1
       cpu.sreg.from_h({ Z: (result_twos_comp & 0xffff).zero?, C: (result_twos_comp & 0x10000) != 0 })

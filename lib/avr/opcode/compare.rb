@@ -46,7 +46,7 @@ module AVR
       cpu.instruction(:cpi, operands.fetch(:Rd), operands.fetch(:K))
     end
 
-    opcode(:cpi, [Arg.register, Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
+    opcode(:cpi, [Arg.register(16..31), Arg.byte], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
       result = (args.fetch(0).value - args.fetch(1).value) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpi)
     end
