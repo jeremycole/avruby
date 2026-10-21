@@ -10,6 +10,7 @@ require "pp"
 
 def format_bytes(n)
   return format("%d B", n) if n < 1024
+
   format("%.0f KiB", n.to_f / 1024)
 end
 
@@ -23,9 +24,7 @@ def initialize_device(device_name)
   super_device_class = device_class.superclass if device_class.superclass != AVR::Device
 
   device_name = device_class.device_name
-  if super_device_class
-    device_name += " (#{super_device_class.device_name})"
-  end
+  device_name += " (#{super_device_class.device_name})" if super_device_class
 
   print("Initializing #{device_name} device... ")
   @device = device_class.new
