@@ -41,6 +41,7 @@ require "avr/device"
 require "avr/port"
 
 require "avr/device/atmel_atmega328p"
+require "avr/device/atmel_atmega32u4"
 require "avr/device/atmel_atmega644pa"
 
 require "avr/device/arduino_uno_r3"

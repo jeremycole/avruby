@@ -50,6 +50,13 @@ RSpec.describe(AVR::Fuses) do
     expect(mega644.fuses.EXTENDED.value).to(eq(0xff))
   end
 
+  it "initializes ATmega32u4 with standard default fuse values" do
+    mega32u4 = AVR::Device::Atmel_ATmega32u4.new
+    expect(mega32u4.fuses.LOW.value).to(eq(0x5e))
+    expect(mega32u4.fuses.HIGH.value).to(eq(0x99))
+    expect(mega32u4.fuses.EXTENDED.value).to(eq(0xf3))
+  end
+
   it "has correct named bit values for ATmega328p low fuse default (0x62)" do
     expect(fuses.LOW.CKSEL0).to(be(false))
     expect(fuses.LOW.CKSEL1).to(be(true))
@@ -82,6 +89,14 @@ RSpec.describe(AVR::Fuses) do
     expect(mega644.fuses.HIGH.SPIEN).to(be(false))
     expect(mega644.fuses.HIGH.JTAGEN).to(be(false))
     expect(mega644.fuses.HIGH.OCDEN).to(be(true))
+  end
+
+  it "has correct named bit values for ATmega32u4 extended fuse default (0xf3)" do
+    mega32u4 = AVR::Device::Atmel_ATmega32u4.new
+    expect(mega32u4.fuses.EXTENDED.BODLEVEL0).to(be(true))
+    expect(mega32u4.fuses.EXTENDED.BODLEVEL1).to(be(true))
+    expect(mega32u4.fuses.EXTENDED.BODLEVEL2).to(be(false))
+    expect(mega32u4.fuses.EXTENDED.HWBE).to(be(false))
   end
 
   it "has correct named bit values for extended fuse default (0xff)" do
