@@ -10,6 +10,7 @@ require "pp"
 
 def format_bytes(n)
   return format("%d B", n) if n < 1024
+  return format("%.1f KiB", n.to_f / 1024) if n % 1024 != 0
 
   format("%.0f KiB", n.to_f / 1024)
 end
