@@ -2,6 +2,23 @@
 # frozen_string_literal: true
 
 RSpec.describe(AVR::Device) do
+  describe ".devices" do
+    it "registers loaded device types" do
+      expect(described_class.devices).to(include(
+        Atmel_ATmega328p: AVR::Device::Atmel_ATmega328p,
+        Atmel_ATmega644pa: AVR::Device::Atmel_ATmega644pa
+      ))
+    end
+
+    it "automatically registers new subclasses" do
+      class CustomRegisteredDevice < AVR::Device # rubocop:disable RSpec/LeakyConstantDeclaration, Lint/ConstantDefinitionInBlock
+        abstract!
+      end
+
+      expect(described_class.devices[:CustomRegisteredDevice]).to(eq(CustomRegisteredDevice))
+    end
+  end
+
   describe "Atmel_ATmega328p" do
     let(:device) { AVR::Device::Atmel_ATmega328p.new }
     let(:cpu) { device.cpu }
