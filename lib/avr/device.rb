@@ -19,13 +19,14 @@ module AVR
       sig { params(subclass: T.class_of(Device)).void }
       def inherited(subclass)
         super
+
         name = subclass.name&.split("::")&.last
-        devices[name.to_sym] = subclass if name
+        AVR::Device.devices[name.to_sym] = subclass if name
       end
 
       sig { returns(T.nilable(String)) }
       def device_name
-        name&.split("::")&.last&.sub("_", " ") # rubocop:disable Style/SafeNavigationChainLength
+        name&.split("::")&.last&.gsub("_", " ") # rubocop:disable Style/SafeNavigationChainLength
       end
     end
 
