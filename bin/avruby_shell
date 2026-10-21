@@ -8,6 +8,11 @@ require "irb"
 require "irb/completion"
 require "pp"
 
+def format_bytes(n)
+  return format("%d B", n) if n < 1024
+  format("%.0f KiB", n.to_f / 1024)
+end
+
 def initialize_device(device_name)
   device_class = AVR::Device::Atmel_ATmega328p
   if device_name
@@ -15,13 +20,20 @@ def initialize_device(device_name)
     raise "No device found matching #{device_name}." unless device_class
   end
 
-  print("Initializing #{device_class.device_name} device... ")
+  super_device_class = device_class.superclass if device_class.superclass != AVR::Device
+
+  device_name = device_class.device_name
+  if super_device_class
+    device_name += " (#{super_device_class.device_name})"
+  end
+
+  print("Initializing #{device_name} device... ")
   @device = device_class.new
   @cpu = @device.cpu
   puts "OK."
-  puts "- #{@device.sram_size / 1024} KiB SRAM"
-  puts "- #{@device.flash_size / 1024} KiB Flash"
-  puts "- #{@device.eeprom_size / 1024} KiB EEPROM"
+  puts "- #{format_bytes(@device.sram_size)} SRAM"
+  puts "- #{format_bytes(@device.flash_size)} Flash"
+  puts "- #{format_bytes(@device.eeprom_size)} EEPROM"
 end
 
 def apply_fuses(fuses)
