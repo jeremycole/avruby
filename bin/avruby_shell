@@ -8,15 +8,24 @@ require "irb"
 require "irb/completion"
 require "pp"
 
-def initialize_device
-  print("Initializing device... ")
-  @device = AVR::Device::Atmel_ATmega328p.new
+def initialize_device(device_name)
+  device_class = AVR::Device::Atmel_ATmega328p
+  if device_name
+    device_class = AVR::Device.devices.select { |k, _v| k.match(/#{device_name}/i) }.values.first
+    raise "No device found matching #{device_name}." unless device_class
+  end
+
+  print("Initializing #{device_class.device_name} device... ")
+  @device = device_class.new
   @cpu = @device.cpu
   puts "OK."
+  puts "- #{@device.sram_size / 1024} KiB SRAM"
+  puts "- #{@device.flash_size / 1024} KiB Flash"
+  puts "- #{@device.eeprom_size / 1024} KiB EEPROM"
 end
 
 def apply_fuses(fuses)
-  print("Setting fuses... ")
+  print("Setting fuses to #{fuses.map { |n| format('%02x', n) }.join(', ')}... ")
   @device.fuses.set(fuses)
   puts "OK."
 end
@@ -119,6 +128,7 @@ IRB.conf[:PROMPT_MODE] = :avruby_shell
   benchmark_ticks:              nil,
   benchmark_warmup_time:        nil,
   benchmark_print_opcode_cache: false,
+  device:                       nil,
   intel_hex_files:              [],
   fuses:                        nil,
 }
@@ -128,6 +138,9 @@ OptionParser.new do |opts|
     puts opts
     puts
     exit
+  end
+  opts.on("-D", "--device=DEVICE", "Specify the device to use.") do |o|
+    @options[:device] = o
   end
   opts.on("-F", "--fuses=FUSES", "Specify the fuse values, in hexadecimal.") do |o|
     @options[:fuses] = o.split(/[,\s]+/).map { |v| v.to_i(16) }
@@ -148,7 +161,7 @@ OptionParser.new do |opts|
   opts.on("-I", "--intel-hex-file=FILE", "Load Intel hex file.") { |o| @options[:intel_hex_files] << o }
 end.parse!
 
-initialize_device
+initialize_device(@options[:device])
 apply_fuses(@options[:fuses]) if @options[:fuses]
 load_intel_hex_files(@options[:intel_hex_files]) unless @options[:intel_hex_files].empty?
 enable_tracing if @options[:trace]

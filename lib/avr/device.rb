@@ -8,6 +8,27 @@ module AVR
 
     abstract!
 
+    @devices = T.let({}, T::Hash[Symbol, T.class_of(Device)])
+
+    class << self
+      extend T::Sig
+
+      sig { returns(T::Hash[Symbol, T.class_of(Device)]) }
+      attr_reader :devices
+
+      sig { params(subclass: T.class_of(Device)).void }
+      def inherited(subclass)
+        super
+        name = subclass.name&.split("::")&.last
+        devices[name.to_sym] = subclass if name
+      end
+
+      sig { returns(T.nilable(String)) }
+      def device_name
+        name&.split("::")&.last&.sub("_", " ") # rubocop:disable Style/SafeNavigationChainLength
+      end
+    end
+
     sig { abstract.returns(Integer) }
     def sram_size; end
 
