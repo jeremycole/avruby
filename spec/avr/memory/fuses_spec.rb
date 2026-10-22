@@ -1,14 +1,14 @@
 # typed: false
 # frozen_string_literal: true
 
-RSpec.describe(AVR::Fuses) do
+RSpec.describe(AVR::Memory::Fuses) do
   let(:device) { AVR::Device::Atmel_ATmega328p.new }
   let(:cpu) { device.cpu }
   let(:fuses) { device.fuses }
 
-  it "is defined and is a subclass of AVR::Memory" do
+  it "is defined and is a subclass of AVR::Memory::MemoryByteBacked" do
     expect(described_class).to(be_an_instance_of(Class))
-    expect(described_class.superclass).to(eq(AVR::Memory))
+    expect(described_class.superclass).to(eq(AVR::Memory::MemoryByteBacked))
   end
 
   it "is available in the device and cpu" do

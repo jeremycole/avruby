@@ -166,21 +166,21 @@ module AVR
     sig { returns(Oscillator) }
     attr_reader :oscillator
 
-    sig { returns(Flash) }
+    sig { returns(Memory::Flash) }
     attr_reader :flash
 
-    sig { returns(EEPROM) }
+    sig { returns(Memory::EEPROM) }
     attr_reader :eeprom
 
-    sig { returns(Fuses) }
+    sig { returns(Memory::Fuses) }
     attr_reader :fuses
 
     sig { void }
     def initialize
       @cpu = T.let(CPU.new(self), CPU)
-      @flash = T.let(Flash.new(flash_size), Flash)
-      @eeprom = T.let(EEPROM.new(eeprom_size, cpu), EEPROM)
-      @fuses = T.let(Fuses.new(self), Fuses)
+      @flash = T.let(Memory::Flash.new(flash_size), Memory::Flash)
+      @eeprom = T.let(Memory::EEPROM.new(eeprom_size, cpu), Memory::EEPROM)
+      @fuses = T.let(Memory::Fuses.new(self), Memory::Fuses)
       @cpu.reset
 
       @system_clock = T.let(Clock.new("system"), Clock)

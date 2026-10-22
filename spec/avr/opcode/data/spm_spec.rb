@@ -47,7 +47,7 @@ RSpec.describe(AVR::Opcode) do
           cpu.io_registers.add(rampz_reg)
           cpu.RAMPZ.value = 1
 
-          large_flash = AVR::Flash.new(0x20000)
+          large_flash = AVR::Memory::Flash.new(0x20000)
           allow(device).to receive(:flash).and_return(large_flash)
 
           cpu.r0 = 0xef

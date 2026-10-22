@@ -12,7 +12,9 @@ end
 
 require "avr/version"
 require "avr/value"
+require "avr/memory_byte"
 require "avr/memory"
+require "avr/memory/memory_byte_backed"
 require "avr/memory/sram"
 require "avr/memory/eeprom"
 require "avr/memory/flash"
