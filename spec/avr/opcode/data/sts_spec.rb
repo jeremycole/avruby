@@ -8,7 +8,7 @@ RSpec.describe(AVR::Opcode) do
       it "stores the contents of the register into data memory pointed to by an immediate" do
         cpu.r16 = 0xaf
         cpu.instruction(:sts, AVR::Value.new(0x0500), cpu.r16).execute
-        expect(cpu.sram.memory[0x0500].value).to(eq(0xaf))
+        expect(cpu.sram[0x0500].value).to(eq(0xaf))
       end
 
       it "validates that Rr is within r16..r31" do

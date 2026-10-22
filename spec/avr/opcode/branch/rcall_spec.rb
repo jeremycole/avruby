@@ -10,8 +10,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.pc = 0x1122
         cpu.instruction(:rcall, AVR::Value.new(+20)).execute
         expect(cpu.sp.value).to(eq(previous_sp - 2))
-        expect(cpu.sram.memory[cpu.sp.value + 1].value).to(eq(0x22 + 1))
-        expect(cpu.sram.memory[cpu.sp.value + 2].value).to(eq(0x11))
+        expect(cpu.sram[cpu.sp.value + 1].value).to(eq(0x22 + 1))
+        expect(cpu.sram[cpu.sp.value + 2].value).to(eq(0x11))
       end
 
       it "adjusts PC by the specified offset" do

@@ -16,8 +16,8 @@ module AVR
     sig { returns(Integer) }
     attr_reader :size
 
-    sig { params(name: String, size: Integer, value: Integer).void }
-    def initialize(name, size, value = 0)
+    sig { params(name: String, size: Integer).void }
+    def initialize(name, size)
       @name = name
       @size = size
     end
@@ -30,24 +30,17 @@ module AVR
       "#<#{self.class.name} size=#{size}>"
     end
 
-    sig { void }
-    def reset
-      memory.each do |byte|
-        byte.value = 0
-      end
-    end
-
     sig { params(address: Integer).returns(Integer) }
     def word(address)
       byte_address = address << 1
-      (T.must(memory[byte_address + 1]).value << 8) | T.must(memory[byte_address]).value
+      (self[byte_address + 1].value << 8) | self[byte_address].value
     end
 
     sig { params(address: Integer, value: Integer).void }
     def set_word(address, value)
       byte_address = address << 1
-      T.must(memory[byte_address + 1]).value = (value & 0xff00) >> 8
-      T.must(memory[byte_address]).value = value & 0x00ff
+      self[byte_address + 1].value = (value & 0xff00) >> 8
+      self[byte_address].value = value & 0x00ff
     end
 
     sig { params(filename: String).returns(Integer) }
@@ -55,7 +48,7 @@ module AVR
       ihex = IntelHex::FileReader.new(filename)
       sum = 0
       ihex.each_byte_with_address do |byte, address|
-        T.must(memory[address]).value = byte
+        self[address].value = byte
         sum += 1
       end
       sum

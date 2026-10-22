@@ -13,7 +13,7 @@ RSpec.describe(AVR::Opcode) do
 
       context "when called with a Z+ operand" do
         it "loads the program memory pointed to by Z into the register" do
-          cpu.device.flash.memory[0x0500].value = 0xaf
+          cpu.device.flash[0x0500].value = 0xaf
           cpu.Z = 0x0500
           cpu.instruction(:lpm, cpu.r0, AVR::RegisterWithModification.new(cpu.Z, :post_increment)).execute
           expect(cpu.r0.value).to(eq(0xaf))

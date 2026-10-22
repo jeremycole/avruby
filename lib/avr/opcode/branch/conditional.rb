@@ -63,7 +63,7 @@ module AVR
     end
 
     opcode(:sbic, [Arg.byte, Arg.bit_number]) do |cpu, _memory, args|
-      io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
+      io_register = cpu.sram[cpu.device.io_register_start + args.fetch(0).value]
       cpu.decode if io_register.value & (1 << args.fetch(1).value) == 0
     end
 
@@ -72,7 +72,7 @@ module AVR
     end
 
     opcode(:sbis, [Arg.byte, Arg.bit_number]) do |cpu, _memory, args|
-      io_register = cpu.sram.memory.fetch(cpu.device.io_register_start + args.fetch(0).value)
+      io_register = cpu.sram[cpu.device.io_register_start + args.fetch(0).value]
       cpu.decode if io_register.value & (1 << args.fetch(1).value) != 0
     end
   end

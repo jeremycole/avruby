@@ -318,7 +318,7 @@ module AVR
 
     sig { params(cpu: CPU, byte: Integer).returns(Integer) }
     def self.stack_push(cpu, byte)
-      cpu.sram.memory.fetch(cpu.sp.value).value = byte
+      cpu.sram[cpu.sp.value].value = byte
       cpu.sp.decrement
     end
 
@@ -331,7 +331,7 @@ module AVR
     sig { params(cpu: CPU).returns(Integer) }
     def self.stack_pop(cpu)
       cpu.sp.increment
-      cpu.sram.memory.fetch(cpu.sp.value).value
+      cpu.sram[cpu.sp.value].value
     end
 
     sig { params(cpu: CPU).returns(Integer) }

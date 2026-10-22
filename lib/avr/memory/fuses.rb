@@ -61,7 +61,7 @@ module AVR
       def [](key)
         case key
         when Integer
-          memory[key]
+          super
         when Symbol, String
           @registers.registers[key.to_s] || @registers.registers[key.to_s.upcase]
         end
