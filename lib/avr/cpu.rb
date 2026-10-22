@@ -19,6 +19,11 @@ module AVR
     sig { returns(Memory::SRAM) }
     attr_reader :sram
 
+    sig { returns(Memory) }
+    def data_address_space
+      sram
+    end
+
     sig { returns(RegisterFile) }
     attr_reader :registers
 
@@ -105,7 +110,7 @@ module AVR
       @registers = RegisterFile.new(self)
 
       device.register_count.times do |n|
-        registers.add(GeneralPurposeRegister.new(self, n, @sram[n]))
+        registers.add(GeneralPurposeRegister.new(self, n, data_address_space[n]))
       end
 
       device.word_register_map.each do |name, map|
@@ -121,9 +126,9 @@ module AVR
 
         bit_names = device.register_bit_names_map[name]
         if bit_names
-          io_registers.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, @sram[address], bit_names))
+          io_registers.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names))
         else
-          io_registers.add(MemoryByteRegister.new(self, name.to_s, @sram[address]))
+          io_registers.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
         end
       end
 
@@ -131,8 +136,8 @@ module AVR
 
       @sp = SP.new(
         self,
-        @sram[device.register_memory_map[:SPH]],
-        @sram[device.register_memory_map[:SPL]],
+        data_address_space[device.register_memory_map[:SPH]],
+        data_address_space[device.register_memory_map[:SPL]],
         device.ram_end
       )
 

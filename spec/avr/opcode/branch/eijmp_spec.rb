@@ -13,7 +13,7 @@ RSpec.describe(AVR::Opcode) do
 
       context "when EIND register is present" do
         it "sets PC to the address specified by EIND:Z" do
-          eind_reg = AVR::MemoryByteRegister.new(cpu, "EIND", cpu.sram[0x3c])
+          eind_reg = AVR::MemoryByteRegister.new(cpu, "EIND", cpu.data_address_space[0x3c])
           cpu.io_registers.add(eind_reg)
           cpu.EIND.value = 0x02
 

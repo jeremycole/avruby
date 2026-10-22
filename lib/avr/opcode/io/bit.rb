@@ -8,7 +8,7 @@ module AVR
     end
 
     opcode(:cbi, [Arg.lower_io_address, Arg.bit_number]) do |cpu, _memory, args|
-      cpu.sram[cpu.device.io_register_start + args.fetch(0).value].value &= ~(1 << args.fetch(1).value)
+      cpu.data_address_space[cpu.device.io_register_start + args.fetch(0).value].value &= ~(1 << args.fetch(1).value)
     end
 
     decode("1001 1010 AAAA Abbb", :sbi) do |cpu, _opcode_definition, operands|
@@ -16,7 +16,7 @@ module AVR
     end
 
     opcode(:sbi, [Arg.lower_io_address, Arg.bit_number]) do |cpu, _memory, args|
-      cpu.sram[cpu.device.io_register_start + args.fetch(0).value].value |= (1 << args.fetch(1).value)
+      cpu.data_address_space[cpu.device.io_register_start + args.fetch(0).value].value |= (1 << args.fetch(1).value)
     end
   end
 end
