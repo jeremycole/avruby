@@ -9,7 +9,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.X = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:st, AVR::RegisterWithModification.new(cpu.X), cpu.r0).execute
-        expect(cpu.sram[0x0200].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0200].value).to(eq(0xaf))
         expect(cpu.X.value).to(eq(0x0200))
       end
 
@@ -17,7 +17,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.X = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:st, AVR::RegisterWithModification.new(cpu.X, :pre_decrement), cpu.r0).execute
-        expect(cpu.sram[0x01ff].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x01ff].value).to(eq(0xaf))
         expect(cpu.X.value).to(eq(0x01ff))
       end
 
@@ -25,7 +25,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.X = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:st, AVR::RegisterWithModification.new(cpu.X, :post_increment), cpu.r0).execute
-        expect(cpu.sram[0x0200].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0200].value).to(eq(0xaf))
         expect(cpu.X.value).to(eq(0x0201))
       end
 
@@ -33,7 +33,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.Y = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:st, AVR::RegisterWithModification.new(cpu.Y, :post_increment), cpu.r0).execute
-        expect(cpu.sram[0x0200].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0200].value).to(eq(0xaf))
         expect(cpu.Y.value).to(eq(0x0201))
       end
 
@@ -41,7 +41,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.Z = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:st, AVR::RegisterWithModification.new(cpu.Z, :post_increment), cpu.r0).execute
-        expect(cpu.sram[0x0200].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0200].value).to(eq(0xaf))
         expect(cpu.Z.value).to(eq(0x0201))
       end
 
@@ -50,7 +50,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.r0 = 0xaf
         device.flash.set_word(0, 0b1001_0010_0000_1100)
         cpu.step
-        expect(cpu.sram[0x0200].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0200].value).to(eq(0xaf))
         expect(cpu.X.value).to(eq(0x0200))
       end
     end

@@ -43,7 +43,7 @@ RSpec.describe(AVR::Opcode) do
 
       context "when RAMPZ register is present" do
         it "writes r1:r0 to the program memory addressed by RAMPZ:Z" do
-          rampz_reg = AVR::MemoryByteRegister.new(cpu, "RAMPZ", cpu.sram[0x3b])
+          rampz_reg = AVR::MemoryByteRegister.new(cpu, "RAMPZ", cpu.data_address_space[0x3b])
           cpu.io_registers.add(rampz_reg)
           cpu.RAMPZ.value = 1
 

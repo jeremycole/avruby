@@ -21,7 +21,7 @@ module AVR
 
     opcode(:lds, [Arg.register(16..31), Arg.word]) do |cpu, _memory, args|
       cpu.next_pc += 1
-      args.fetch(0).value = cpu.sram[args.fetch(1).value].value
+      args.fetch(0).value = cpu.data_address_space[args.fetch(1).value].value
     end
 
     decode("1001 000d dddd 1100", :ld) do |cpu, _opcode_definition, operands|
@@ -63,7 +63,7 @@ module AVR
     opcode(:ld, [Arg.register, Arg.modifying_word_register]) do |cpu, _memory, args|
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
-      args.fetch(0).value = cpu.sram[mwr.register.value].value
+      args.fetch(0).value = cpu.data_address_space[mwr.register.value].value
       mwr.register.value += 1 if mwr.modification == :post_increment
     end
 
@@ -84,7 +84,7 @@ module AVR
 
     opcode(:ldd, [Arg.register, Arg.displaced_word_register]) do |cpu, _memory, args|
       dwr = T.cast(args.fetch(1), RegisterWithDisplacement)
-      args.fetch(0).value = cpu.sram[dwr.register.value + dwr.displacement].value
+      args.fetch(0).value = cpu.data_address_space[dwr.register.value + dwr.displacement].value
     end
 
     decode("1001 001r rrrr 0000", :sts) do |cpu, _opcode_definition, operands|
@@ -108,7 +108,7 @@ module AVR
 
     opcode(:sts, [Arg.word, Arg.register(16..31)]) do |cpu, _memory, args|
       cpu.next_pc += 1
-      cpu.sram[args.fetch(0).value].value = args.fetch(1).value
+      cpu.data_address_space[args.fetch(0).value].value = args.fetch(1).value
     end
 
     decode("1001 001r rrrr 1100", :st) do |cpu, _opcode_definition, operands|
@@ -150,7 +150,7 @@ module AVR
     opcode(:st, [Arg.modifying_word_register, Arg.register]) do |cpu, _memory, args|
       mwr = T.cast(args.fetch(0), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
-      cpu.sram[mwr.register.value].value = args.fetch(1).value
+      cpu.data_address_space[mwr.register.value].value = args.fetch(1).value
       mwr.register.value += 1 if mwr.modification == :post_increment
     end
 
@@ -171,7 +171,7 @@ module AVR
 
     opcode(:std, [Arg.displaced_word_register, Arg.register]) do |cpu, _memory, args|
       dwr = T.cast(args.fetch(0), RegisterWithDisplacement)
-      cpu.sram[dwr.register.value + dwr.displacement].value = args.fetch(1).value
+      cpu.data_address_space[dwr.register.value + dwr.displacement].value = args.fetch(1).value
     end
 
     sig { params(memory_byte: MemoryByte, register: Value, mnemonic: Symbol).void }
@@ -195,7 +195,7 @@ module AVR
     end
 
     opcode(:xch, [Arg.register]) do |cpu, _memory, args|
-      exchange_memory_byte_with_register(cpu.sram[cpu.Z.value], args.fetch(0), :xch)
+      exchange_memory_byte_with_register(cpu.data_address_space[cpu.Z.value], args.fetch(0), :xch)
     end
 
     decode("1001 001r rrrr 0101", :las) do |cpu, _opcode_definition, operands|
@@ -203,7 +203,7 @@ module AVR
     end
 
     opcode(:las, [Arg.register]) do |cpu, _memory, args|
-      exchange_memory_byte_with_register(cpu.sram[cpu.Z.value], args.fetch(0), :las)
+      exchange_memory_byte_with_register(cpu.data_address_space[cpu.Z.value], args.fetch(0), :las)
     end
 
     decode("1001 001r rrrr 0110", :lac) do |cpu, _opcode_definition, operands|
@@ -211,7 +211,7 @@ module AVR
     end
 
     opcode(:lac, [Arg.register]) do |cpu, _memory, args|
-      exchange_memory_byte_with_register(cpu.sram[cpu.Z.value], args.fetch(0), :lac)
+      exchange_memory_byte_with_register(cpu.data_address_space[cpu.Z.value], args.fetch(0), :lac)
     end
 
     decode("1001 001r rrrr 0111", :lat) do |cpu, _opcode_definition, operands|
@@ -219,7 +219,7 @@ module AVR
     end
 
     opcode(:lat, [Arg.register]) do |cpu, _memory, args|
-      exchange_memory_byte_with_register(cpu.sram[cpu.Z.value], T.cast(args.fetch(0), Register), :lat)
+      exchange_memory_byte_with_register(cpu.data_address_space[cpu.Z.value], T.cast(args.fetch(0), Register), :lat)
     end
   end
 end

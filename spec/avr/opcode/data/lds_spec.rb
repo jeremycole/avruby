@@ -6,7 +6,7 @@ RSpec.describe(AVR::Opcode) do
   describe "lds" do
     it_behaves_like "opcode", :lds do
       it "loads the data memory pointed to by an immediate into the register" do
-        cpu.sram[0x0500].value = 0xaf
+        cpu.data_address_space[0x0500].value = 0xaf
         cpu.instruction(:lds, cpu.r16, AVR::Value.new(0x0500)).execute
         expect(cpu.r16.value).to(eq(0xaf))
       end

@@ -11,8 +11,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.Z = 0x1234
         cpu.instruction(:eicall).execute
         expect(cpu.sp.value).to(eq(previous_sp - 2))
-        expect(cpu.sram[cpu.sp.value + 1].value).to(eq(0x22 + 1))
-        expect(cpu.sram[cpu.sp.value + 2].value).to(eq(0x11))
+        expect(cpu.data_address_space[cpu.sp.value + 1].value).to(eq(0x22 + 1))
+        expect(cpu.data_address_space[cpu.sp.value + 2].value).to(eq(0x11))
       end
 
       it "sets PC to the specified constant in Z when EIND is not present" do
@@ -23,7 +23,7 @@ RSpec.describe(AVR::Opcode) do
 
       context "when EIND register is present" do
         it "sets PC to the address specified by EIND:Z" do
-          eind_reg = AVR::MemoryByteRegister.new(cpu, "EIND", cpu.sram[0x3c])
+          eind_reg = AVR::MemoryByteRegister.new(cpu, "EIND", cpu.data_address_space[0x3c])
           cpu.io_registers.add(eind_reg)
           cpu.EIND.value = 0x02
 
@@ -35,8 +35,8 @@ RSpec.describe(AVR::Opcode) do
           expect(cpu.EIND.value).to(eq(0x02))
           expect(cpu.Z.value).to(eq(0x1234))
           expect(cpu.sp.value).to(eq(previous_sp - 2))
-          expect(cpu.sram[cpu.sp.value + 1].value).to(eq(0x22 + 1))
-          expect(cpu.sram[cpu.sp.value + 2].value).to(eq(0x11))
+          expect(cpu.data_address_space[cpu.sp.value + 1].value).to(eq(0x22 + 1))
+          expect(cpu.data_address_space[cpu.sp.value + 2].value).to(eq(0x11))
         end
       end
     end

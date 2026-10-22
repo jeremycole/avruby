@@ -34,17 +34,17 @@ module AVR
 
     sig { returns(MemoryByte) }
     def pin
-      cpu.sram[@pin_address]
+      cpu.data_address_space[@pin_address]
     end
 
     sig { returns(MemoryByte) }
     def ddr
-      cpu.sram[@ddr_address]
+      cpu.data_address_space[@ddr_address]
     end
 
     sig { returns(MemoryByte) }
     def port
-      cpu.sram[@port_address]
+      cpu.data_address_space[@port_address]
     end
 
     sig { params(pin: Integer, state: Symbol).returns(Symbol) }

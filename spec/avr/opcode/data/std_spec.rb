@@ -9,7 +9,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.Y = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:std, AVR::RegisterWithDisplacement.new(cpu.Y, +5), cpu.r0).execute
-        expect(cpu.sram[0x0205].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0205].value).to(eq(0xaf))
         expect(cpu.Y.value).to(eq(0x0200))
       end
 
@@ -17,7 +17,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.Z = 0x0200
         cpu.r0 = 0xaf
         cpu.instruction(:std, AVR::RegisterWithDisplacement.new(cpu.Z, +5), cpu.r0).execute
-        expect(cpu.sram[0x0205].value).to(eq(0xaf))
+        expect(cpu.data_address_space[0x0205].value).to(eq(0xaf))
         expect(cpu.Z.value).to(eq(0x0200))
       end
     end
