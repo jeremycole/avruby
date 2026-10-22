@@ -70,7 +70,7 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :io_registers
 
-    sig { returns(Fuses) }
+    sig { returns(Memory::Fuses) }
     def fuses
       device.fuses
     end
@@ -100,7 +100,7 @@ module AVR
       @device = device
       @pc = 0
       @next_pc = 0
-      @sram = SRAM.new(device.ram_start + device.sram_size)
+      @sram = Memory::SRAM.new(device.ram_start + device.sram_size)
 
       @registers = RegisterFile.new(self)
 

@@ -2,12 +2,14 @@
 # frozen_string_literal: true
 
 module AVR
-  class SRAM < Memory
-    extend T::Sig
+  class Memory
+    class SRAM < MemoryByteBacked
+      extend T::Sig
 
-    sig { params(size: Integer).void }
-    def initialize(size)
-      super("SRAM", size, 0)
+      sig { params(size: Integer).void }
+      def initialize(size)
+        super("SRAM", size, 0)
+      end
     end
   end
 end
