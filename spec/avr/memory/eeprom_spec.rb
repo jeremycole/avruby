@@ -27,7 +27,7 @@ RSpec.describe(AVR::Memory::EEPROM) do
   end
 
   it "can read data from EEPROM" do
-    device.eeprom.memory[0xaa].value = 0xaf
+    device.eeprom[0xaa].value = 0xaf
     cpu.EEDR.value = 0x00
     cpu.EEARL.value = 0xaa
     cpu.EECR.EERE = true
@@ -50,18 +50,18 @@ RSpec.describe(AVR::Memory::EEPROM) do
   end
 
   it "can write data to EEPROM" do
-    device.eeprom.memory[0xaa].value = 0xff
+    device.eeprom[0xaa].value = 0xff
     cpu.EEDR.value = 0xaf
     cpu.EEARL.value = 0xaa
     cpu.EECR.EEMPE = true
     cpu.EECR.EEPE = true
-    expect(device.eeprom.memory[0xaa].value).to(eq(0xaf))
+    expect(device.eeprom[0xaa].value).to(eq(0xaf))
     expect(cpu.EECR.EEMPE).to(be(false))
     expect(cpu.EECR.EEPE).to(be(false))
   end
 
   it "calls the EE_READY interrupt when ready" do
-    device.eeprom.memory[0xaa].value = 0xaf
+    device.eeprom[0xaa].value = 0xaf
     cpu.EEDR.value = 0x00
     cpu.EEARL.value = 0xaa
     cpu.EECR.EERIE = true

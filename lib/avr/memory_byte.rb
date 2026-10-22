@@ -5,7 +5,7 @@ module AVR
   class MemoryByte
     extend T::Sig
 
-    sig { returns(Memory) }
+    sig { returns(Memory::MemoryByteBacked) }
     attr_reader :memory
 
     sig { returns(Integer) }
@@ -14,7 +14,7 @@ module AVR
     sig { returns(Integer) }
     attr_reader :value
 
-    sig { params(memory: Memory, address: Integer, value: Integer).void }
+    sig { params(memory: Memory::MemoryByteBacked, address: Integer, value: Integer).void }
     def initialize(memory, address, value)
       @memory = memory
       @address = address

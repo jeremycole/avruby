@@ -69,7 +69,7 @@ module AVR
 
       sig { params(name: String, size: Integer, value: Integer).void }
       def initialize(name, size, value = 0)
-        super
+        super(name, size)
 
         @memory = T.let(
           size.times.map { |address| MemoryByte.new(self, address, value) },
@@ -80,7 +80,14 @@ module AVR
 
       sig { params(address: Integer).returns(MemoryByte).override }
       def [](address)
-        memory[address]
+        memory.fetch(address)
+      end
+
+      sig { void }
+      def reset
+        memory.each do |byte|
+          byte.value = 0
+        end
       end
 
       sig { params(memory_byte: MemoryByte, old_value: Integer, new_value: Integer).void }

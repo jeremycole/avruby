@@ -11,8 +11,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.Z = 0x1234
         cpu.instruction(:icall).execute
         expect(cpu.sp.value).to(eq(previous_sp - 2))
-        expect(cpu.sram.memory[cpu.sp.value + 1].value).to(eq(0x22 + 1))
-        expect(cpu.sram.memory[cpu.sp.value + 2].value).to(eq(0x11))
+        expect(cpu.sram[cpu.sp.value + 1].value).to(eq(0x22 + 1))
+        expect(cpu.sram[cpu.sp.value + 2].value).to(eq(0x11))
       end
 
       it "sets PC to the specified constant" do

@@ -19,7 +19,7 @@ module AVR
       args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
-      args.fetch(0).value = cpu.device.flash.memory.fetch(mwr.register.value).value
+      args.fetch(0).value = cpu.device.flash[mwr.register.value].value
       mwr.register.value += 1 if mwr.modification == :post_increment
     end
 
@@ -41,7 +41,7 @@ module AVR
       mwr.register.value -= 1 if mwr.modification == :pre_decrement
       rampz = cpu.io_registers.registers["RAMPZ"]&.value || cpu.registers.registers["RAMPZ"]&.value || 0
       address = (rampz << 16) | mwr.register.value
-      args.fetch(0).value = cpu.device.flash.memory.fetch(address).value
+      args.fetch(0).value = cpu.device.flash[address].value
       mwr.register.value += 1 if mwr.modification == :post_increment
     end
 
@@ -59,8 +59,8 @@ module AVR
       mwr.register.value -= 2 if mwr.modification == :pre_decrement
       rampz = cpu.io_registers.registers["RAMPZ"]&.value || cpu.registers.registers["RAMPZ"]&.value || 0
       address = (rampz << 16) | mwr.register.value
-      cpu.device.flash.memory.fetch(address).value = cpu.r0.value
-      cpu.device.flash.memory.fetch(address + 1).value = cpu.r1.value
+      cpu.device.flash[address].value = cpu.r0.value
+      cpu.device.flash[address + 1].value = cpu.r1.value
       mwr.register.value += 2 if mwr.modification == :post_increment
     end
   end

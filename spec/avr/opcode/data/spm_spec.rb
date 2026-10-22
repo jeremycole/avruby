@@ -11,8 +11,8 @@ RSpec.describe(AVR::Opcode) do
           cpu.r1 = 0x12
           cpu.Z = 0x0500
           cpu.instruction(:spm).execute
-          expect(cpu.device.flash.memory[0x0500].value).to(eq(0x34))
-          expect(cpu.device.flash.memory[0x0501].value).to(eq(0x12))
+          expect(cpu.device.flash[0x0500].value).to(eq(0x34))
+          expect(cpu.device.flash[0x0501].value).to(eq(0x12))
           expect(cpu.Z.value).to(eq(0x0500))
         end
       end
@@ -23,8 +23,8 @@ RSpec.describe(AVR::Opcode) do
           cpu.r1 = 0xab
           cpu.Z = 0x0500
           cpu.instruction(:spm, AVR::RegisterWithModification.new(cpu.Z)).execute
-          expect(cpu.device.flash.memory[0x0500].value).to(eq(0xcd))
-          expect(cpu.device.flash.memory[0x0501].value).to(eq(0xab))
+          expect(cpu.device.flash[0x0500].value).to(eq(0xcd))
+          expect(cpu.device.flash[0x0501].value).to(eq(0xab))
           expect(cpu.Z.value).to(eq(0x0500))
         end
       end
@@ -35,15 +35,15 @@ RSpec.describe(AVR::Opcode) do
           cpu.r1 = 0x56
           cpu.Z = 0x0500
           cpu.instruction(:spm, AVR::RegisterWithModification.new(cpu.Z, :post_increment)).execute
-          expect(cpu.device.flash.memory[0x0500].value).to(eq(0x78))
-          expect(cpu.device.flash.memory[0x0501].value).to(eq(0x56))
+          expect(cpu.device.flash[0x0500].value).to(eq(0x78))
+          expect(cpu.device.flash[0x0501].value).to(eq(0x56))
           expect(cpu.Z.value).to(eq(0x0502))
         end
       end
 
       context "when RAMPZ register is present" do
         it "writes r1:r0 to the program memory addressed by RAMPZ:Z" do
-          rampz_reg = AVR::MemoryByteRegister.new(cpu, "RAMPZ", cpu.sram.memory[0x3b])
+          rampz_reg = AVR::MemoryByteRegister.new(cpu, "RAMPZ", cpu.sram[0x3b])
           cpu.io_registers.add(rampz_reg)
           cpu.RAMPZ.value = 1
 
@@ -54,8 +54,8 @@ RSpec.describe(AVR::Opcode) do
           cpu.r1 = 0xbe
           cpu.Z = 0x0500
           cpu.instruction(:spm, AVR::RegisterWithModification.new(cpu.Z, :post_increment)).execute
-          expect(large_flash.memory[0x10500].value).to(eq(0xef))
-          expect(large_flash.memory[0x10501].value).to(eq(0xbe))
+          expect(large_flash[0x10500].value).to(eq(0xef))
+          expect(large_flash[0x10501].value).to(eq(0xbe))
           expect(cpu.Z.value).to(eq(0x0502))
           expect(cpu.RAMPZ.value).to(eq(1))
         end
