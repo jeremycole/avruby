@@ -134,7 +134,7 @@ module AVR
         OpcodeArgumentDefinition
           .new(:sreg_flag)
           .validator { |arg| StatusRegisterBitExpected unless arg.is_a?(Value) }
-          .validator { |arg| StatusRegisterBitExpected unless arg.value.between?(0, 1) }
+          .validator { |arg| StatusRegisterBitExpected unless arg.value.between?(0, 7) }
       end
 
       sig { returns(OpcodeArgumentDefinition) }
