@@ -61,7 +61,7 @@ module AVR
           if filter
             return true if filter&.include?(address)
 
-            false
+            return false
           end
           true
         end
