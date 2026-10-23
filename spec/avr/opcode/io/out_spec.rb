@@ -4,7 +4,7 @@ require "shared_examples_for_opcode"
 
 RSpec.describe(AVR::Opcode) do
   describe "out" do
-    let(:portb_io_address) { AVR::Value.new(cpu.PORTB.memory_byte.address - device.io_register_start) }
+    let(:portb_io_address) { AVR::Value.new(device.register_memory_map[:PORTB] - device.io_register_start) }
     let(:portb) { cpu.PORTB.memory_byte }
 
     it_behaves_like "opcode", :out do

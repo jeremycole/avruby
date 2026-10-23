@@ -16,13 +16,20 @@ module AVR
     sig { returns(Integer) }
     attr_accessor :next_pc
 
+    sig { returns(Memory::MemoryByteBacked) }
+    attr_reader :register_memory
+
+    sig { returns(Memory::MemoryByteBacked) }
+    attr_reader :io_register_memory
+
+    sig { returns(Memory::MemoryByteBacked) }
+    attr_reader :ext_io_register_memory
+
     sig { returns(Memory::SRAM) }
     attr_reader :sram
 
-    sig { returns(Memory) }
-    def data_address_space
-      sram
-    end
+    sig { returns(Memory::AddressSpace) }
+    attr_reader :data_address_space
 
     sig { returns(RegisterFile) }
     attr_reader :registers
@@ -75,6 +82,9 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :io_registers
 
+    sig { returns(RegisterFile) }
+    attr_reader :ext_io_registers
+
     sig { returns(Memory::Fuses) }
     def fuses
       device.fuses
@@ -105,7 +115,11 @@ module AVR
       @device = device
       @pc = 0
       @next_pc = 0
-      @sram = Memory::SRAM.new(device.ram_start + device.sram_size)
+
+      @data_address_space = Memory::AddressSpace.new("Data Address Space", 0xffff)
+
+      @register_memory = Memory::MemoryByteBacked.new("registers", device.register_count, 0)
+      data_address_space.attach(@register_memory, 0)
 
       @registers = RegisterFile.new(self)
 
@@ -117,18 +131,28 @@ module AVR
         registers.add(RegisterPair.new(self, @registers[map[:h]], @registers[map[:l]], name))
       end
 
+      @io_register_memory = Memory::MemoryByteBacked.new("io_registers", device.io_register_count, 0)
+      data_address_space.attach(@io_register_memory, device.io_register_start)
+
+      @ext_io_register_memory = Memory::MemoryByteBacked.new("ext_io_registers", device.ext_io_register_count, 0)
+      data_address_space.attach(@ext_io_register_memory, device.ext_io_register_start)
+
       @io_registers = RegisterFile.new(self)
-      (device.io_registers + device.ext_io_registers).each do |name|
-        next unless name
+      @ext_io_registers = RegisterFile.new(self)
 
-        address = device.register_memory_map[name]
-        next unless address
+      { @io_registers => device.io_registers, @ext_io_registers => device.ext_io_registers }.each do |register_file, names|
+        names.each do |name|
+          next unless name
 
-        bit_names = device.register_bit_names_map[name]
-        if bit_names
-          io_registers.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names))
-        else
-          io_registers.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
+          address = device.register_memory_map[name]
+          next unless address
+
+          bit_names = device.register_bit_names_map[name]
+          if bit_names
+            register_file.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names))
+          else
+            register_file.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
+          end
         end
       end
 
@@ -140,6 +164,9 @@ module AVR
         data_address_space[device.register_memory_map[:SPL]],
         device.ram_end
       )
+
+      @sram = Memory::SRAM.new(device.sram_size)
+      data_address_space.attach(@sram, device.ram_start)
 
       @decoder = OpcodeDecoder.new
 
@@ -199,6 +226,7 @@ module AVR
     def reset_to_clean_state
       registers.reset
       io_registers.reset
+      ext_io_registers.reset
       sram.reset
       reset
       sp.value = device.ram_end
@@ -214,9 +242,9 @@ module AVR
 
     sig { void }
     def reset_clkpr
-      return unless io_registers.registers.key?("CLKPR")
+      return unless ext_io_registers.registers.key?("CLKPR")
 
-      clkpr = io_registers.registers["CLKPR"]
+      clkpr = ext_io_registers.registers["CLKPR"]
       clkdiv8 = device.fuses.respond_to?(:ckdiv8?) && T.unsafe(device.fuses).ckdiv8?
 
       if clkpr.is_a?(MemoryByteRegisterWithNamedBits)
