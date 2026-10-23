@@ -197,7 +197,7 @@ module AVR
     sig { void }
     def trace_cpu
       cpu.trace do |instruction|
-        puts format("*** %20s: %04x %s", "INSTRUCTION TRACE", cpu.pc * 2, instruction)
+        puts format("*** %24s: %04x %s", "INSTRUCTION TRACE", cpu.pc * 2, instruction)
       end
     end
 
@@ -219,7 +219,7 @@ module AVR
       memory.watch do |memory_byte, old_value, _new_value|
         registers = register_addresses[memory_byte.address]
         registers&.each do |register|
-          puts format("*** %20s: %12s: %4s -> %4s",
+          puts format("*** %24s: %12s: %4s -> %4s",
             trace_name,
             register.name,
             register.is_a?(MemoryByteRegister) ? register.format % old_value : "",
@@ -239,7 +239,7 @@ module AVR
     def trace_sreg
       cpu.io_register_memory.watch do |memory_byte, old_value, new_value|
         if memory_byte.address == cpu.sreg.memory_byte.address
-          puts format("*** %20s: %s", "SREG TRACE", cpu.sreg.diff_values(old_value, new_value))
+          puts format("*** %24s: %s", "SREG TRACE", cpu.sreg.diff_values(old_value, new_value))
         end
       end
     end
@@ -247,7 +247,7 @@ module AVR
     sig { void }
     def trace_sram
       cpu.sram.watch do |memory_byte, old_value, new_value|
-        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+        puts format("*** %24s: %12s: %4s -> %4s", "MEMORY TRACE",
           format("%s[%04x]", memory_byte.memory.name, ram_start + memory_byte.address),
           format(memory_byte.format, old_value),
           format(memory_byte.format, new_value))
@@ -257,7 +257,7 @@ module AVR
     sig { void }
     def trace_flash
       flash.watch do |memory_byte, old_value, new_value|
-        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+        puts format("*** %24s: %12s: %4s -> %4s", "MEMORY TRACE",
           format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
           format(memory_byte.format, old_value),
           format(memory_byte.format, new_value))
@@ -267,7 +267,7 @@ module AVR
     sig { void }
     def trace_eeprom
       eeprom.watch do |memory_byte, old_value, new_value|
-        puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
+        puts format("*** %24s: %12s: %4s -> %4s", "MEMORY TRACE",
           format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
           format(memory_byte.format, old_value),
           format(memory_byte.format, new_value))

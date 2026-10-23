@@ -55,6 +55,11 @@ def enable_tracing
   print("Setting up tracing... ")
   @device.trace_all
   puts "OK."
+
+  puts
+  puts "INITIAL STATUS"
+  puts "**************"
+  @cpu.print_status
 end
 
 def shell
