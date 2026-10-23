@@ -201,10 +201,10 @@ module AVR
       end
     end
 
-    sig { void }
-    def trace_registers
+    sig { params(trace_name: String, register_file: RegisterFile, memory: Memory::MemoryByteBacked).void }
+    def trace_register_file(trace_name, register_file, memory)
       register_addresses = {}
-      cpu.registers.registers.each_value do |register|
+      register_file.registers.each_value do |register|
         case register
         when MemoryByteRegister
           register_addresses[register.memory_byte.address] ||= []
@@ -216,11 +216,11 @@ module AVR
           register_addresses[register.h.memory_byte.address] << register
         end
       end
-      cpu.sram.watch do |memory_byte, old_value, _new_value|
+      memory.watch do |memory_byte, old_value, _new_value|
         registers = register_addresses[memory_byte.address]
         registers&.each do |register|
           puts format("*** %20s: %12s: %4s -> %4s",
-            "REGISTER TRACE",
+            trace_name,
             register.name,
             register.is_a?(MemoryByteRegister) ? register.format % old_value : "",
             register.format % register.value)
@@ -229,8 +229,15 @@ module AVR
     end
 
     sig { void }
+    def trace_registers
+      trace_register_file("REGISTER TRACE", cpu.registers, cpu.register_memory)
+      trace_register_file("IO REGISTER TRACE", cpu.io_registers, cpu.io_register_memory)
+      trace_register_file("EXT IO REGISTER TRACE", cpu.ext_io_registers, cpu.ext_io_register_memory)
+    end
+
+    sig { void }
     def trace_sreg
-      cpu.sram.watch do |memory_byte, old_value, new_value|
+      cpu.io_register_memory.watch do |memory_byte, old_value, new_value|
         if memory_byte.address == cpu.sreg.memory_byte.address
           puts format("*** %20s: %s", "SREG TRACE", cpu.sreg.diff_values(old_value, new_value))
         end
@@ -241,7 +248,7 @@ module AVR
     def trace_sram
       cpu.sram.watch do |memory_byte, old_value, new_value|
         puts format("*** %20s: %12s: %4s -> %4s", "MEMORY TRACE",
-          format("%s[%04x]", memory_byte.memory.name, memory_byte.address),
+          format("%s[%04x]", memory_byte.memory.name, ram_start + memory_byte.address),
           format(memory_byte.format, old_value),
           format(memory_byte.format, new_value))
       end

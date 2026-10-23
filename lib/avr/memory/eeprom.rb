@@ -27,7 +27,7 @@ module AVR
           cpu.EEDR.memory_byte => :EEDR,
         }
 
-        @cpu.sram.watch(@watched_memory_bytes.keys.map(&:address)) do |memory_byte, old_value, new_value|
+        @cpu.io_register_memory.watch(@watched_memory_bytes.keys.map(&:address)) do |memory_byte, old_value, new_value|
           case @watched_memory_bytes[memory_byte]
           when :EECR
             handle_eecr(old_value, new_value)
