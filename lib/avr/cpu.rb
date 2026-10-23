@@ -140,7 +140,10 @@ module AVR
       @io_registers = RegisterFile.new(self)
       @ext_io_registers = RegisterFile.new(self)
 
-      { @io_registers => device.io_registers, @ext_io_registers => device.ext_io_registers }.each do |register_file, names|
+      {
+        @io_registers => device.io_registers,
+        @ext_io_registers => device.ext_io_registers,
+      }.each do |register_file, names|
         names.each do |name|
           next unless name
 
@@ -149,7 +152,9 @@ module AVR
 
           bit_names = device.register_bit_names_map[name]
           if bit_names
-            register_file.add(MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names))
+            register_file.add(
+              MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names)
+            )
           else
             register_file.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
           end
