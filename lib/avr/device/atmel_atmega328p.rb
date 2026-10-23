@@ -34,7 +34,7 @@ module AVR
 
       sig { override.returns(Integer) }
       def eeprom_size
-        512
+        1024
       end
 
       sig { override.returns(Integer) }
