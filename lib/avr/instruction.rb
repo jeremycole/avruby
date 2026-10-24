@@ -62,9 +62,9 @@ module AVR
     def execute
       raise "Invalid instruction" unless valid?
 
-      cpu.next_pc = cpu.pc + 1
+      cpu.next_pc.value = cpu.pc.value + 1
       opcode.execute(cpu, nil, args)
-      cpu.pc = cpu.next_pc
+      cpu.pc.value = cpu.next_pc.value
 
       nil
     end

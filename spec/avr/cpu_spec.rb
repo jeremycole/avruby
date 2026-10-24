@@ -36,8 +36,8 @@ RSpec.describe(AVR::CPU) do
   describe "#reset and #reset_to_clean_state" do
     it "resets registers, PC, and stack pointer" do
       cpu.r0 = 0x99
-      cpu.pc = 0x0100
-      cpu.next_pc = 0x0100
+      cpu.pc.value = 0x0100
+      cpu.next_pc.value = 0x0100
       cpu.sp.value = 0x0100
 
       cpu.reset_to_clean_state
@@ -52,8 +52,8 @@ RSpec.describe(AVR::CPU) do
   describe "#fetch" do
     it "reads word at next_pc and increments next_pc" do
       device.flash.set_word(0, 0x1234)
-      cpu.pc = 0
-      cpu.next_pc = 0
+      cpu.pc.value = 0
+      cpu.next_pc.value = 0
 
       word = cpu.fetch
       expect(word).to(eq(0x1234))
@@ -74,8 +74,8 @@ RSpec.describe(AVR::CPU) do
     before do
       # nop instruction: 0x0000
       device.flash.set_word(0, 0x0000)
-      cpu.pc = 0
-      cpu.next_pc = 0
+      cpu.pc.value = 0
+      cpu.next_pc.value = 0
     end
 
     it "decodes instruction at pc and advances next_pc" do
@@ -104,8 +104,8 @@ RSpec.describe(AVR::CPU) do
     it "executes instruction and invokes trace callback" do
       # ldi r16, 42 -> 0xe20a
       device.flash.set_word(0, 0xe20a)
-      cpu.pc = 0
-      cpu.next_pc = 0
+      cpu.pc.value = 0
+      cpu.next_pc.value = 0
 
       traced = []
       cpu.trace do |instruction|
@@ -121,8 +121,8 @@ RSpec.describe(AVR::CPU) do
 
     it "catches, prints status, and re-raises execution errors" do
       device.flash.set_word(0, 0x0000) # nop
-      cpu.pc = 0
-      cpu.next_pc = 0
+      cpu.pc.value = 0
+      cpu.next_pc.value = 0
 
       inst = cpu.instruction(:nop)
       allow(inst).to(receive(:execute)).and_raise(RuntimeError, "Execution exploded")
@@ -136,8 +136,8 @@ RSpec.describe(AVR::CPU) do
 
   describe "#interrupt" do
     it "clears I flag, pushes return address, and jumps to vector by symbol" do
-      cpu.pc = 0x0100
-      cpu.next_pc = 0x0100
+      cpu.pc.value = 0x0100
+      cpu.next_pc.value = 0x0100
       cpu.sreg.I = true
 
       cpu.interrupt(:INT0) # INT0 vector is 0x0002 on ATmega328p
@@ -147,8 +147,8 @@ RSpec.describe(AVR::CPU) do
     end
 
     it "clears I flag, pushes return address, and jumps to vector by number" do
-      cpu.pc = 0x0100
-      cpu.next_pc = 0x0100
+      cpu.pc.value = 0x0100
+      cpu.next_pc.value = 0x0100
       cpu.sreg.I = true
 
       cpu.interrupt(1) # vector 1 is INT0 -> address 0x0002
@@ -168,8 +168,8 @@ RSpec.describe(AVR::CPU) do
     it "invokes callback when clock reaches target tick" do
       device.flash.set_word(0, 0x0000)
       device.flash.set_word(1, 0x0000)
-      cpu.pc = 0
-      cpu.next_pc = 0
+      cpu.pc.value = 0
+      cpu.next_pc.value = 0
 
       notified = false
       cpu.notify_at_tick(1) do

@@ -16,7 +16,7 @@ module AVR
 
     opcode(:brbs, [Arg.sreg_flag, Arg.near_relative_pc]) do |cpu, _memory, args|
       sreg_bit = RegisterWithBitNumber.new(cpu.sreg, args.fetch(0).value)
-      cpu.next_pc = cpu.pc + args.fetch(1).value + 1 if sreg_bit.value == 1
+      cpu.next_pc.value = cpu.pc.value + args.fetch(1).value + 1 if sreg_bit.value == 1
     end
 
     decode("1111 01kk kkkk ksss", :brbc) do |cpu, _opcode_definition, operands|
@@ -25,7 +25,7 @@ module AVR
 
     opcode(:brbc, [Arg.sreg_flag, Arg.near_relative_pc]) do |cpu, _memory, args|
       sreg_bit = RegisterWithBitNumber.new(cpu.sreg, args.fetch(0).value)
-      cpu.next_pc = cpu.pc + args.fetch(1).value + 1 if sreg_bit.value == 0
+      cpu.next_pc.value = cpu.pc.value + args.fetch(1).value + 1 if sreg_bit.value == 0
     end
 
     decode("0001 00rd dddd rrrr", :cpse) do |cpu, _opcode_definition, operands|

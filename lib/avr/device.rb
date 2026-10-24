@@ -36,6 +36,11 @@ module AVR
     sig { abstract.returns(Integer) }
     def flash_size; end
 
+    sig { returns(Integer) }
+    def flash_size_in_words
+      flash_size / 2
+    end
+
     sig { abstract.returns(Integer) }
     def eeprom_size; end
 
@@ -101,7 +106,7 @@ module AVR
       boot_size = boot_size_map[bootsz]
       return 0 unless boot_size
 
-      (flash_size / 2) - boot_size
+      flash_size_in_words - boot_size
     end
 
     sig { returns(Integer) }
@@ -197,7 +202,7 @@ module AVR
     sig { void }
     def trace_cpu
       cpu.trace do |instruction|
-        puts format("*** %24s: %04x %s", "INSTRUCTION TRACE", cpu.pc * 2, instruction)
+        puts format("*** %24s: %04x %s", "INSTRUCTION TRACE", cpu.pc.value_in_bytes, instruction)
       end
     end
 

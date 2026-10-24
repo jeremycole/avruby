@@ -7,7 +7,7 @@ RSpec.describe(AVR::Opcode) do
     it_behaves_like "opcode", :icall do
       it "pushes the current PC onto the stack" do
         previous_sp = cpu.sp.value
-        cpu.pc = 0x1122
+        cpu.pc.value = 0x1122
         cpu.Z = 0x1234
         cpu.instruction(:icall).execute
         expect(cpu.sp.value).to(eq(previous_sp - 2))
