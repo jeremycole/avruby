@@ -20,7 +20,7 @@ module AVR
     end
 
     opcode(:lds, [Arg.register(16..31), Arg.word]) do |cpu, _memory, args|
-      cpu.next_pc += 1
+      cpu.next_pc.increment
       args.fetch(0).value = cpu.data_address_space[args.fetch(1).value].value
     end
 
@@ -107,7 +107,7 @@ module AVR
     # end
 
     opcode(:sts, [Arg.word, Arg.register(16..31)]) do |cpu, _memory, args|
-      cpu.next_pc += 1
+      cpu.next_pc.increment
       cpu.data_address_space[args.fetch(0).value].value = args.fetch(1).value
     end
 

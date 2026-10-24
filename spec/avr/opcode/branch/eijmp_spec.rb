@@ -12,6 +12,14 @@ RSpec.describe(AVR::Opcode) do
       end
 
       context "when EIND register is present" do
+        let(:device) do
+          Class.new(AVR::Device::Atmel_ATmega328p) do
+            def flash_size
+              0x80000
+            end
+          end.new
+        end
+
         it "sets PC to the address specified by EIND:Z" do
           eind_reg = AVR::MemoryByteRegister.new(cpu, "EIND", cpu.data_address_space[0x3c])
           cpu.io_registers.add(eind_reg)

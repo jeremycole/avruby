@@ -8,7 +8,7 @@ module AVR
     end
 
     opcode(:ret) do |cpu, _memory, _args|
-      cpu.next_pc = stack_pop_word(cpu)
+      cpu.next_pc.value = stack_pop_word(cpu)
     end
 
     decode("1001 0101 0001 1000", :reti) do |cpu, _opcode_definition, _operands|
@@ -17,7 +17,7 @@ module AVR
 
     opcode(:reti, [], [:I]) do |cpu, _memory, _args|
       cpu.sreg.I = true
-      cpu.next_pc = stack_pop_word(cpu)
+      cpu.next_pc.value = stack_pop_word(cpu)
     end
   end
 end

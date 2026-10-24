@@ -10,11 +10,11 @@ module AVR
     sig { returns(Device) }
     attr_reader :device
 
-    sig { returns(Integer) }
-    attr_accessor :pc
+    sig { returns(PC) }
+    attr_reader :pc
 
-    sig { returns(Integer) }
-    attr_accessor :next_pc
+    sig { returns(PC) }
+    attr_reader :next_pc
 
     sig { returns(Memory::MemoryByteBacked) }
     attr_reader :register_memory
@@ -113,8 +113,8 @@ module AVR
     sig { params(device: Device).void }
     def initialize(device)
       @device = device
-      @pc = 0
-      @next_pc = 0
+      @pc = PC.new(device.flash_size_in_words)
+      @next_pc = PC.new(device.flash_size_in_words)
 
       @data_address_space = Memory::AddressSpace.new("Data Address Space", 0xffff)
 
@@ -201,8 +201,7 @@ module AVR
       puts "Status:"
       puts format("%8s = %d", "Ticks", clock.ticks)
       puts format("%8s = %d opcodes", "Cache", decoder.cache.size)
-      puts format("%8s = 0x%04x words", "PC", pc)
-      puts format("%8s = 0x%04x bytes", "PC", pc * 2)
+      puts format("%8s = 0x%04x words (0x%04x bytes)", "PC", pc.value, pc.value_in_bytes)
       puts format("%8s = 0x%04x (%d bytes used)", "SP", sp.value, device.ram_end - sp.value)
       puts format("%8s = 0x%02x [%s]", "SREG", sreg.value, sreg.bit_values)
       puts
@@ -239,8 +238,8 @@ module AVR
 
     sig { void }
     def reset
-      @pc = device.reset_address
-      @next_pc = @pc
+      @pc.value = device.reset_address
+      @next_pc.value = @pc.value
       sreg.reset
       reset_clkpr
     end
@@ -264,8 +263,8 @@ module AVR
 
     sig { returns(Integer) }
     def fetch
-      word = device.flash.word(next_pc)
-      @next_pc += 1
+      word = device.flash.word(next_pc.value)
+      @next_pc.increment
       word
     end
 
@@ -289,7 +288,7 @@ module AVR
 
     sig { returns(Instruction) }
     def decode
-      offset = next_pc
+      offset = next_pc.value
       word = fetch
       decoded_opcode = decoder.decode(word)
       unless decoded_opcode
@@ -306,11 +305,11 @@ module AVR
 
     sig { returns(Instruction) }
     def peek
-      save_pc = pc
-      save_next_pc = next_pc
+      save_pc = pc.value
+      save_next_pc = next_pc.value
       i = decode
-      @pc = save_pc
-      @next_pc = save_next_pc
+      @pc.value = save_pc
+      @next_pc.value = save_next_pc
       i
     end
 

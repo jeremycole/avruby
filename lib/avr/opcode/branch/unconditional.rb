@@ -14,7 +14,7 @@ module AVR
     end
 
     opcode(:jmp, [Arg.absolute_pc]) do |cpu, _memory, args|
-      cpu.next_pc = args.fetch(0).value
+      cpu.next_pc.value = args.fetch(0).value
     end
 
     decode("1001 0100 0000 1110", :call) do |cpu, _opcode_definition, _operands|
@@ -28,8 +28,8 @@ module AVR
     end
 
     opcode(:call, [Arg.absolute_pc]) do |cpu, _memory, args|
-      stack_push_word(cpu, cpu.pc + 2)
-      cpu.next_pc = args.fetch(0).value
+      stack_push_word(cpu, cpu.pc.value + 2)
+      cpu.next_pc.value = args.fetch(0).value
     end
 
     # rcall rjmp
@@ -42,7 +42,7 @@ module AVR
     end
 
     opcode(:rjmp, [Arg.far_relative_pc]) do |cpu, _memory, args|
-      cpu.next_pc = cpu.pc + args.fetch(0).value + 1
+      cpu.next_pc.value = cpu.pc.value + args.fetch(0).value + 1
     end
 
     decode("1101 kkkk kkkk kkkk", :rcall) do |cpu, _opcode_definition, operands|
@@ -50,8 +50,8 @@ module AVR
     end
 
     opcode(:rcall, [Arg.far_relative_pc]) do |cpu, _memory, args|
-      stack_push_word(cpu, cpu.pc + 1)
-      cpu.next_pc = cpu.pc + args.fetch(0).value + 1
+      stack_push_word(cpu, cpu.pc.value + 1)
+      cpu.next_pc.value = cpu.pc.value + args.fetch(0).value + 1
     end
 
     decode("1001 0100 0000 1001", :ijmp) do |cpu, _opcode_definition, _operands|
@@ -59,7 +59,7 @@ module AVR
     end
 
     opcode(:ijmp) do |cpu, _memory, _args|
-      cpu.next_pc = cpu.Z.value
+      cpu.next_pc.value = cpu.Z.value
     end
 
     decode("1001 0101 0000 1001", :icall) do |cpu, _opcode_definition, _operands|
@@ -67,8 +67,8 @@ module AVR
     end
 
     opcode(:icall) do |cpu, _memory, _args|
-      stack_push_word(cpu, cpu.pc + 1)
-      cpu.next_pc = cpu.Z.value
+      stack_push_word(cpu, cpu.pc.value + 1)
+      cpu.next_pc.value = cpu.Z.value
     end
 
     decode("1001 0100 0001 1001", :eijmp) do |cpu, _opcode_definition, _operands|
@@ -77,7 +77,7 @@ module AVR
 
     opcode(:eijmp) do |cpu, _memory, _args|
       eind = cpu.io_registers.registers["EIND"]&.value || cpu.registers.registers["EIND"]&.value || 0
-      cpu.next_pc = (eind << 16) | cpu.Z.value
+      cpu.next_pc.value = (eind << 16) | cpu.Z.value
     end
 
     decode("1001 0101 0001 1001", :eicall) do |cpu, _opcode_definition, _operands|
@@ -85,9 +85,9 @@ module AVR
     end
 
     opcode(:eicall) do |cpu, _memory, _args|
-      stack_push_word(cpu, cpu.pc + 1)
+      stack_push_word(cpu, cpu.pc.value + 1)
       eind = cpu.io_registers.registers["EIND"]&.value || cpu.registers.registers["EIND"]&.value || 0
-      cpu.next_pc = (eind << 16) | cpu.Z.value
+      cpu.next_pc.value = (eind << 16) | cpu.Z.value
     end
   end
 end

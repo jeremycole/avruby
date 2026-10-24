@@ -33,8 +33,8 @@ RSpec.describe(AVR::Instruction) do
     end
 
     it "executes instruction, advancing PC and applying operation" do
-      cpu.pc = 0x0000
-      cpu.next_pc = 0x0000
+      cpu.pc.value = 0x0000
+      cpu.next_pc.value = 0x0000
       cpu.r0.value = 5
       cpu.r1.value = 10
 
