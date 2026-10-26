@@ -25,6 +25,10 @@ module AVR
       end
     end
 
+    def bits
+      bit_names.compact.to_h { |name| [name, fetch_bit(name)] }
+    end
+
     def fetch(name)
       send(name)
     end

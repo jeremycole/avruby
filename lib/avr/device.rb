@@ -99,8 +99,8 @@ module AVR
     def boot_size_map; end
 
     sig { returns(Integer) }
-    def boot_reset_address
-      bootsz = T.unsafe(fuses).BOOTSZ if fuses.respond_to?(:BOOTSZ)
+    def boot_area_start_address
+      bootsz = fuses.composites[:BOOTSZ]
       return 0 unless bootsz
 
       boot_size = boot_size_map[bootsz]
@@ -111,11 +111,7 @@ module AVR
 
     sig { returns(Integer) }
     def reset_address
-      if fuses.respond_to?(:bootrst?) && T.unsafe(fuses).bootrst?
-        boot_reset_address
-      else
-        0
-      end
+      fuses.programmed?(:BOOTRST) ? boot_area_start_address : 0
     end
 
     sig { returns(T::Hash[Integer, Symbol]) }

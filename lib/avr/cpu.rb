@@ -249,16 +249,16 @@ module AVR
       return unless ext_io_registers.registers.key?("CLKPR")
 
       clkpr = ext_io_registers.registers["CLKPR"]
-      clkdiv8 = device.fuses.respond_to?(:ckdiv8?) && T.unsafe(device.fuses).ckdiv8?
+      return unless clkpr.is_a?(MemoryByteRegisterWithNamedBits)
 
-      if clkpr.is_a?(MemoryByteRegisterWithNamedBits)
-        clkpr.CLKPS0 = clkdiv8
-        clkpr.CLKPS1 = clkdiv8
-        clkpr.CLKPS2 = false
-        clkpr.CLKPS3 = false
-      else
-        clkpr.value = (clkpr.value & ~0x0f) | (clkdiv8 ? 0x03 : 0x00)
-      end
+      ckdiv8 = device.fuses.programmed?(:CKDIV8)
+
+      clkpr.CLKPS0 = ckdiv8
+      clkpr.CLKPS1 = ckdiv8
+      clkpr.CLKPS2 = false
+      clkpr.CLKPS3 = false
+
+      nil
     end
 
     sig { returns(Integer) }
@@ -273,17 +273,24 @@ module AVR
       Instruction.new(self, mnemonic, args)
     end
 
+    sig { returns(Integer) }
+    def interrupt_vector_table_start_address
+      # We use 0-based addresses here rather than 2-based as in the AVR documentation because the interrupt
+      # vector map includes RESET at 0. The actual reset vector may be overridden based on the BOOTRST fuse.
+      self.MCUCR.IVSEL ? device.boot_area_start_address : 0
+    end
+
     sig { params(name_or_vector_number: T.any(Symbol, Integer)).void }
     def interrupt(name_or_vector_number)
       sreg.I = false
       case name_or_vector_number
       when Integer
-        address = name_or_vector_number * 2
+        vector_offset = name_or_vector_number * 2 # Each vector is 32 bits; offset is in words.
       when Symbol
-        address = device.interrupt_vector_map[name_or_vector_number]
+        vector_offset = device.interrupt_vector_map[name_or_vector_number]
       end
 
-      instruction(:call, Value.new(address)).execute
+      instruction(:call, Value.new(interrupt_vector_table_start_address + vector_offset)).execute
     end
 
     sig { returns(Instruction) }
