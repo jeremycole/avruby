@@ -111,7 +111,7 @@ module AVR
     attr_reader :tracer
 
     sig { params(device: Device).void }
-    def initialize(device)
+    def initialize(device) # rubocop:disable Metrics/AbcSize
       @device = device
       @pc = PC.new(device.flash_size_in_words)
       @next_pc = PC.new(device.flash_size_in_words)
@@ -158,6 +158,20 @@ module AVR
           else
             register_file.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
           end
+        end
+
+        # Look for pairs of registers with the same prefix ending in H and L (such as TCNT1H and TCNT1L),
+        # and make a word register for the pair. Some registers may end with "H" or "L" (such as OSCCAL),
+        # but not be a pair, skip those.
+        word_registers =
+          register_file.registers.keys
+                       .grep(/H$/)
+                       .map { |k| k.sub(/H$/, "") }
+                       .map { |k| [k, { h: register_file.registers["#{k}H"], l: register_file.registers["#{k}L"] }] }
+                       .select { |_, v| v.values.all? }
+
+        word_registers.each do |name, pair|
+          register_file.add(RegisterPair.new(self, pair[:h], pair[:l], name))
         end
       end
 
