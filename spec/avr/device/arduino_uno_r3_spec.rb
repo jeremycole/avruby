@@ -16,14 +16,14 @@ RSpec.describe(AVR::Device::Arduino_Uno_R3) do
       HIGH: 0xde,
       EXTENDED: 0x05,
     ))
-    expect(fuses.LOW.value).to(eq(0xff))
-    expect(fuses.HIGH.value).to(eq(0xde))
-    expect(fuses.EXTENDED.value).to(eq(0x05))
+    expect(fuses[0].value).to(eq(0xff))
+    expect(fuses[1].value).to(eq(0xde))
+    expect(fuses[2].value).to(eq(0x05))
   end
 
   it "starts at bootloader reset address (0x3F00) with default fuses" do
-    expect(fuses.bootrst?).to(be(true))
-    expect(fuses.BOOTSZ).to(eq(3))
+    expect(fuses.programmed?(:BOOTRST)).to(be(true))
+    expect(fuses.composites[:BOOTSZ]).to(eq(3))
     expect(device.boot_size_map[3]).to(eq(256))
     expect(device.reset_address).to(eq(0x3F00))
     expect(cpu.pc).to(eq(0x3F00))
@@ -31,7 +31,7 @@ RSpec.describe(AVR::Device::Arduino_Uno_R3) do
   end
 
   it "initializes CLKPR with CKDIV8 unprogrammed (0x00)" do
-    expect(fuses.ckdiv8?).to(be(false))
+    expect(fuses.programmed?(:CKDIV8)).to(be(false))
     expect(cpu.CLKPR.value).to(eq(0x00))
   end
 

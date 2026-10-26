@@ -125,34 +125,32 @@ RSpec.describe(AVR::Device::Atmel_ATmega644pa) do
 
   it "calculates correct boot reset address for each BOOTSZ setting" do
     # Flash size = 65536 bytes = 32768 words (0x8000)
-    # BOOTSZ = 3 -> 512 words -> 0x7E00 (32256)
-    fuses.HIGH.BOOTSZ0 = true
-    fuses.HIGH.BOOTSZ1 = true
-    expect(fuses.BOOTSZ).to(eq(3))
-    expect(device.boot_reset_address).to(eq(0x7E00))
-
-    # BOOTSZ = 2 -> 1024 words -> 0x7C00 (31744)
-    fuses.HIGH.BOOTSZ0 = false
-    fuses.HIGH.BOOTSZ1 = true
-    expect(fuses.BOOTSZ).to(eq(2))
-    expect(device.boot_reset_address).to(eq(0x7C00))
+    # BOOTSZ = 0 -> 4096 words -> 0x7000 (28672)
+    expect(fuses.composites[:BOOTSZ]).to(eq(0))
+    expect(device.boot_area_start_address).to(eq(0x7000))
 
     # BOOTSZ = 1 -> 2048 words -> 0x7800 (30720)
-    fuses.HIGH.BOOTSZ0 = true
-    fuses.HIGH.BOOTSZ1 = false
-    expect(fuses.BOOTSZ).to(eq(1))
-    expect(device.boot_reset_address).to(eq(0x7800))
+    fuses.set([0x5e, 0x99 | 0b011, 0xf3])
+    cpu.reset
+    expect(fuses.composites[:BOOTSZ]).to(eq(1))
+    expect(device.boot_area_start_address).to(eq(0x7800))
 
-    # BOOTSZ = 0 -> 4096 words -> 0x7000 (28672)
-    fuses.HIGH.BOOTSZ0 = false
-    fuses.HIGH.BOOTSZ1 = false
-    expect(fuses.BOOTSZ).to(eq(0))
-    expect(device.boot_reset_address).to(eq(0x7000))
+    # BOOTSZ = 2 -> 1024 words -> 0x7C00 (31744)
+    fuses.set([0x5e, 0x99 | 0b101, 0xf3])
+    cpu.reset
+    expect(fuses.composites[:BOOTSZ]).to(eq(2))
+    expect(device.boot_area_start_address).to(eq(0x7C00))
+
+    # BOOTSZ = 3 -> 512 words -> 0x7E00 (32256)
+    fuses.set([0x5e, 0x99 | 0b111, 0xf3])
+    cpu.reset
+    expect(fuses.composites[:BOOTSZ]).to(eq(3))
+    expect(device.boot_area_start_address).to(eq(0x7E00))
   end
 
   it "initializes CLKPR CLKPS bits based on CKDIV8 fuse" do
     # Default LOW fuse is 0x62 (CKDIV8 is programmed / 0) -> CLKPS = 0b0011 (3)
-    expect(fuses.ckdiv8?).to(be(true))
+    expect(fuses.programmed?(:CKDIV8)).to(be(true))
     expect(cpu.CLKPR.CLKPS0).to(be(true))
     expect(cpu.CLKPR.CLKPS1).to(be(true))
     expect(cpu.CLKPR.CLKPS2).to(be(false))
@@ -161,7 +159,8 @@ RSpec.describe(AVR::Device::Atmel_ATmega644pa) do
 
     # When CKDIV8 is unprogrammed (1), e.g. LOW = 0xe2 -> CLKPS = 0b0000 (0)
     fuses.set([0xe2, 0xd9, 0xff])
-    expect(fuses.ckdiv8?).to(be(false))
+    cpu.reset
+    expect(fuses.programmed?(:CKDIV8)).to(be(false))
     expect(cpu.CLKPR.CLKPS0).to(be(false))
     expect(cpu.CLKPR.CLKPS1).to(be(false))
     expect(cpu.CLKPR.CLKPS2).to(be(false))
