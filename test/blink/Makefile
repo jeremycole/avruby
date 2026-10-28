@@ -1,4 +1,4 @@
-MCU_TARGETS=atmega32u4 atmega328p atmega644pa
+MCU_TARGETS=atmega32u4 atmega328p atmega644pa attiny4
 
 .PHONY: all
 all:

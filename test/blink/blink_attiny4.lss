@@ -1,0 +1,211 @@
+
+blink_attiny4.elf:     file format elf32-avr
+blink_attiny4.elf
+architecture: avr:100, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x00000000
+
+Program Header:
+    LOAD off    0x00000074 vaddr 0x00000000 paddr 0x00000000 align 2**1
+         filesz 0x00000056 memsz 0x00000056 flags r-x
+    LOAD off    0x000000ca vaddr 0x00800040 paddr 0x00000056 align 2**0
+         filesz 0x00000000 memsz 0x00000000 flags rw-
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000056  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800040  00000056  000000ca  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000012  00000000  00000000  000000ca  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000000dc  2**2
+                  CONTENTS, READONLY, OCTETS
+  4 .debug_info   000002ab  00000000  00000000  00000118  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  5 .debug_abbrev 00000284  00000000  00000000  000003c3  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  6 .debug_line   0000001d  00000000  00000000  00000647  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+  7 .debug_str    000000f6  00000000  00000000  00000664  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+SYMBOL TABLE:
+00000000 l    d  .text	00000000 .text
+00800040 l    d  .data	00000000 .data
+00000000 l    d  .comment	00000000 .comment
+00000000 l    d  .note.gnu.avr.deviceinfo	00000000 .note.gnu.avr.deviceinfo
+00000000 l    d  .debug_info	00000000 .debug_info
+00000000 l    d  .debug_abbrev	00000000 .debug_abbrev
+00000000 l    d  .debug_line	00000000 .debug_line
+00000000 l    d  .debug_str	00000000 .debug_str
+00000000 l    df *ABS*	00000000 crtattiny4.o
+00000000 l       .debug_abbrev	00000000 .Ldebug_abbrev0
+00000000 l       .debug_str	00000000 .Lproducer
+00000000 l       .debug_line	00000000 .Ldebug_line0
+0000000f l       .debug_str	00000000 .Luint8_t_name
+00000017 l       .debug_str	00000000 .Luint16_t_name
+00000020 l       .debug_str	00000000 .Lname4
+00000025 l       .debug_str	00000000 .Lname5
+0000002b l       .debug_str	00000000 .Lname6
+0000002f l       .debug_str	00000000 .Lname7
+00000032 l       .debug_str	00000000 .Lname8
+00000037 l       .debug_str	00000000 .Lname9
+0000003e l       .debug_str	00000000 .Lname10
+00000045 l       .debug_str	00000000 .Lname11
+0000004c l       .debug_str	00000000 .Lname12
+00000051 l       .debug_str	00000000 .Lname13
+00000055 l       .debug_str	00000000 .Lname14
+0000005c l       .debug_str	00000000 .Lname15
+00000063 l       .debug_str	00000000 .Lname16
+0000006a l       .debug_str	00000000 .Lname17
+00000071 l       .debug_str	00000000 .Lname18
+00000078 l       .debug_str	00000000 .Lname19
+0000007d l       .debug_str	00000000 .Lname20
+00000082 l       .debug_str	00000000 .Lname21
+00000087 l       .debug_str	00000000 .Lname22
+0000008d l       .debug_str	00000000 .Lname23
+00000093 l       .debug_str	00000000 .Lname24
+00000099 l       .debug_str	00000000 .Lname25
+0000009e l       .debug_str	00000000 .Lname26
+000000a4 l       .debug_str	00000000 .Lname27
+000000aa l       .debug_str	00000000 .Lname28
+000000b0 l       .debug_str	00000000 .Lname29
+000000b7 l       .debug_str	00000000 .Lname30
+000000be l       .debug_str	00000000 .Lname31
+000000c5 l       .debug_str	00000000 .Lname32
+000000cb l       .debug_str	00000000 .Lname33
+000000d1 l       .debug_str	00000000 .Lname34
+000000d7 l       .debug_str	00000000 .Lname35
+000000dc l       .debug_str	00000000 .Lname36
+000000e3 l       .debug_str	00000000 .Lname37
+000000e9 l       .debug_str	00000000 .Lname38
+000000ef l       .debug_str	00000000 .Lname39
+00000000 l    df *ABS*	00000000 blink.c
+0000003e l       *ABS*	00000000 __SP_H__
+0000003d l       *ABS*	00000000 __SP_L__
+0000003f l       *ABS*	00000000 __SREG__
+0000003c l       *ABS*	00000000 __CCP__
+00000010 l       *ABS*	00000000 __tmp_reg__
+00000011 l       *ABS*	00000000 __zero_reg__
+0000003a l       .text	00000000 L0
+0000004e l       .text	00000000 L0
+00000030 l       .text	00000000 .L11
+00000044 l       .text	00000000 .L12
+00000028 l       .text	00000000 .L2
+00000000 l    df *ABS*	00000000 _exit.o
+00000052 l       .text	00000000 .Loc.0
+00000054 l       .text	00000000 __stop_program
+00000054 l       .text	00000000 .Loc.1
+00000056 l       .text	00000000 L0
+00000052 l       .text	00000000 L0
+00000056 l       .text	00000000 L0
+00000024  w      .text	00000000 __vector_1
+00000020 g       *ABS*	00000000 __DATA_REGION_LENGTH__
+00000000 g       *ABS*	00000000 __TEXT_REGION_ORIGIN__
+00000014 g       .text	00000000 __trampolines_start
+00000056 g       .text	00000000 _etext
+00000024 g       .text	00000000 __bad_interrupt
+00000056 g       *ABS*	00000000 __data_load_end
+00000024  w      .text	00000000 __vector_6
+00000014 g       .text	00000000 __trampolines_end
+00000024  w      .text	00000000 __vector_3
+00000056 g       *ABS*	00000000 __data_load_start
+00000014 g       .text	00000000 __dtors_end
+00000002 g       *ABS*	00000000 __LOCK_REGION_LENGTH__
+00004000 g       *ABS*	00000000 __RODATA_PM_OFFSET__
+00000014  w      .text	00000000 __init
+00000024  w      .text	00000000 __vector_7
+00000000 g       .text	00000000 __vectors
+00000000  w      .text	00000000 __vector_default
+00000024  w      .text	00000000 __vector_5
+00000004 g       *ABS*	00000000 __SIGNATURE_REGION_LENGTH__
+00000014 g       .text	00000000 __ctors_start
+00000026 g     F .text	0000002c main
+00000014 g       .text	00000000 __progmem_end
+00000024  w      .text	00000000 __vector_4
+00800040 g       *ABS*	00000000 __DATA_REGION_ORIGIN__
+00000000  w      *ABS*	00000000 __heap_end
+00000024  w      .text	00000000 __vector_9
+00000024  w      .text	00000000 __vector_2
+00000014 g       .text	00000000 __dtors_start
+00000014 g       .text	00000000 __ctors_end
+0000005f  w      *ABS*	00000000 __stack
+00800040 g       .data	00000000 _edata
+00800040 g       .data	00000000 _end
+00000014 g       .text	00000000 __progmem_start
+00000024  w      .text	00000000 __vector_8
+00000052  w      .text	00000000 .hidden exit
+00000052 g       .text	00000000 .hidden _exit
+00000000 g       *ABS*	00000000 __flmap_init_label
+00000000 g       *ABS*	00000000 __flmap
+00000002 g       *ABS*	00000000 __FUSE_REGION_LENGTH__
+00000200 g       *ABS*	00000000 __TEXT_REGION_LENGTH__
+
+
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	10 c0       	rjmp	.+32     	; 0x24 <__bad_interrupt>
+   4:	0f c0       	rjmp	.+30     	; 0x24 <__bad_interrupt>
+   6:	0e c0       	rjmp	.+28     	; 0x24 <__bad_interrupt>
+   8:	0d c0       	rjmp	.+26     	; 0x24 <__bad_interrupt>
+   a:	0c c0       	rjmp	.+24     	; 0x24 <__bad_interrupt>
+   c:	0b c0       	rjmp	.+22     	; 0x24 <__bad_interrupt>
+   e:	0a c0       	rjmp	.+20     	; 0x24 <__bad_interrupt>
+  10:	09 c0       	rjmp	.+18     	; 0x24 <__bad_interrupt>
+  12:	08 c0       	rjmp	.+16     	; 0x24 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 27       	eor	r17, r17
+  16:	1f bf       	out	0x3f, r17	; 63
+  18:	cf e5       	ldi	r28, 0x5F	; 95
+  1a:	d0 e0       	ldi	r29, 0x00	; 0
+  1c:	de bf       	out	0x3e, r29	; 62
+  1e:	cd bf       	out	0x3d, r28	; 61
+  20:	02 d0       	rcall	.+4      	; 0x26 <main>
+  22:	17 c0       	rjmp	.+46     	; 0x52 <_exit>
+
+00000024 <__bad_interrupt>:
+  24:	ed cf       	rjmp	.-38     	; 0x0 <__vectors>
+
+00000026 <main>:
+  26:	0a 9a       	sbi	0x01, 2	; 1
+
+00000028 <.L2>:
+  28:	12 9a       	sbi	0x02, 2	; 2
+  2a:	4f ef       	ldi	r20, 0xFF	; 255
+  2c:	54 e3       	ldi	r21, 0x34	; 52
+  2e:	6c e0       	ldi	r22, 0x0C	; 12
+
+00000030 <.L1^B1>:
+  30:	41 50       	subi	r20, 0x01	; 1
+  32:	50 40       	sbci	r21, 0x00	; 0
+  34:	60 40       	sbci	r22, 0x00	; 0
+  36:	e1 f7       	brne	.-8      	; 0x30 <.L1^B1>
+  38:	00 c0       	rjmp	.+0      	; 0x3a <L0^A>
+
+0000003a <L0^A>:
+  3a:	00 00       	nop
+  3c:	12 98       	cbi	0x02, 2	; 2
+  3e:	4f ef       	ldi	r20, 0xFF	; 255
+  40:	54 e3       	ldi	r21, 0x34	; 52
+  42:	6c e0       	ldi	r22, 0x0C	; 12
+
+00000044 <.L1^B2>:
+  44:	41 50       	subi	r20, 0x01	; 1
+  46:	50 40       	sbci	r21, 0x00	; 0
+  48:	60 40       	sbci	r22, 0x00	; 0
+  4a:	e1 f7       	brne	.-8      	; 0x44 <.L1^B2>
+  4c:	00 c0       	rjmp	.+0      	; 0x4e <L0^A>
+
+0000004e <L0^A>:
+  4e:	00 00       	nop
+  50:	eb cf       	rjmp	.-42     	; 0x28 <.L2>
+
+00000052 <_exit>:
+  52:	f8 94       	cli
+
+00000054 <__stop_program>:
+  54:	ff cf       	rjmp	.-2      	; 0x54 <__stop_program>
