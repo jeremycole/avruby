@@ -20,7 +20,7 @@ A simple benchmark can be run with the following command (note that Sorbet runti
 
 ```bash
 SORBET_RUNTIME_DEFAULT_CHECKED_LEVEL=never \
-  bundle exec bin/avruby_shell -I test/blink/blink.hex -b 60
+  bundle exec bin/avruby_shell -I test/blink/blink_atmega328p.hex -b 60
 ```
 
 Currently, many simple programs (such as `blink`) will run out of the box, although the CPU as emulated is exceedingly slow. It runs at ~100 kHz on a MacBook Pro with 2.8 GHz Intel Core i7 using Ruby 3.3.5. Performance is not a goal, so this will vary somewhat over time with new features and refactors.
