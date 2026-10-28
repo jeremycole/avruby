@@ -23,6 +23,15 @@ module AVR
       super()
     end
 
+    sig { params(modify_by: Integer, block: T.proc.params(register: Register).returns(Integer)).returns(Integer) }
+    def handle_modification(modify_by, &block)
+      register.value -= modify_by if modification == :pre_decrement
+      value = block.call(register)
+      register.value += modify_by if modification == :post_increment
+
+      value
+    end
+
     sig { returns(String) }
     def name
       [
