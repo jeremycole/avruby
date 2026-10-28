@@ -13,9 +13,9 @@ main:
 /* frame size = 0 */
 /* stack size = 0 */
 .L__stack_usage = 0
-	sbi 0xa,3
+	sbi 0x4,2
 .L2:
-	sbi 0xb,3
+	sbi 0x5,2
 	ldi r18,lo8(799999)
 	ldi r24,hi8(799999)
 	ldi r25,hlo8(799999)
@@ -25,7 +25,7 @@ main:
 	brne 1b
 	rjmp .
 	nop
-	cbi 0xb,3
+	cbi 0x5,2
 	ldi r18,lo8(799999)
 	ldi r24,hi8(799999)
 	ldi r25,hlo8(799999)
@@ -37,4 +37,4 @@ main:
 	nop
 	rjmp .L2
 	.size	main, .-main
-	.ident	"GCC: (GNU) 8.3.0"
+	.ident	"GCC: (GNU) 14.3.0"
