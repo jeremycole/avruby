@@ -18,9 +18,9 @@ module AVR
     opcode(:lpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
       mwr = T.cast(args.fetch(1), RegisterWithModification)
-      mwr.register.value -= 1 if mwr.modification == :pre_decrement
-      args.fetch(0).value = cpu.device.flash[mwr.register.value].value
-      mwr.register.value += 1 if mwr.modification == :post_increment
+      args.fetch(0).value = mwr.handle_modification(1) do |r|
+        cpu.device.flash[r.value].value
+      end
     end
 
     decode("1001 0101 1101 1000", :elpm) do |cpu, _opcode_definition, _operands|
@@ -37,12 +37,11 @@ module AVR
 
     opcode(:elpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
+      rampz = cpu.io_registers.registers["RAMPZ"]&.value || 0 # Devices with < 64 KiB Flash don't have RAMPZ
       mwr = T.cast(args.fetch(1), RegisterWithModification)
-      mwr.register.value -= 1 if mwr.modification == :pre_decrement
-      rampz = cpu.io_registers.registers["RAMPZ"]&.value || cpu.registers.registers["RAMPZ"]&.value || 0
-      address = (rampz << 16) | mwr.register.value
-      args.fetch(0).value = cpu.device.flash[address].value
-      mwr.register.value += 1 if mwr.modification == :post_increment
+      args.fetch(0).value = mwr.handle_modification(1) do |r|
+        cpu.device.flash[(rampz << 16) | r.value].value
+      end
     end
 
     decode("1001 0101 1110 1000", :spm) do |cpu, _opcode_definition, _operands|
@@ -55,13 +54,14 @@ module AVR
 
     opcode(:spm, [Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [RegisterWithModification.new(cpu.Z)] if args.empty?
+      rampz = cpu.io_registers.registers["RAMPZ"]&.value || 0  # Devices with < 64 KiB Flash don't have RAMPZ
       mwr = T.cast(args.fetch(0), RegisterWithModification)
-      mwr.register.value -= 2 if mwr.modification == :pre_decrement
-      rampz = cpu.io_registers.registers["RAMPZ"]&.value || cpu.registers.registers["RAMPZ"]&.value || 0
-      address = (rampz << 16) | mwr.register.value
-      cpu.device.flash[address].value = cpu.r0.value
-      cpu.device.flash[address + 1].value = cpu.r1.value
-      mwr.register.value += 2 if mwr.modification == :post_increment
+
+      mwr.handle_modification(2) do |r|
+        address = (rampz << 16) | r.value
+        cpu.device.flash[address].value = cpu.r0.value
+        cpu.device.flash[address + 1].value = cpu.r1.value
+      end
     end
   end
 end
