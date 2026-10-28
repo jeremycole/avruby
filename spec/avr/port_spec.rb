@@ -52,7 +52,7 @@ RSpec.describe(AVR::Port) do
   it "formats value_pins and inspect" do
     cpu.DDRB.value = 0x01
     cpu.PORTB.value = 0x01
-    expect(port_b.value_pins).to(eq("P0=H, P1=Z, P2=Z, P3=Z, P4=Z, P5=Z, P6=Z, P7=Z"))
-    expect(port_b.inspect).to(eq("#<AVR::Port P0=H, P1=Z, P2=Z, P3=Z, P4=Z, P5=Z, P6=Z, P7=Z>"))
+    expect(port_b.value_pins).to(eq("0=H, 1=Z, 2=Z, 3=Z, 4=Z, 5=Z, 6=Z, 7=Z"))
+    expect(port_b.inspect).to(eq("#<AVR::Port 0=H, 1=Z, 2=Z, 3=Z, 4=Z, 5=Z, 6=Z, 7=Z>"))
   end
 end

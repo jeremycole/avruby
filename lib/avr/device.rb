@@ -44,6 +44,11 @@ module AVR
     sig { abstract.returns(Integer) }
     def eeprom_size; end
 
+    sig { returns(T::Boolean) }
+    def has_eeprom?
+      eeprom_size > 0
+    end
+
     sig { abstract.returns(Integer) }
     def fuse_size; end
 
@@ -180,7 +185,7 @@ module AVR
     def initialize
       @cpu = T.let(CPU.new(self), CPU)
       @flash = T.let(Memory::Flash.new(flash_size), Memory::Flash)
-      @eeprom = T.let(Memory::EEPROM.new(eeprom_size, cpu), Memory::EEPROM)
+      @eeprom = T.let(Memory::EEPROM.new(eeprom_size, cpu), Memory::EEPROM) if has_eeprom?
       @fuses = T.let(Memory::Fuses.new(self), Memory::Fuses)
       @cpu.reset
 
@@ -206,6 +211,7 @@ module AVR
     def trace_register_file(trace_name, register_file, memory)
       register_addresses = {}
       register_file.registers.each_value do |register|
+        puts "Tracing #{register.name}"
         case register
         when MemoryByteRegister
           register_addresses[register.memory_byte.address] ||= []
@@ -267,6 +273,8 @@ module AVR
 
     sig { void }
     def trace_eeprom
+      return unless has_eeprom?
+
       eeprom.watch do |memory_byte, old_value, new_value|
         puts format("*** %24s: %12s: %4s -> %4s", "MEMORY TRACE",
           format("%s[%04x]", memory_byte.memory.name, memory_byte.address),

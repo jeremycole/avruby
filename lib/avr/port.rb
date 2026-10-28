@@ -14,22 +14,28 @@ module AVR
     sig { returns(T.any(Symbol, String)) }
     attr_reader :name
 
+    sig { returns(T::Array[Integer]) }
+    attr_reader :pins
+
     sig do
       params(
         cpu: CPU,
         name: T.any(Symbol, String),
         pin_address: Integer,
         ddr_address: Integer,
-        port_address: Integer
+        port_address: Integer,
+        pins: T::Array[Integer]
       ).void
     end
-    def initialize(cpu, name, pin_address, ddr_address, port_address)
+    def initialize(cpu, name, pin_address, ddr_address, port_address, pins)
       @cpu = cpu
       @name = name
-      @input = T.let(PINS.map { :Z }, T::Array[Symbol])
+      @pins = pins
       @pin_address = pin_address
       @ddr_address = ddr_address
       @port_address = port_address
+      @input = T.let(PINS.map { :~ }, T::Array[Symbol])
+      @pins.each { |n| @input[n] = :Z }
     end
 
     sig { returns(MemoryByte) }
@@ -83,7 +89,7 @@ module AVR
 
     sig { returns(String) }
     def value_pins
-      PINS.zip(pin_states).map { |n, s| "P#{n}=#{s}" }.join(", ")
+      pins.zip(pin_states).map { |n, s| "#{n}=#{s}" }.join(", ")
     end
 
     sig { returns(Integer) }

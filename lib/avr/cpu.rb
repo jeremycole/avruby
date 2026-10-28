@@ -34,51 +34,6 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :registers
 
-    sig { returns(Register) }
-    def r0
-      registers.fetch(:r0)
-    end
-
-    sig { params(value: Integer).void }
-    def r0=(value)
-      r0.value = value
-    end
-
-    sig { returns(Register) }
-    def r1
-      registers.fetch(:r1)
-    end
-
-    sig { params(value: Integer).void }
-    def r1=(value)
-      r1.value = value
-    end
-
-    sig { returns(Register) }
-    def r1r0
-      @r1r0 ||= RegisterPair.new(self, r1, r0)
-    end
-
-    sig { params(value: Integer).void }
-    def r1r0=(value)
-      r1r0.value = value
-    end
-
-    sig { returns(Register) }
-    def X # rubocop:disable Naming/MethodName
-      registers.fetch(:X)
-    end
-
-    sig { returns(Register) }
-    def Y # rubocop:disable Naming/MethodName
-      registers.fetch(:Y)
-    end
-
-    sig { returns(Register) }
-    def Z # rubocop:disable Naming/MethodName
-      registers.fetch(:Z)
-    end
-
     sig { returns(RegisterFile) }
     attr_reader :io_registers
 
@@ -119,23 +74,31 @@ module AVR
       @data_address_space = Memory::AddressSpace.new("Data Address Space", 0xffff)
 
       @register_memory = Memory::MemoryByteBacked.new("registers", device.register_count, 0)
-      data_address_space.attach(@register_memory, 0)
+      data_address_space.attach(@register_memory, device.register_start)
 
       @registers = RegisterFile.new(self)
 
       device.register_count.times do |n|
-        registers.add(GeneralPurposeRegister.new(self, n, data_address_space[n]))
+        registers.add(GeneralPurposeRegister.new(self, device.register_start + n, data_address_space[device.register_start + n]))
       end
 
-      device.word_register_map.each do |name, map|
-        registers.add(RegisterPair.new(self, @registers[map[:h]], @registers[map[:l]], name))
+      if @registers.registers.key?(:r1) && @registers.registers.key?(:r0)
+        registers.add(RegisterPair.new(self, r1, r0, :r1r0))
       end
 
-      @io_register_memory = Memory::MemoryByteBacked.new("io_registers", device.io_register_count, 0)
-      data_address_space.attach(@io_register_memory, device.io_register_start)
+      registers.add(RegisterPair.new(self, r27, r26, :X))
+      registers.add(RegisterPair.new(self, r29, r28, :Y))
+      registers.add(RegisterPair.new(self, r31, r30, :Z))
 
-      @ext_io_register_memory = Memory::MemoryByteBacked.new("ext_io_registers", device.ext_io_register_count, 0)
-      data_address_space.attach(@ext_io_register_memory, device.ext_io_register_start)
+      if device.io_register_count > 0
+        @io_register_memory = Memory::MemoryByteBacked.new("io_registers", device.io_register_count, 0)
+        data_address_space.attach(@io_register_memory, device.io_register_start)
+      end
+
+      if device.ext_io_register_count > 0
+        @ext_io_register_memory = Memory::MemoryByteBacked.new("ext_io_registers", device.ext_io_register_count, 0)
+        data_address_space.attach(@ext_io_register_memory, device.ext_io_register_start)
+      end
 
       @io_registers = RegisterFile.new(self)
       @ext_io_registers = RegisterFile.new(self)
@@ -191,7 +154,11 @@ module AVR
 
       @ports = {}
       device.port_map.each do |name, addr|
-        @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port])
+        port_name = "PORT#{name}"
+        pins = device.register_bit_names_map[port_name.to_sym]
+                     .reject(&:nil?)
+                     .map { |p| p.to_s.gsub(port_name, "").to_i }
+        @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port], pins)
       end
 
       @clock = Clock.new("cpu")
