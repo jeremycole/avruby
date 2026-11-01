@@ -21,9 +21,10 @@ module AVR
 
       sig { returns(T::Hash[Symbol, Integer]) }
       def bits
-        @bits ||= T.let(registers.registers.values.flat_map(&:bits).reduce({}) do |x, h|
-          x.merge(h)
-        end, T.nilable(T::Hash[Symbol, Integer]))
+        @bits ||= T.let(
+          T.cast(registers.registers.values, T::Array[MemoryByteRegisterWithNamedBits])
+           .flat_map(&:bits).reduce({}) { |x, h| x.merge(h) }, T.nilable(T::Hash[Symbol, Integer])
+        )
       end
 
       sig { returns(T::Hash[Symbol, T::Boolean]) }
