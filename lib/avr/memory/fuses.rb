@@ -119,8 +119,9 @@ module AVR
       sig { params(name: Symbol).returns(MemoryByteRegister) }
       def register(name)
         if T.must(device.fuse_bit_names_map[name]).any?
-          MemoryByteRegisterWithNamedBits.new(device.cpu, name.to_s, memory[T.must(device.fuse_memory_map[name])],
-            device.fuse_bit_names_map[name])
+          MemoryByteRegisterWithNamedBits.new(device.cpu, name.to_s,
+            T.must(memory[T.must(device.fuse_memory_map[name])]),
+            T.must(device.fuse_bit_names_map[name]))
         else
           MemoryByteRegister.new(device.cpu, name.to_s, T.must(memory[T.must(device.fuse_memory_map[name])]))
         end
