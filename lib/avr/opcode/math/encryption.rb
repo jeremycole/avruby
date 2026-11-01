@@ -212,13 +212,13 @@ module AVR
 
       data64 = 0
       8.times do |i|
-        reg = cpu.registers[i]
+        reg = T.must(cpu.registers[i])
         data64 |= (reg.value << (8 * i))
       end
 
       key64 = 0
       8.times do |i|
-        reg = cpu.registers[8 + i]
+        reg = T.must(cpu.registers[8 + i])
         key64 |= (reg.value << (8 * i))
       end
 
@@ -226,7 +226,7 @@ module AVR
       result64 = des_round(data64, key64, k, decrypt)
 
       8.times do |i|
-        reg = cpu.registers[i]
+        reg = T.must(cpu.registers[i])
         reg.value = (result64 >> (8 * i)) & 0xff
       end
     end
