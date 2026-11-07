@@ -60,7 +60,7 @@ module AVR
     end
 
     opcode(:adc, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
-      result = (args.fetch(0).value + args.fetch(1).value + (cpu.sreg.C ? 1 : 0)) & 0xff
+      result = (args.fetch(0).value + args.fetch(1).value + (cpu.sreg.C)) & 0xff
       set_sreg_for_add_adc(cpu, result, args.fetch(0).value, args.fetch(1).value)
       args.fetch(0).value = result
     end

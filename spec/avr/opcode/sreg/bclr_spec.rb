@@ -8,14 +8,14 @@ RSpec.describe(AVR::Opcode) do
       it "sets the correct SREG bit" do
         cpu.sreg.value = 0xff
         cpu.instruction(:bclr, AVR::RegisterWithNamedBit.new(cpu.sreg, :Z)).execute
-        expect(cpu.sreg.I).to(be(true))
-        expect(cpu.sreg.T).to(be(true))
-        expect(cpu.sreg.H).to(be(true))
-        expect(cpu.sreg.S).to(be(true))
-        expect(cpu.sreg.V).to(be(true))
-        expect(cpu.sreg.N).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.I).to(be(1))
+        expect(cpu.sreg.T).to(be(1))
+        expect(cpu.sreg.H).to(be(1))
+        expect(cpu.sreg.S).to(be(1))
+        expect(cpu.sreg.V).to(be(1))
+        expect(cpu.sreg.N).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
+        expect(cpu.sreg.C).to(be(1))
       end
     end
   end

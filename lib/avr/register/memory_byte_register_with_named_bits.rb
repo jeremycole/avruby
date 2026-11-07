@@ -21,19 +21,31 @@ module AVR
         T::Hash[Symbol, Integer]
       )
 
-      @bit_names_bv.each do |bit_name, bit_value|
-        define_singleton_method(bit_name, proc { (value & bit_value) == bit_value })
+    end
 
-        define_singleton_method((bit_name.to_s + "=").to_sym, proc { |new_value|
-          if [true, 1].include?(new_value)
-            self.value |= bit_value
-          elsif [false, 0].include?(new_value)
-            self.value &= ~bit_value
-          else
-            raise "Bad value #{new_value} for bit #{bit_name}"
-          end
-        })
+    sig { params(bit_name: Symbol).returns(Integer) }
+    def get(bit_name)
+      bit_value = T.must(@bit_names_bv[bit_name])
+      ((value & bit_value) == 0) ? 0 : 1
+    end
+
+    sig { params(bit_name: Symbol).returns(T::Boolean) }
+    def set?(bit_name)
+      get(bit_name) == 1
+    end
+
+    sig { params(bit_name: Symbol, new_value: Integer).void }
+    def set(bit_name, new_value)
+      raise "Bad value #{new_value} for bit #{bit_name}" unless [1, 0].include?(new_value)
+
+      bit_value = T.must(@bit_names_bv[bit_name])
+      if new_value == 1
+        self.value |= bit_value
+      else
+        self.value &= ~bit_value
       end
+
+      nil
     end
 
     sig { returns(T::Hash[Symbol, Integer]) }
@@ -41,14 +53,14 @@ module AVR
       bit_names.compact.to_h { |name| [name, fetch_bit(name)] }
     end
 
-    sig { params(name: Symbol).returns(T::Boolean) }
+    sig { params(name: Symbol).returns(Integer) }
     def fetch(name)
-      send(name)
+      get(name)
     end
 
     sig { params(name: Symbol).returns(Integer) }
     def fetch_bit(name)
-      fetch(name) ? 1 : 0
+      fetch(name)
     end
 
     sig { params(flags: T::Array[Symbol]).returns(Integer) }
@@ -60,7 +72,7 @@ module AVR
 
     sig { returns(String) }
     def bit_values
-      @bit_names.compact.map { |name| name.to_s + "=" + (send(name) ? "1" : "0") }.join(", ")
+      @bit_names.compact.map { |name| name.to_s + "=" + get(name).to_s }.join(", ")
     end
 
     sig { params(value: Integer).returns(T::Hash[Symbol, Integer]) }

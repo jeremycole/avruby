@@ -267,10 +267,10 @@ module AVR
 
       ckdiv8 = device.fuses.programmed?(:CKDIV8)
 
-      clkpr.CLKPS0 = ckdiv8
-      clkpr.CLKPS1 = ckdiv8
-      clkpr.CLKPS2 = false
-      clkpr.CLKPS3 = false
+      clkpr.set(:CLKPS0, ckdiv8 ? 1 : 0)
+      clkpr.set(:CLKPS1, ckdiv8 ? 1 : 0)
+      clkpr.set(:CLKPS2, 0)
+      clkpr.set(:CLKPS3, 0)
 
       nil
     end
@@ -291,12 +291,12 @@ module AVR
     def interrupt_vector_table_start_address
       # We use 0-based addresses here rather than 2-based as in the AVR documentation because the interrupt
       # vector map includes RESET at 0. The actual reset vector may be overridden based on the BOOTRST fuse.
-      self.MCUCR.IVSEL ? device.boot_area_start_address : 0
+      self.MCUCR.get(:IVSEL) == 1 ? device.boot_area_start_address : 0
     end
 
     sig { params(name_or_vector_number: T.any(Symbol, Integer)).void }
     def interrupt(name_or_vector_number)
-      sreg.I = false
+      sreg.I = 0
       case name_or_vector_number
       when Integer
         vector_offset = name_or_vector_number * 2 # Each vector is 32 bits; offset is in words.

@@ -16,7 +16,7 @@ module AVR
     end
 
     opcode(:reti, [], [:I]) do |cpu, _memory, _args|
-      cpu.sreg.I = true
+      cpu.sreg.I = 1
       cpu.next_pc.value = stack_pop_word(cpu)
     end
   end

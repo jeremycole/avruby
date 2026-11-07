@@ -151,20 +151,20 @@ RSpec.describe(AVR::Device::Atmel_ATmega644pa) do
   it "initializes CLKPR CLKPS bits based on CKDIV8 fuse" do
     # Default LOW fuse is 0x62 (CKDIV8 is programmed / 0) -> CLKPS = 0b0011 (3)
     expect(fuses.programmed?(:CKDIV8)).to(be(true))
-    expect(cpu.CLKPR.CLKPS0).to(be(true))
-    expect(cpu.CLKPR.CLKPS1).to(be(true))
-    expect(cpu.CLKPR.CLKPS2).to(be(false))
-    expect(cpu.CLKPR.CLKPS3).to(be(false))
+    expect(cpu.CLKPR.get(:CLKPS0)).to(be(1))
+    expect(cpu.CLKPR.get(:CLKPS1)).to(be(1))
+    expect(cpu.CLKPR.get(:CLKPS2)).to(be(0))
+    expect(cpu.CLKPR.get(:CLKPS3)).to(be(0))
     expect(cpu.CLKPR.value).to(eq(0x03))
 
     # When CKDIV8 is unprogrammed (1), e.g. LOW = 0xe2 -> CLKPS = 0b0000 (0)
     fuses.set([0xe2, 0xd9, 0xff])
     cpu.reset
     expect(fuses.programmed?(:CKDIV8)).to(be(false))
-    expect(cpu.CLKPR.CLKPS0).to(be(false))
-    expect(cpu.CLKPR.CLKPS1).to(be(false))
-    expect(cpu.CLKPR.CLKPS2).to(be(false))
-    expect(cpu.CLKPR.CLKPS3).to(be(false))
+    expect(cpu.CLKPR.get(:CLKPS0)).to(be(0))
+    expect(cpu.CLKPR.get(:CLKPS1)).to(be(0))
+    expect(cpu.CLKPR.get(:CLKPS2)).to(be(0))
+    expect(cpu.CLKPR.get(:CLKPS3)).to(be(0))
     expect(cpu.CLKPR.value).to(eq(0x00))
 
     # When reset_to_clean_state is called with CKDIV8 programmed -> CLKPS = 0b0011 (3)

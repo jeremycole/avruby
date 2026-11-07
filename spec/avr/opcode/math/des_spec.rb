@@ -26,7 +26,7 @@ RSpec.describe(AVR::Opcode) do
       it "encrypts standard FIPS test vector when H is 0" do
         set_registers64(cpu, 0, plaintext)
         set_registers64(cpu, 8, key)
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
 
         16.times do |k|
           cpu.instruction(:des, AVR::Value.new(k)).execute
@@ -39,7 +39,7 @@ RSpec.describe(AVR::Opcode) do
       it "decrypts standard FIPS test vector when H is 1" do
         set_registers64(cpu, 0, ciphertext)
         set_registers64(cpu, 8, key)
-        cpu.sreg.H = true
+        cpu.sreg.H = 1
 
         16.times do |k|
           cpu.instruction(:des, AVR::Value.new(k)).execute
@@ -47,13 +47,13 @@ RSpec.describe(AVR::Opcode) do
 
         expect(get_registers64(cpu, 0)).to(eq(plaintext))
         expect(get_registers64(cpu, 8)).to(eq(key))
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
       end
 
       it "computes correct intermediate Feistel states without applying final permutation prematurely" do
         set_registers64(cpu, 0, plaintext)
         set_registers64(cpu, 8, key)
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
 
         # Round 0: applies IP, computes Feistel round 1, outputs (L1, R1) without FP
         cpu.instruction(:des, AVR::Value.new(0)).execute
@@ -67,7 +67,7 @@ RSpec.describe(AVR::Opcode) do
       it "executes correctly when decoded from flash memory" do
         set_registers64(cpu, 0, plaintext)
         set_registers64(cpu, 8, key)
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
 
         # 0b1001_0100_0000_1011 is DES 0
         device.flash.set_word(0, 0b1001_0100_0000_1011)
@@ -79,24 +79,24 @@ RSpec.describe(AVR::Opcode) do
       it "does not alter SREG flags during execution" do
         set_registers64(cpu, 0, plaintext)
         set_registers64(cpu, 8, key)
-        cpu.sreg.H = false
-        cpu.sreg.Z = true
-        cpu.sreg.C = true
+        cpu.sreg.H = 0
+        cpu.sreg.Z = 1
+        cpu.sreg.C = 1
 
         cpu.instruction(:des, AVR::Value.new(0)).execute
 
-        expect(cpu.sreg.H).to(be(false))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.H).to(be(0))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(1))
 
-        cpu.sreg.Z = false
-        cpu.sreg.C = false
+        cpu.sreg.Z = 0
+        cpu.sreg.C = 0
       end
 
       it "correctly encrypts and decrypts with all zeros key and data" do
         set_registers64(cpu, 0, 0x0000000000000000)
         set_registers64(cpu, 8, 0x0000000000000000)
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
 
         16.times do |k|
           cpu.instruction(:des, AVR::Value.new(k)).execute
@@ -104,13 +104,13 @@ RSpec.describe(AVR::Opcode) do
 
         expect(get_registers64(cpu, 0)).to(eq(0x8CA64DE9C1B123A7))
 
-        cpu.sreg.H = true
+        cpu.sreg.H = 1
         16.times do |k|
           cpu.instruction(:des, AVR::Value.new(k)).execute
         end
 
         expect(get_registers64(cpu, 0)).to(eq(0x0000000000000000))
-        cpu.sreg.H = false
+        cpu.sreg.H = 0
       end
     end
   end

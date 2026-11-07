@@ -17,7 +17,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.r0 = 255
         i.execute
         expect(cpu.r0.value).to(eq(0))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
     end
   end

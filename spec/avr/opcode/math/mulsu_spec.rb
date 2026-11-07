@@ -12,8 +12,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 19
         i.execute
         expect(cpu.r1r0.value).to(eq(17 * 19))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "performs multiplication of negative signed and unsigned numbers" do
@@ -21,8 +21,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 1
         i.execute
         expect(cpu.r1r0.value).to(eq(0xffff))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum negative signed multiplicand with unsigned multiplier" do
@@ -33,8 +33,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x8080))
         expect(cpu.r1.value).to(eq(0x80))
         expect(cpu.r0.value).to(eq(0x80))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum positive signed multiplicand with maximum unsigned multiplier" do
@@ -45,8 +45,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x7e81))
         expect(cpu.r1.value).to(eq(0x7e))
         expect(cpu.r0.value).to(eq(0x81))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "sets the Z bit when the signed multiplicand is zero" do
@@ -54,8 +54,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 123
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the Z bit when the unsigned multiplier is zero" do
@@ -63,8 +63,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "validates that Rd and Rr are within r16..r23" do

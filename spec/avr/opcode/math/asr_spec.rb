@@ -11,26 +11,26 @@ RSpec.describe(AVR::Opcode) do
         cpu.r0 = 0b1010
         i.execute
         expect(cpu.r0.value).to(eq(0b101))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "does sign extension" do
         cpu.r0 = 0b10000010
         i.execute
         expect(cpu.r0.value).to(eq(0b11000001))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the carry bit when appropriate" do
         cpu.r0 = 1
         i.execute
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.C).to(be(1))
       end
 
       it "sets the Z bit when the result is zero" do
         cpu.r0 = 1
         i.execute
-        expect(cpu.sreg.Z).to(be(true))
+        expect(cpu.sreg.Z).to(be(1))
       end
     end
   end

@@ -15,8 +15,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(646))
         expect(cpu.r1.value).to(eq(0x02))
         expect(cpu.r0.value).to(eq(0x86))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "performs fractional multiplication of positive and negative signed numbers" do
@@ -27,8 +27,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0xfffe))
         expect(cpu.r1.value).to(eq(0xff))
         expect(cpu.r0.value).to(eq(0xfe))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "performs fractional multiplication of two negative signed numbers" do
@@ -39,8 +39,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(2))
         expect(cpu.r1.value).to(eq(0x00))
         expect(cpu.r0.value).to(eq(0x02))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum negative signed numbers" do
@@ -51,8 +51,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x8000))
         expect(cpu.r1.value).to(eq(0x80))
         expect(cpu.r0.value).to(eq(0x00))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum negative multiplicand with maximum positive multiplier" do
@@ -63,8 +63,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x8100))
         expect(cpu.r1.value).to(eq(0x81))
         expect(cpu.r0.value).to(eq(0x00))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum positive signed numbers" do
@@ -75,8 +75,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x7e02))
         expect(cpu.r1.value).to(eq(0x7e))
         expect(cpu.r0.value).to(eq(0x02))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "sets the Z bit when Rd is zero" do
@@ -84,8 +84,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0xfe # -2
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the Z bit when Rr is zero" do
@@ -93,8 +93,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the Z bit when both operands are zero" do
@@ -102,8 +102,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "validates that Rd and Rr are within r16..r23" do
