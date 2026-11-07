@@ -138,22 +138,22 @@ RSpec.describe(AVR::CPU) do
     it "clears I flag, pushes return address, and jumps to vector by symbol" do
       cpu.pc.value = 0x0100
       cpu.next_pc.value = 0x0100
-      cpu.sreg.I = true
+      cpu.sreg.I = 1
 
       cpu.interrupt(:INT0) # INT0 vector is 0x0002 on ATmega328p
 
-      expect(cpu.sreg.I).to(be(false))
+      expect(cpu.sreg.I).to(be(0))
       expect(cpu.pc).to(eq(0x0002))
     end
 
     it "clears I flag, pushes return address, and jumps to vector by number" do
       cpu.pc.value = 0x0100
       cpu.next_pc.value = 0x0100
-      cpu.sreg.I = true
+      cpu.sreg.I = 1
 
       cpu.interrupt(1) # vector 1 is INT0 -> address 0x0002
 
-      expect(cpu.sreg.I).to(be(false))
+      expect(cpu.sreg.I).to(be(0))
       expect(cpu.pc).to(eq(0x0002))
     end
 

@@ -10,22 +10,22 @@ RSpec.describe(AVR::Opcode) do
       it "compares r16 == K" do
         cpu.r16 = 5
         i.execute
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "compares r16 < K" do
         cpu.r16 = 4
         i.execute
-        expect(cpu.sreg.Z).to(be(false))
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.Z).to(be(0))
+        expect(cpu.sreg.C).to(be(1))
       end
 
       it "compares r16 > K" do
         cpu.r16 = 6
         i.execute
-        expect(cpu.sreg.Z).to(be(false))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(0))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "validates that Rd is within r16..r31" do

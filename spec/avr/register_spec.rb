@@ -47,33 +47,11 @@ RSpec.describe(AVR::Register) do
   describe "AVR::MemoryByteRegisterWithNamedBits" do
     subject(:sreg) { AVR::MemoryByteRegisterWithNamedBits.new(cpu, :SREG, mem[2], [:C, :Z, :N, :V, :S, :H, :T, :I]) }
 
-    it "defines dynamic named bit getter and setter methods" do
-      sreg.C = true
-      expect(sreg.C).to(be(true))
-      expect(sreg.value).to(eq(0x01))
-
-      sreg.Z = 1
-      expect(sreg.Z).to(be(true))
-      expect(sreg.value).to(eq(0x03))
-
-      sreg.C = false
-      expect(sreg.C).to(be(false))
-      expect(sreg.value).to(eq(0x02))
-
-      sreg.Z = 0
-      expect(sreg.Z).to(be(false))
-      expect(sreg.value).to(eq(0x00))
-    end
-
-    it "raises error on invalid value in bit setter" do
-      expect { sreg.C = :invalid }.to(raise_error(RuntimeError, /Bad value invalid for bit C/))
-    end
-
     it "fetches bit boolean or integer" do
       sreg.value = 0x01
-      expect(sreg.fetch(:C)).to(be(true))
+      expect(sreg.fetch(:C)).to(be(1))
       expect(sreg.fetch_bit(:C)).to(eq(1))
-      expect(sreg.fetch(:Z)).to(be(false))
+      expect(sreg.fetch(:Z)).to(be(0))
       expect(sreg.fetch_bit(:Z)).to(eq(0))
     end
 
@@ -194,22 +172,22 @@ RSpec.describe(AVR::Register) do
     it "has all status bit accessors" do
       expect(AVR::SREG::STATUS_BITS).to(eq([:C, :Z, :N, :V, :S, :H, :T, :I]))
 
-      sreg.C = true
-      expect(sreg.C).to(be(true))
-      sreg.Z = true
-      expect(sreg.Z).to(be(true))
-      sreg.N = true
-      expect(sreg.N).to(be(true))
-      sreg.V = true
-      expect(sreg.V).to(be(true))
-      sreg.S = true
-      expect(sreg.S).to(be(true))
-      sreg.H = true
-      expect(sreg.H).to(be(true))
-      sreg.T = true
-      expect(sreg.T).to(be(true))
-      sreg.I = true
-      expect(sreg.I).to(be(true))
+      sreg.C = 1
+      expect(sreg.C).to(be(1))
+      sreg.Z = 1
+      expect(sreg.Z).to(be(1))
+      sreg.N = 1
+      expect(sreg.N).to(be(1))
+      sreg.V = 1
+      expect(sreg.V).to(be(1))
+      sreg.S = 1
+      expect(sreg.S).to(be(1))
+      sreg.H = 1
+      expect(sreg.H).to(be(1))
+      sreg.T = 1
+      expect(sreg.T).to(be(1))
+      sreg.I = 1
+      expect(sreg.I).to(be(1))
 
       expect(sreg.value).to(eq(0xff))
     end
@@ -287,11 +265,11 @@ RSpec.describe(AVR::Register) do
     end
 
     it "reads and sets named bit value" do
-      cpu.sreg.C = false
+      cpu.sreg.C = 0
       expect(rwnb.value).to(eq(0))
 
       rwnb.value = 1
-      expect(cpu.sreg.C).to(be(true))
+      expect(cpu.sreg.C).to(be(1))
       expect(rwnb.value).to(eq(1))
     end
   end

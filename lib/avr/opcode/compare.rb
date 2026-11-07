@@ -19,7 +19,7 @@ module AVR
       h     = (!rd3 & rr_k3) | (rr_k3 & r3) | (r3 & !rd3)
 
       z = r.zero?
-      z = r.zero? ? cpu.sreg.Z : false if mnemonic == :cpc
+      z = r.zero? ? cpu.sreg.Z? : false if mnemonic == :cpc
 
       cpu.sreg.from_h({ H: h, S: n ^ v, V: v, N: n, Z: z, C: c })
     end
@@ -38,7 +38,7 @@ module AVR
     end
 
     opcode(:cpc, [Arg.register, Arg.register], [:H, :S, :V, :N, :Z, :C]) do |cpu, _memory, args|
-      result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C ? 1 : 0)) & 0xff
+      result = (args.fetch(0).value - args.fetch(1).value - (cpu.sreg.C)) & 0xff
       set_sreg_for_cp_cpi_cpc(cpu, result, args.fetch(0).value, args.fetch(1).value, :cpc)
     end
 

@@ -15,8 +15,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(646))
         expect(cpu.r1.value).to(eq(0x02))
         expect(cpu.r0.value).to(eq(0x86))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "sets the carry bit when the 17-bit result overflows 16 bits" do
@@ -27,8 +27,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0xfc02))
         expect(cpu.r1.value).to(eq(0xfc))
         expect(cpu.r0.value).to(eq(0x02))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles boundary values without carry" do
@@ -39,8 +39,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x8000))
         expect(cpu.r1.value).to(eq(0x80))
         expect(cpu.r0.value).to(eq(0x00))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "handles maximum product below 16-bit overflow" do
@@ -51,8 +51,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0xff00))
         expect(cpu.r1.value).to(eq(0xff))
         expect(cpu.r0.value).to(eq(0x00))
-        expect(cpu.sreg.C).to(be(false))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "sets carry when product just exceeds 16-bit range" do
@@ -63,8 +63,8 @@ RSpec.describe(AVR::Opcode) do
         expect(cpu.r1r0.value).to(eq(0x00fe))
         expect(cpu.r1.value).to(eq(0x00))
         expect(cpu.r0.value).to(eq(0xfe))
-        expect(cpu.sreg.C).to(be(true))
-        expect(cpu.sreg.Z).to(be(false))
+        expect(cpu.sreg.C).to(be(1))
+        expect(cpu.sreg.Z).to(be(0))
       end
 
       it "sets the Z bit when Rd is zero" do
@@ -72,8 +72,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 123
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the Z bit when Rr is zero" do
@@ -81,8 +81,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the Z bit when both operands are zero" do
@@ -90,8 +90,8 @@ RSpec.describe(AVR::Opcode) do
         cpu.r17 = 0
         i.execute
         expect(cpu.r1r0.value).to(eq(0))
-        expect(cpu.sreg.Z).to(be(true))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.Z).to(be(1))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "validates that Rd and Rr are within r16..r23" do

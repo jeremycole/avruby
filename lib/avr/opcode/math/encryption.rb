@@ -222,7 +222,7 @@ module AVR
         key64 |= (reg.value << (8 * i))
       end
 
-      decrypt = cpu.sreg.H
+      decrypt = cpu.sreg.H?
       result64 = des_round(data64, key64, k, decrypt)
 
       8.times do |i|

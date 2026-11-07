@@ -16,22 +16,22 @@ RSpec.describe(AVR::Opcode) do
       it "does not set the carry flag without overflow" do
         cpu.r16 = 1
         i.execute
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "overflows to zero and sets the carry flag" do
         cpu.r16 = 0
         i.execute
         expect(cpu.r16.value).to(eq(255))
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.C).to(be(1))
       end
 
       it "does not subtract the carry flag" do
         cpu.r16 = 2
-        cpu.sreg.C = true
+        cpu.sreg.C = 1
         i.execute
         expect(cpu.r16.value).to(eq(1))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "validates that Rd is within r16..r31" do

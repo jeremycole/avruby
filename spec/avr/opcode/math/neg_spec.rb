@@ -19,14 +19,14 @@ RSpec.describe(AVR::Opcode) do
         cpu.r0 = 0x00
         i.execute
         expect(cpu.r0.value).to(eq(0x00))
-        expect(cpu.sreg.C).to(be_falsey)
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "sets the carry bit when the result is not zero" do
         cpu.r0 = 0x01
         i.execute
         expect(cpu.r0.value).to(eq(0xff))
-        expect(cpu.sreg.C).to(be_truthy)
+        expect(cpu.sreg.C).to(be(1))
       end
     end
   end

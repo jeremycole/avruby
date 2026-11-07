@@ -19,7 +19,7 @@ RSpec.describe(AVR::Opcode) do
         cpu.r0 = 1
         cpu.r1 = 1
         i.execute
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
 
       it "overflows to zero and sets the carry flag" do
@@ -27,16 +27,16 @@ RSpec.describe(AVR::Opcode) do
         cpu.r1 = 1
         i.execute
         expect(cpu.r0.value).to(eq(255))
-        expect(cpu.sreg.C).to(be(true))
+        expect(cpu.sreg.C).to(be(1))
       end
 
       it "subtracts the carry flag" do
         cpu.r0 = 3
         cpu.r1 = 2
-        cpu.sreg.C = true
+        cpu.sreg.C = 1
         i.execute
         expect(cpu.r0.value).to(eq(0))
-        expect(cpu.sreg.C).to(be(false))
+        expect(cpu.sreg.C).to(be(0))
       end
     end
   end
