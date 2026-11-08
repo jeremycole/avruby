@@ -129,7 +129,7 @@ module AVR
 
     sig { params(cpu: CPU).void }
     def initialize(cpu)
-      super(cpu, "SREG", cpu.data_address_space[T.must(cpu.device.register_memory_map[:SREG])], STATUS_BITS)
+      super(cpu, :SREG, cpu.data_address_space[T.must(cpu.device.register_memory_map[:SREG])], STATUS_BITS)
     end
   end
 end

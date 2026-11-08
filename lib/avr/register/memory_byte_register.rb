@@ -8,7 +8,7 @@ module AVR
     sig { returns(MemoryByte) }
     attr_reader :memory_byte
 
-    sig { params(cpu: CPU, name: T.any(Symbol, String), memory_byte: MemoryByte).void }
+    sig { params(cpu: CPU, name: Symbol, memory_byte: MemoryByte).void }
     def initialize(cpu, name, memory_byte)
       super(cpu, name)
       @memory_byte = memory_byte
