@@ -10,12 +10,15 @@ module AVR
 
     sig do
       params(
+        name: String,
         size: Integer
       ).void
     end
-    def initialize(size)
-      @size = size
+    def initialize(name, size)
       super()
+
+      @name = name
+      @size = size
     end
 
     sig { returns(Integer) }
