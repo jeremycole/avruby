@@ -113,8 +113,8 @@ module AVR
     sig { params(device: Device).void }
     def initialize(device) # rubocop:disable Metrics/AbcSize
       @device = device
-      @pc = T.let(PC.new(device.flash_size_in_words), PC)
-      @next_pc = T.let(PC.new(device.flash_size_in_words), PC)
+      @pc = T.let(PC.new("pc", device.flash_size_in_words), PC)
+      @next_pc = T.let(PC.new("next_pc", device.flash_size_in_words), PC)
 
       @data_address_space = T.let(Memory::AddressSpace.new("Data Address Space", 0xffff), AVR::Memory::AddressSpace)
 

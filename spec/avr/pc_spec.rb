@@ -3,15 +3,15 @@
 
 RSpec.describe(AVR::PC) do
   let(:flash_size_in_words) { 16_384 } # 32 KB flash = 16,384 words (0x4000)
-  subject(:pc) { described_class.new(flash_size_in_words) }
+  subject(:pc) { described_class.new("pc", flash_size_in_words) }
 
   describe "initialization and defaults" do
     it "initializes with value 0 by default" do
       expect(pc.value).to(eq(0))
     end
 
-    it "initializes with name '0' by default" do
-      expect(pc.name).to(eq("0"))
+    it "initializes with name 'pc'" do
+      expect(pc.name).to(eq("pc"))
     end
 
     it "exposes flash_size and calculated sizes" do
@@ -68,7 +68,7 @@ RSpec.describe(AVR::PC) do
 
   describe "comparisons and conversions" do
     it "compares equal with another PC with same value" do
-      other = described_class.new(flash_size_in_words)
+      other = described_class.new("other_pc", flash_size_in_words)
       expect(pc).to(eq(other))
     end
 
@@ -94,7 +94,7 @@ RSpec.describe(AVR::PC) do
     end
 
     it "inspects with class name and name" do
-      expect(pc.inspect).to(eq("#<AVR::PC 0>"))
+      expect(pc.inspect).to(eq("#<AVR::PC pc>"))
     end
   end
 
