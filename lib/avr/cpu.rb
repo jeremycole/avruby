@@ -1,4 +1,4 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 
 module AVR
@@ -34,9 +34,9 @@ module AVR
     sig { returns(RegisterFile) }
     attr_reader :registers
 
-    sig { returns(Register) }
+    sig { returns(MemoryByteRegister) }
     def r0
-      registers.fetch(:r0)
+      T.cast(T.must(registers.fetch(:r0)), MemoryByteRegister)
     end
 
     sig { params(value: Integer).void }
@@ -44,9 +44,9 @@ module AVR
       r0.value = value
     end
 
-    sig { returns(Register) }
+    sig { returns(MemoryByteRegister) }
     def r1
-      registers.fetch(:r1)
+      T.cast(T.must(registers.fetch(:r1)), MemoryByteRegister)
     end
 
     sig { params(value: Integer).void }
@@ -54,9 +54,9 @@ module AVR
       r1.value = value
     end
 
-    sig { returns(Register) }
+    sig { returns(RegisterPair) }
     def r1r0
-      @r1r0 ||= RegisterPair.new(self, r1, r0)
+      @r1r0 ||= T.let(RegisterPair.new(self, r1, r0), T.nilable(AVR::RegisterPair))
     end
 
     sig { params(value: Integer).void }
@@ -64,19 +64,19 @@ module AVR
       r1r0.value = value
     end
 
-    sig { returns(Register) }
+    sig { returns(RegisterPair) }
     def X # rubocop:disable Naming/MethodName
-      registers.fetch(:X)
+      T.cast(T.must(registers.fetch(:X)), RegisterPair)
     end
 
-    sig { returns(Register) }
+    sig { returns(RegisterPair) }
     def Y # rubocop:disable Naming/MethodName
-      registers.fetch(:Y)
+      T.cast(T.must(registers.fetch(:Y)), RegisterPair)
     end
 
-    sig { returns(Register) }
+    sig { returns(RegisterPair) }
     def Z # rubocop:disable Naming/MethodName
-      registers.fetch(:Z)
+      T.cast(T.must(registers.fetch(:Z)), RegisterPair)
     end
 
     sig { returns(RegisterFile) }
@@ -113,32 +113,41 @@ module AVR
     sig { params(device: Device).void }
     def initialize(device) # rubocop:disable Metrics/AbcSize
       @device = device
-      @pc = PC.new(device.flash_size_in_words)
-      @next_pc = PC.new(device.flash_size_in_words)
+      @pc = T.let(PC.new(device.flash_size_in_words), PC)
+      @next_pc = T.let(PC.new(device.flash_size_in_words), PC)
 
-      @data_address_space = Memory::AddressSpace.new("Data Address Space", 0xffff)
+      @data_address_space = T.let(Memory::AddressSpace.new("Data Address Space", 0xffff), AVR::Memory::AddressSpace)
 
-      @register_memory = Memory::MemoryByteBacked.new("registers", device.register_count, 0)
+      @register_memory = T.let(Memory::MemoryByteBacked.new("registers", device.register_count, 0), AVR::Memory::MemoryByteBacked)
       data_address_space.attach(@register_memory, 0)
 
-      @registers = RegisterFile.new(self)
+      @registers = T.let(RegisterFile.new(self), AVR::RegisterFile)
 
       device.register_count.times do |n|
         registers.add(GeneralPurposeRegister.new(self, n, data_address_space[n]))
       end
 
       device.word_register_map.each do |name, map|
-        registers.add(RegisterPair.new(self, @registers[map[:h]], @registers[map[:l]], name))
+        registers.add(RegisterPair.new(self,
+          T.cast(T.must(@registers[T.must(map[:h])]), MemoryByteRegister),
+          T.cast(T.must(@registers[T.must(map[:l])]), MemoryByteRegister),
+          name))
       end
 
-      @io_register_memory = Memory::MemoryByteBacked.new("io_registers", device.io_register_count, 0)
+      @io_register_memory = T.let(
+        Memory::MemoryByteBacked.new("io_registers", device.io_register_count, 0),
+        AVR::Memory::MemoryByteBacked
+      )
       data_address_space.attach(@io_register_memory, device.io_register_start)
 
-      @ext_io_register_memory = Memory::MemoryByteBacked.new("ext_io_registers", device.ext_io_register_count, 0)
+      @ext_io_register_memory = T.let(
+        Memory::MemoryByteBacked.new("ext_io_registers", device.ext_io_register_count, 0),
+        AVR::Memory::MemoryByteBacked
+      )
       data_address_space.attach(@ext_io_register_memory, device.ext_io_register_start)
 
-      @io_registers = RegisterFile.new(self)
-      @ext_io_registers = RegisterFile.new(self)
+      @io_registers = T.let(RegisterFile.new(self), AVR::RegisterFile)
+      @ext_io_registers = T.let(RegisterFile.new(self), AVR::RegisterFile)
 
       {
         @io_registers => device.io_registers,
@@ -175,39 +184,40 @@ module AVR
         end
       end
 
-      @sreg = SREG.new(self)
+      @sreg = T.let(SREG.new(self), AVR::SREG)
 
-      @sp = SP.new(
+      @sp = T.let(SP.new(
         self,
-        data_address_space[device.register_memory_map[:SPH]],
-        data_address_space[device.register_memory_map[:SPL]],
+        data_address_space[T.must(device.register_memory_map[:SPH])],
+        data_address_space[T.must(device.register_memory_map[:SPL])],
         device.ram_end
-      )
+      ), AVR::SP)
 
-      @sram = Memory::SRAM.new(device.sram_size)
+      @sram = T.let(Memory::SRAM.new(device.sram_size), AVR::Memory::SRAM)
       data_address_space.attach(@sram, device.ram_start)
 
-      @decoder = OpcodeDecoder.new
+      @decoder = T.let(OpcodeDecoder.new, AVR::OpcodeDecoder)
 
-      @ports = {}
+      @ports = T.let({}, T::Hash[T.untyped, T.untyped])
       device.port_map.each do |name, addr|
-        @ports[name] = Port.new(self, name, addr[:pin], addr[:ddr], addr[:port])
+        @ports[name] = Port.new(self, name, T.must(addr[:pin]), T.must(addr[:ddr]), T.must(addr[:port]))
       end
 
-      @clock = Clock.new("cpu")
+      @clock = T.let(Clock.new("cpu"), AVR::Clock)
       @clock.push_sink(Clock::Sink.new("cpu") { step })
 
-      @tracer = nil
+      @tracer = T.let(nil, T.nilable(T.proc.params(arg0: AVR::Instruction).void))
     end
 
+    sig { params(tick: Integer, block: T.untyped).void }
     def notify_at_tick(tick, &block)
       clock.notify_at_tick(tick, Clock::Sink.new("notify #{block} at #{tick}", block.to_proc))
     end
 
     sig { params(block: T.nilable(T.proc.params(arg0: Instruction).void)).void }
     def trace(&block)
-      @tracer = nil
-      @tracer = block.to_proc if block_given?
+      @tracer = T.let(nil, T.nilable(T.proc.params(arg0: AVR::Instruction).void))
+      @tracer = T.let(block.to_proc, T.nilable(T.proc.params(arg0: AVR::Instruction).void)) if block_given?
     end
 
     sig { void }
@@ -291,7 +301,8 @@ module AVR
     def interrupt_vector_table_start_address
       # We use 0-based addresses here rather than 2-based as in the AVR documentation because the interrupt
       # vector map includes RESET at 0. The actual reset vector may be overridden based on the BOOTRST fuse.
-      self.MCUCR.get(:IVSEL) == 1 ? device.boot_area_start_address : 0
+      mcucr = T.cast(io_registers.registers.fetch("MCUCR"), MemoryByteRegisterWithNamedBits)
+      mcucr.get(:IVSEL) == 1 ? device.boot_area_start_address : 0
     end
 
     sig { params(name_or_vector_number: T.any(Symbol, Integer)).void }
@@ -304,7 +315,7 @@ module AVR
         vector_offset = device.interrupt_vector_map[name_or_vector_number]
       end
 
-      instruction(:call, Value.new(interrupt_vector_table_start_address + vector_offset)).execute
+      instruction(:call, Value.new(interrupt_vector_table_start_address + T.must(vector_offset))).execute
     end
 
     sig { returns(Instruction) }

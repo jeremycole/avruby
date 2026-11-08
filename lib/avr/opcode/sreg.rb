@@ -50,7 +50,7 @@ module AVR
     end
 
     opcode(:bst, [Arg.register, Arg.bit_number], [:T]) do |cpu, _memory, args|
-      cpu.sreg.T = (args.fetch(0).value & (1 << args.fetch(1).value) != 0) ? 1 : 0
+      cpu.sreg.T = args.fetch(0).value & (1 << args.fetch(1).value) != 0 ? 1 : 0
     end
   end
 end

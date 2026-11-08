@@ -8,122 +8,122 @@ module AVR
     STATUS_BITS = T.let([:C, :Z, :N, :V, :S, :H, :T, :I].freeze, T::Array[Symbol])
 
     sig { returns(Integer) }
-    def C
+    def C # rubocop:disable Naming/MethodName
       get(:C)
     end
 
     sig { returns(T::Boolean) }
-    def C?
+    def C? # rubocop:disable Naming/MethodName
       get(:C) == 1
     end
 
     sig { params(value: Integer).void }
-    def C=(value)
+    def C=(value) # rubocop:disable Naming/MethodName
       set(:C, value)
     end
 
     sig { returns(Integer) }
-    def Z
+    def Z # rubocop:disable Naming/MethodName
       get(:Z)
     end
 
     sig { returns(T::Boolean) }
-    def Z?
+    def Z? # rubocop:disable Naming/MethodName
       get(:Z) == 1
     end
 
     sig { params(value: Integer).void }
-    def Z=(value)
+    def Z=(value) # rubocop:disable Naming/MethodName
       set(:Z, value)
     end
 
     sig { returns(Integer) }
-    def N
+    def N # rubocop:disable Naming/MethodName
       get(:N)
     end
 
     sig { returns(T::Boolean) }
-    def N?
+    def N? # rubocop:disable Naming/MethodName
       get(:N) == 1
     end
 
     sig { params(value: Integer).void }
-    def N=(value)
+    def N=(value) # rubocop:disable Naming/MethodName
       set(:N, value)
     end
 
     sig { returns(Integer) }
-    def V
+    def V # rubocop:disable Naming/MethodName
       get(:V)
     end
 
     sig { returns(T::Boolean) }
-    def V?
+    def V? # rubocop:disable Naming/MethodName
       get(:V) == 1
     end
 
     sig { params(value: Integer).void }
-    def V=(value)
+    def V=(value) # rubocop:disable Naming/MethodName
       set(:V, value)
     end
 
     sig { returns(Integer) }
-    def S
+    def S # rubocop:disable Naming/MethodName
       get(:S)
     end
 
     sig { returns(T::Boolean) }
-    def S?
+    def S? # rubocop:disable Naming/MethodName
       get(:S) == 1
     end
 
     sig { params(value: Integer).void }
-    def S=(value)
+    def S=(value) # rubocop:disable Naming/MethodName
       set(:S, value)
     end
 
     sig { returns(Integer) }
-    def H
+    def H # rubocop:disable Naming/MethodName
       get(:H)
     end
 
     sig { returns(T::Boolean) }
-    def H?
+    def H? # rubocop:disable Naming/MethodName
       get(:H) == 1
     end
 
     sig { params(value: Integer).void }
-    def H=(value)
+    def H=(value) # rubocop:disable Naming/MethodName
       set(:H, value)
     end
 
     sig { returns(Integer) }
-    def T
+    def T # rubocop:disable Naming/MethodName
       get(:T)
     end
 
     sig { returns(T::Boolean) }
-    def T?
+    def T? # rubocop:disable Naming/MethodName
       get(:T) == 1
     end
 
     sig { params(value: Integer).void }
-    def T=(value)
+    def T=(value) # rubocop:disable Naming/MethodName
       set(:T, value)
     end
 
     sig { returns(Integer) }
-    def I
+    def I # rubocop:disable Naming/MethodName
       get(:I)
     end
 
     sig { returns(T::Boolean) }
-    def I?
+    def I? # rubocop:disable Naming/MethodName
       get(:I) == 1
     end
 
     sig { params(value: Integer).void }
-    def I=(value)
+    def I=(value) # rubocop:disable Naming/MethodName
       set(:I, value)
     end
 
