@@ -40,8 +40,8 @@ module AVR
         T.cast(cpu.io_registers.registers.fetch("EEDR"), MemoryByteRegister)
       end
 
-      sig { params(cpu: CPU).void }
-      def attach(cpu)
+      sig { params(_cpu: CPU).void }
+      def attach(_cpu)
         @watched_memory_bytes[eearl.memory_byte] = :EEARL
         @watched_memory_bytes[eearh.memory_byte] = :EEARH
         @watched_memory_bytes[eecr.memory_byte] = :EECR

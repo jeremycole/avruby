@@ -20,13 +20,12 @@ module AVR
         @bit_names.each_with_index.with_object({}) { |(b, i), h| h[b] = 2**i if b },
         T::Hash[Symbol, Integer]
       )
-
     end
 
     sig { params(bit_name: Symbol).returns(Integer) }
     def get(bit_name)
       bit_value = T.must(@bit_names_bv[bit_name])
-      ((value & bit_value) == 0) ? 0 : 1
+      (value & bit_value) == 0 ? 0 : 1
     end
 
     sig { params(bit_name: Symbol).returns(T::Boolean) }
