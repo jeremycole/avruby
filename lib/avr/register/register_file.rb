@@ -8,19 +8,19 @@ module AVR
     sig { returns(CPU) }
     attr_reader :cpu
 
-    sig { returns(T::Hash[T.any(Symbol, String), Register]) }
+    sig { returns(T::Hash[Symbol, Register]) }
     attr_reader :registers
 
     sig { returns(T::Hash[Register, RegisterPair]) }
     attr_reader :word_register_map
 
-    sig { returns(T::Array[T.any(Symbol, String)]) }
+    sig { returns(T::Array[Symbol]) }
     attr_reader :register_list
 
     sig { params(register: Register).void }
     def add(register)
       @registers[register.name] = register
-      @cpu.send(:define_singleton_method, register.name.to_sym, proc { register })
+      @cpu.send(:define_singleton_method, register.name, proc { register })
       @cpu.send(:define_singleton_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
       @register_list << register.name
       return unless register.is_a?(RegisterPair)
@@ -32,9 +32,9 @@ module AVR
     sig { params(cpu: CPU).void }
     def initialize(cpu)
       @cpu = cpu
-      @registers = T.let({}, T::Hash[T.any(Symbol, String), Register])
+      @registers = T.let({}, T::Hash[Symbol, Register])
       @word_register_map = T.let({}, T::Hash[Register, RegisterPair])
-      @register_list = T.let([], T::Array[T.any(Symbol, String)])
+      @register_list = T.let([], T::Array[Symbol])
     end
 
     sig { void }

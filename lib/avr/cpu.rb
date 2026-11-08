@@ -162,10 +162,10 @@ module AVR
           bit_names = device.register_bit_names_map[name]
           if bit_names
             register_file.add(
-              MemoryByteRegisterWithNamedBits.new(self, name.to_s, data_address_space[address], bit_names)
+              MemoryByteRegisterWithNamedBits.new(self, name, data_address_space[address], bit_names)
             )
           else
-            register_file.add(MemoryByteRegister.new(self, name.to_s, data_address_space[address]))
+            register_file.add(MemoryByteRegister.new(self, name, data_address_space[address]))
           end
         end
 
@@ -175,8 +175,8 @@ module AVR
         word_registers =
           register_file.registers.keys
                        .grep(/H$/)
-                       .map { |k| k.sub(/H$/, "") }
-                       .map { |k| [k, { h: register_file.registers["#{k}H"], l: register_file.registers["#{k}L"] }] }
+                       .map { |k| k.to_s.sub(/H$/, "").to_sym }
+                       .map { |k| [k, { h: register_file.registers[:"#{k}H"], l: register_file.registers[:"#{k}L"] }] }
                        .select { |_, v| v.values.all? }
 
         word_registers.each do |name, pair|
@@ -270,9 +270,9 @@ module AVR
 
     sig { void }
     def reset_clkpr
-      return unless ext_io_registers.registers.key?("CLKPR")
+      return unless ext_io_registers.registers.key?(:CLKPR)
 
-      clkpr = ext_io_registers.registers["CLKPR"]
+      clkpr = ext_io_registers.registers[:CLKPR]
       return unless clkpr.is_a?(MemoryByteRegisterWithNamedBits)
 
       ckdiv8 = device.fuses.programmed?(:CKDIV8)
@@ -301,7 +301,7 @@ module AVR
     def interrupt_vector_table_start_address
       # We use 0-based addresses here rather than 2-based as in the AVR documentation because the interrupt
       # vector map includes RESET at 0. The actual reset vector may be overridden based on the BOOTRST fuse.
-      mcucr = T.cast(io_registers.registers.fetch("MCUCR"), MemoryByteRegisterWithNamedBits)
+      mcucr = T.cast(io_registers.registers.fetch(:MCUCR), MemoryByteRegisterWithNamedBits)
       mcucr.get(:IVSEL) == 1 ? device.boot_area_start_address : 0
     end
 

@@ -16,11 +16,11 @@ module AVR
         cpu: CPU,
         h: MemoryByteRegister,
         l: MemoryByteRegister,
-        name: T.nilable(T.any(Symbol, String))
+        name: T.nilable(Symbol)
       ).void
     end
     def initialize(cpu, h, l, name = nil)
-      super(cpu, name || "#{h.name}:#{l.name}")
+      super(cpu, name || :"#{h.name}:#{l.name}")
       @h = h
       @l = l
     end

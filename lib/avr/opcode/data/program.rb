@@ -37,7 +37,7 @@ module AVR
 
     opcode(:elpm, [Arg.register.optional, Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [cpu.r0, RegisterWithModification.new(cpu.Z)] if args.empty?
-      rampz = cpu.io_registers.registers["RAMPZ"]&.value || 0 # Devices with < 64 KiB Flash don't have RAMPZ
+      rampz = cpu.io_registers.registers[:RAMPZ]&.value || 0 # Devices with < 64 KiB Flash don't have RAMPZ
       mwr = T.cast(args.fetch(1), RegisterWithModification)
       args.fetch(0).value = mwr.handle_modification(1) do |r|
         cpu.device.flash[(rampz << 16) | r.value].value
@@ -54,7 +54,7 @@ module AVR
 
     opcode(:spm, [Arg.modifying_word_register.optional]) do |cpu, _memory, args|
       args = [RegisterWithModification.new(cpu.Z)] if args.empty?
-      rampz = cpu.io_registers.registers["RAMPZ"]&.value || 0 # Devices with < 64 KiB Flash don't have RAMPZ
+      rampz = cpu.io_registers.registers[:RAMPZ]&.value || 0 # Devices with < 64 KiB Flash don't have RAMPZ
       mwr = T.cast(args.fetch(0), RegisterWithModification)
 
       mwr.handle_modification(2) do |r|

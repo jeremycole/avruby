@@ -112,7 +112,7 @@ RSpec.describe(AVR::Register) do
 
     it "defaults name to 'h:l' if name is omitted" do
       unnamed = AVR::RegisterPair.new(cpu, rh, rl)
-      expect(unnamed.name).to(eq("r27:r26"))
+      expect(unnamed.name).to(eq(:"r27:r26"))
     end
   end
 

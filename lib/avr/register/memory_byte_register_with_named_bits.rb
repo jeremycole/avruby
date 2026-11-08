@@ -11,7 +11,7 @@ module AVR
     sig { returns(T::Hash[Symbol, Integer]) }
     attr_reader :bit_names_bv
 
-    sig { params(cpu: CPU, name: T.any(String, Symbol), memory_byte: MemoryByte, bit_names: T::Array[T.nilable(Symbol)]).void }
+    sig { params(cpu: CPU, name: Symbol, memory_byte: MemoryByte, bit_names: T::Array[T.nilable(Symbol)]).void }
     def initialize(cpu, name, memory_byte, bit_names)
       super(cpu, name, memory_byte)
 

@@ -10,7 +10,10 @@ module AVR
     sig { returns(CPU) }
     attr_reader :cpu
 
-    sig { params(cpu: CPU, name: T.any(String, Symbol)).void }
+    sig { override.returns(Symbol) }
+    attr_reader :name
+
+    sig { params(cpu: CPU, name: Symbol).void }
     def initialize(cpu, name)
       super()
       @cpu = cpu
