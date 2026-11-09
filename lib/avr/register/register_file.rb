@@ -20,8 +20,6 @@ module AVR
     sig { params(register: Register).void }
     def add(register)
       @registers[register.name] = register
-      @cpu.send(:define_singleton_method, register.name, proc { register })
-      @cpu.send(:define_singleton_method, (register.name.to_s + "=").to_sym, proc { |value| register.value = value })
       @register_list << register.name
       return unless register.is_a?(RegisterPair)
 
@@ -56,14 +54,60 @@ module AVR
       end
     end
 
+    sig { params(key: T.any(Integer, Symbol)).returns(T::Boolean) }
+    def key?(key)
+      if key.is_a?(Integer)
+        key >= 0 && key < @register_list.length
+      else
+        @registers.key?(key)
+      end
+    end
+    alias include? key?
+    alias has_key? key?
+
+    sig { returns(T::Array[Symbol]) }
+    def keys
+      @registers.keys
+    end
+
+    sig { returns(T::Array[Register]) }
+    def values
+      @registers.values
+    end
+
+    sig { params(block: T.proc.params(register: Register).void).void }
+    # rubocop:disable-next Naming/BlockForwarding,Style/ArgumentsForwarding
+    def each_value(&block)
+      @registers.each_value(&block)
+    end
+
     sig { params(key: T.any(Integer, Symbol)).returns(T.nilable(Register)) }
     def fetch(key)
-      @registers.fetch(@register_list.fetch(key)) if key.is_a?(Integer)
+      if key.is_a?(Integer)
+        name = @register_list[key]
+        name ? @registers.fetch(name, nil) : nil
+      else
+        @registers.fetch(key, nil)
+      end
     end
 
     sig { params(key: T.any(Integer, Symbol)).returns(T.nilable(Register)) }
     def [](key)
-      @registers[T.must(@register_list[key])] if key.is_a?(Integer)
+      if key.is_a?(Integer)
+        name = @register_list[key]
+        name ? @registers[name] : nil
+      else
+        @registers[key]
+      end
+    end
+
+    sig { params(key: T.any(Integer, Symbol), value: Integer).returns(Integer) }
+    def []=(key, value)
+      reg = self[key]
+      raise KeyError, "Register not found for #{key}" unless reg
+
+      reg.value = value
+      value
     end
 
     sig { params(register: Register).returns(T.nilable(RegisterPair)) }

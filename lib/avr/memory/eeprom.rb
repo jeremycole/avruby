@@ -22,22 +22,22 @@ module AVR
 
       sig { returns(MemoryByteRegister) }
       def eearl
-        T.cast(cpu.io_registers.registers.fetch(:EEARL), MemoryByteRegister)
+        T.cast(cpu.io_registers.fetch(:EEARL), MemoryByteRegister)
       end
 
       sig { returns(MemoryByteRegister) }
       def eearh
-        T.cast(cpu.io_registers.registers.fetch(:EEARH), MemoryByteRegister)
+        T.cast(cpu.io_registers.fetch(:EEARH), MemoryByteRegister)
       end
 
       sig { returns(MemoryByteRegisterWithNamedBits) }
       def eecr
-        T.cast(cpu.io_registers.registers.fetch(:EECR), MemoryByteRegisterWithNamedBits)
+        T.cast(cpu.io_registers.fetch(:EECR), MemoryByteRegisterWithNamedBits)
       end
 
       sig { returns(MemoryByteRegister) }
       def eedr
-        T.cast(cpu.io_registers.registers.fetch(:EEDR), MemoryByteRegister)
+        T.cast(cpu.io_registers.fetch(:EEDR), MemoryByteRegister)
       end
 
       sig { params(_cpu: CPU).void }

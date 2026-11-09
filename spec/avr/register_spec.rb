@@ -124,6 +124,23 @@ RSpec.describe(AVR::Register) do
       expect(rf.fetch(31)).to(eq(cpu.r31))
     end
 
+    it "checks register existence with key?, include?, and has_key?" do
+      expect(rf.key?(:r0)).to(be(true))
+      expect(rf.include?(:X)).to(be(true))
+      expect(rf.has_key?(:nonexistent)).to(be(false))
+      expect(rf.key?(0)).to(be(true))
+      expect(rf.key?(100)).to(be(false))
+    end
+
+    it "provides keys, values, and each_value" do
+      expect(rf.keys).to(include(:r0, :r31, :X, :Y, :Z))
+      expect(rf.values).to(include(cpu.r0, cpu.r31, cpu.X))
+
+      yielded = []
+      rf.each_value { |reg| yielded << reg.name }
+      expect(yielded).to(include(:r0, :r31, :X, :Y, :Z))
+    end
+
     it "associates word registers for registered register pairs" do
       expect(rf.associated_word_register(cpu.r26)).to(eq(cpu.X))
       expect(rf.associated_word_register(cpu.r27)).to(eq(cpu.X))

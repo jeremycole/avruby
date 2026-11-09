@@ -38,7 +38,7 @@ module AVR
     sig { returns(T::Array[T.any(Clock, Sink)]) }
     attr_reader :sinks
 
-    sig { returns(T::Hash[Integer, T.untyped]) }
+    sig { returns(T::Hash[Integer, T::Array[Sink]]) }
     attr_reader :watches
 
     sig { returns(Integer) }
@@ -53,15 +53,15 @@ module AVR
     sig { params(name: T.nilable(String)).void }
     def initialize(name = nil)
       @name = name
-      @sinks = T.let([], T::Array[Sink])
-      @watches = T.let({}, T::Hash[Integer, T.untyped])
+      @sinks = T.let([], T::Array[T.any(Clock, Sink)])
+      @watches = T.let({}, T::Hash[Integer, T::Array[Sink]])
       @ticks = T.let(0, Integer)
       @count = T.let(0, Integer)
       @scale = T.let(1, Integer)
       @last_tick = T.let(0, Integer)
     end
 
-    sig { params(sink: Sink).void }
+    sig { params(sink: T.any(Clock, Sink)).void }
     def unshift_sink(sink)
       sinks.unshift(sink)
     end
@@ -78,8 +78,8 @@ module AVR
 
     sig { params(tick: Integer, sink: Sink).void }
     def notify_at_tick(tick, sink)
-      @watches[tick] ||= []
-      @watches[tick] << sink
+      watch_list = (@watches[tick] ||= [])
+      watch_list << sink
     end
 
     sig { params(_source: T.nilable(Clock), _ticks: T.nilable(Integer)).returns(Integer) }

@@ -205,7 +205,7 @@ module AVR
     sig { params(trace_name: String, register_file: RegisterFile, memory: Memory::MemoryByteBacked).void }
     def trace_register_file(trace_name, register_file, memory)
       register_addresses = {}
-      register_file.registers.each_value do |register|
+      register_file.each_value do |register|
         case register
         when MemoryByteRegister
           register_addresses[register.memory_byte.address] ||= []

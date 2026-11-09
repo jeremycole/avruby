@@ -39,7 +39,7 @@ RSpec.describe(AVR::Opcode) do
         it "loads the program memory addressed by RAMPZ:Z" do
           rampz_reg = AVR::MemoryByteRegister.new(cpu, :RAMPZ, cpu.data_address_space[0x3b])
           cpu.io_registers.add(rampz_reg)
-          cpu.RAMPZ.value = 1
+          cpu.io_registers[:RAMPZ].value = 1
 
           large_flash = AVR::Memory::Flash.new(0x20000)
           large_flash[0x10500].value = 0x42
@@ -49,7 +49,7 @@ RSpec.describe(AVR::Opcode) do
           cpu.instruction(:elpm, cpu.r18, AVR::RegisterWithModification.new(cpu.Z, :post_increment)).execute
           expect(cpu.r18.value).to(eq(0x42))
           expect(cpu.Z.value).to(eq(0x0501))
-          expect(cpu.RAMPZ.value).to(eq(1))
+          expect(cpu.io_registers[:RAMPZ].value).to(eq(1))
         end
       end
     end

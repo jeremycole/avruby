@@ -45,7 +45,7 @@ RSpec.describe(AVR::Opcode) do
         it "writes r1:r0 to the program memory addressed by RAMPZ:Z" do
           rampz_reg = AVR::MemoryByteRegister.new(cpu, :RAMPZ, cpu.data_address_space[0x3b])
           cpu.io_registers.add(rampz_reg)
-          cpu.RAMPZ.value = 1
+          cpu.io_registers[:RAMPZ].value = 1
 
           large_flash = AVR::Memory::Flash.new(0x20000)
           allow(device).to receive(:flash).and_return(large_flash)
@@ -57,7 +57,7 @@ RSpec.describe(AVR::Opcode) do
           expect(large_flash[0x10500].value).to(eq(0xef))
           expect(large_flash[0x10501].value).to(eq(0xbe))
           expect(cpu.Z.value).to(eq(0x0502))
-          expect(cpu.RAMPZ.value).to(eq(1))
+          expect(cpu.io_registers[:RAMPZ].value).to(eq(1))
         end
       end
     end
