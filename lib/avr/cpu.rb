@@ -35,28 +35,232 @@ module AVR
     attr_reader :registers
 
     sig { returns(MemoryByteRegister) }
-    def r0
-      T.cast(T.must(registers.fetch(:r0)), MemoryByteRegister)
-    end
-
+    def r0 = T.cast(T.must(registers.fetch(:r0)), MemoryByteRegister)
     sig { params(value: Integer).void }
     def r0=(value)
       r0.value = value
     end
 
     sig { returns(MemoryByteRegister) }
-    def r1
-      T.cast(T.must(registers.fetch(:r1)), MemoryByteRegister)
-    end
-
+    def r1 = T.cast(T.must(registers.fetch(:r1)), MemoryByteRegister)
     sig { params(value: Integer).void }
     def r1=(value)
       r1.value = value
     end
 
+    sig { returns(MemoryByteRegister) }
+    def r2 = T.cast(T.must(registers.fetch(:r2)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r2=(value)
+      r2.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r3 = T.cast(T.must(registers.fetch(:r3)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r3=(value)
+      r3.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r4 = T.cast(T.must(registers.fetch(:r4)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r4=(value)
+      r4.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r5 = T.cast(T.must(registers.fetch(:r5)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r5=(value)
+      r5.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r6 = T.cast(T.must(registers.fetch(:r6)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r6=(value)
+      r6.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r7 = T.cast(T.must(registers.fetch(:r7)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r7=(value)
+      r7.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r8 = T.cast(T.must(registers.fetch(:r8)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r8=(value)
+      r8.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r9 = T.cast(T.must(registers.fetch(:r9)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r9=(value)
+      r9.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r10 = T.cast(T.must(registers.fetch(:r10)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r10=(value)
+      r10.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r11 = T.cast(T.must(registers.fetch(:r11)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r11=(value)
+      r11.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r12 = T.cast(T.must(registers.fetch(:r12)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r12=(value)
+      r12.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r13 = T.cast(T.must(registers.fetch(:r13)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r13=(value)
+      r13.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r14 = T.cast(T.must(registers.fetch(:r14)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r14=(value)
+      r14.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r15 = T.cast(T.must(registers.fetch(:r15)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r15=(value)
+      r15.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r16 = T.cast(T.must(registers.fetch(:r16)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r16=(value)
+      r16.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r17 = T.cast(T.must(registers.fetch(:r17)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r17=(value)
+      r17.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r18 = T.cast(T.must(registers.fetch(:r18)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r18=(value)
+      r18.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r19 = T.cast(T.must(registers.fetch(:r19)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r19=(value)
+      r19.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r20 = T.cast(T.must(registers.fetch(:r20)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r20=(value)
+      r20.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r21 = T.cast(T.must(registers.fetch(:r21)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r21=(value)
+      r21.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r22 = T.cast(T.must(registers.fetch(:r22)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r22=(value)
+      r22.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r23 = T.cast(T.must(registers.fetch(:r23)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r23=(value)
+      r23.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r24 = T.cast(T.must(registers.fetch(:r24)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r24=(value)
+      r24.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r25 = T.cast(T.must(registers.fetch(:r25)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r25=(value)
+      r25.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r26 = T.cast(T.must(registers.fetch(:r26)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r26=(value)
+      r26.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r27 = T.cast(T.must(registers.fetch(:r27)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r27=(value)
+      r27.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r28 = T.cast(T.must(registers.fetch(:r28)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r28=(value)
+      r28.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r29 = T.cast(T.must(registers.fetch(:r29)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r29=(value)
+      r29.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r30 = T.cast(T.must(registers.fetch(:r30)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r30=(value)
+      r30.value = value
+    end
+
+    sig { returns(MemoryByteRegister) }
+    def r31 = T.cast(T.must(registers.fetch(:r31)), MemoryByteRegister)
+    sig { params(value: Integer).void }
+    def r31=(value)
+      r31.value = value
+    end
+
     sig { returns(RegisterPair) }
     def r1r0
-      @r1r0 ||= T.let(RegisterPair.new(self, r1, r0), T.nilable(AVR::RegisterPair))
+      @r1r0 ||= T.let(RegisterPair.new(self, r1, r0, :r1r0), T.nilable(AVR::RegisterPair))
     end
 
     sig { params(value: Integer).void }
@@ -69,14 +273,29 @@ module AVR
       T.cast(T.must(registers.fetch(:X)), RegisterPair)
     end
 
+    sig { params(value: Integer).void }
+    def X=(value) # rubocop:disable Naming/MethodName
+      self.X.value = value
+    end
+
     sig { returns(RegisterPair) }
     def Y # rubocop:disable Naming/MethodName
       T.cast(T.must(registers.fetch(:Y)), RegisterPair)
     end
 
+    sig { params(value: Integer).void }
+    def Y=(value) # rubocop:disable Naming/MethodName
+      self.Y.value = value
+    end
+
     sig { returns(RegisterPair) }
     def Z # rubocop:disable Naming/MethodName
       T.cast(T.must(registers.fetch(:Z)), RegisterPair)
+    end
+
+    sig { params(value: Integer).void }
+    def Z=(value) # rubocop:disable Naming/MethodName
+      self.Z.value = value
     end
 
     sig { returns(RegisterFile) }
@@ -90,9 +309,7 @@ module AVR
       device.fuses
     end
 
-    # SREG uses metaprogramming that Sorbet doesn't understand
-    # sig { returns(SREG) }
-    sig { returns(T.untyped) }
+    sig { returns(SREG) }
     attr_reader :sreg
 
     sig { returns(SP) }
@@ -173,10 +390,10 @@ module AVR
         # and make a word register for the pair. Some registers may end with "H" or "L" (such as OSCCAL),
         # but not be a pair, skip those.
         word_registers =
-          register_file.registers.keys
+          register_file.keys
                        .grep(/H$/)
                        .map { |k| k.to_s.sub(/H$/, "").to_sym }
-                       .map { |k| [k, { h: register_file.registers[:"#{k}H"], l: register_file.registers[:"#{k}L"] }] }
+                       .map { |k| [k, { h: register_file[:"#{k}H"], l: register_file[:"#{k}L"] }] }
                        .select { |_, v| v.values.all? }
 
         word_registers.each do |name, pair|
@@ -198,7 +415,7 @@ module AVR
 
       @decoder = T.let(OpcodeDecoder.new, AVR::OpcodeDecoder)
 
-      @ports = T.let({}, T::Hash[T.untyped, T.untyped])
+      @ports = T.let({}, T::Hash[Symbol, Port])
       device.port_map.each do |name, addr|
         @ports[name] = Port.new(self, name, T.must(addr[:pin]), T.must(addr[:ddr]), T.must(addr[:port]))
       end
@@ -209,9 +426,9 @@ module AVR
       @tracer = T.let(nil, T.nilable(T.proc.params(arg0: AVR::Instruction).void))
     end
 
-    sig { params(tick: Integer, block: T.untyped).void }
+    sig { params(tick: Integer, block: Clock::Sink::SinkCallback).void }
     def notify_at_tick(tick, &block)
-      clock.notify_at_tick(tick, Clock::Sink.new("notify #{block} at #{tick}", block.to_proc))
+      clock.notify_at_tick(tick, Clock::Sink.new("notify #{block} at #{tick}", block))
     end
 
     sig { params(block: T.nilable(T.proc.params(arg0: Instruction).void)).void }
@@ -270,9 +487,9 @@ module AVR
 
     sig { void }
     def reset_clkpr
-      return unless ext_io_registers.registers.key?(:CLKPR)
+      return unless ext_io_registers.key?(:CLKPR)
 
-      clkpr = ext_io_registers.registers[:CLKPR]
+      clkpr = ext_io_registers[:CLKPR]
       return unless clkpr.is_a?(MemoryByteRegisterWithNamedBits)
 
       ckdiv8 = device.fuses.programmed?(:CKDIV8)
@@ -292,7 +509,7 @@ module AVR
       word
     end
 
-    sig { params(mnemonic: Symbol, args: T.untyped).returns(Instruction) }
+    sig { params(mnemonic: Symbol, args: Argument::ValueType).returns(Instruction) }
     def instruction(mnemonic, *args)
       Instruction.new(self, mnemonic, args)
     end
@@ -301,7 +518,7 @@ module AVR
     def interrupt_vector_table_start_address
       # We use 0-based addresses here rather than 2-based as in the AVR documentation because the interrupt
       # vector map includes RESET at 0. The actual reset vector may be overridden based on the BOOTRST fuse.
-      mcucr = T.cast(io_registers.registers.fetch(:MCUCR), MemoryByteRegisterWithNamedBits)
+      mcucr = T.cast(io_registers.fetch(:MCUCR), MemoryByteRegisterWithNamedBits)
       mcucr.get(:IVSEL) == 1 ? device.boot_area_start_address : 0
     end
 

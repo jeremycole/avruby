@@ -54,8 +54,16 @@ module AVR
       d = operands.fetch(:D).value
       r = operands.fetch(:R).value
       {
-        Rd: RegisterPair.new(cpu, cpu.registers.fetch((d << 1) + 1), cpu.registers.fetch(d << 1)),
-        Rr: RegisterPair.new(cpu, cpu.registers.fetch((r << 1) + 1), cpu.registers.fetch(r << 1)),
+        Rd: RegisterPair.new(
+          cpu,
+          T.cast(T.must(cpu.registers.fetch((d << 1) + 1)), MemoryByteRegister),
+          T.cast(T.must(cpu.registers.fetch(d << 1)), MemoryByteRegister)
+        ),
+        Rr: RegisterPair.new(
+          cpu,
+          T.cast(T.must(cpu.registers.fetch((r << 1) + 1)), MemoryByteRegister),
+          T.cast(T.must(cpu.registers.fetch(r << 1)), MemoryByteRegister)
+        ),
       }
     end
 
@@ -87,8 +95,8 @@ module AVR
       {
         Rd: RegisterPair.new(
           cpu,
-          cpu.registers.fetch(register_base + 1),
-          cpu.registers.fetch(register_base)
+          T.cast(T.must(cpu.registers.fetch(register_base + 1)), MemoryByteRegister),
+          T.cast(T.must(cpu.registers.fetch(register_base)), MemoryByteRegister)
         ),
         K: Value.new(operands.fetch(:K).value),
       }

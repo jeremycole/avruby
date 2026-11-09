@@ -45,11 +45,11 @@ module AVR
       extend T::Sig
 
       FormatterProc = T.type_alias do
-        T.proc.params(arg: T.untyped).returns(String)
+        T.proc.params(arg: Argument::ValueType).returns(String)
       end
 
       ValidatorProc = T.type_alias do
-        T.proc.params(arg: T.untyped).returns(T.nilable(T.class_of(OpcodeException)))
+        T.proc.params(arg: Argument::ValueType).returns(T.nilable(T.class_of(OpcodeException)))
       end
 
       sig { returns(Symbol) }
@@ -82,7 +82,7 @@ module AVR
         self
       end
 
-      sig { params(arg: T.untyped).returns(T.nilable(T::Array[T.class_of(AVR::Opcode::OpcodeException)])) }
+      sig { params(arg: Argument::ValueType).returns(T.nilable(T::Array[T.class_of(AVR::Opcode::OpcodeException)])) }
       def validate(arg)
         @validators.map { |validator| validator.call(arg) }.compact
       end
@@ -116,7 +116,7 @@ module AVR
 
         if range
           argument.validator do |arg|
-            RegisterOutOfRange unless range.cover?(arg.number)
+            RegisterOutOfRange unless arg.is_a?(GeneralPurposeRegister) && range.cover?(arg.number)
           end
         end
 
@@ -197,16 +197,24 @@ module AVR
       def self.displaced_word_register
         OpcodeArgumentDefinition
           .new(:displaced_word_register)
-          .formatter { |arg| format("%s%+d", arg.register.name, arg.displacement) }
+          .formatter do |arg|
+            arg.is_a?(RegisterWithDisplacement) ? format("%s%+d", arg.register.name, arg.displacement) : arg.to_s
+          end
       end
 
       sig { returns(OpcodeArgumentDefinition) }
       def self.register_with_bit_number
-        OpcodeArgumentDefinition
-          .new(:register_with_bit_number)
-          .validator { |arg| RegisterExpected unless arg.register.is_a?(Register) }
-          .validator { |arg| BitNumberExpected unless arg.bit_number.is_a?(Integer) }
-          .validator { |arg| ConstantOutOfRange unless arg.bit_number.between?(0, 7) }
+        argument = OpcodeArgumentDefinition.new(:register_with_bit_number)
+        argument.validator do |arg|
+          RegisterExpected unless arg.is_a?(RegisterWithBitNumber) && arg.register.is_a?(Register)
+        end
+        argument.validator do |arg|
+          BitNumberExpected unless arg.is_a?(RegisterWithBitNumber) && arg.bit_number.is_a?(Integer)
+        end
+        argument.validator do |arg|
+          ConstantOutOfRange unless arg.is_a?(RegisterWithBitNumber) && arg.bit_number.between?(0, 7)
+        end
+        argument
       end
 
       sig { returns(OpcodeArgumentDefinition) }
@@ -279,7 +287,7 @@ module AVR
       arg_types.select(&:required?).size..arg_types.size
     end
 
-    sig { params(args: T::Array[T.untyped]).returns(T::Boolean) }
+    sig { params(args: Argument::ArrayType).returns(T::Boolean) }
     def validate(args) # rubocop:disable Naming/PredicateMethod
       raise IncorrectArgumentCount unless required_arg_count.include?(args.size)
 
@@ -292,7 +300,7 @@ module AVR
       true
     end
 
-    sig { params(args: T::Array[T.untyped]).returns(T::Array[String]) }
+    sig { params(args: Argument::ArrayType).returns(T::Array[String]) }
     def format_args(args)
       args.each_with_index.map { |arg, i| T.must(arg_types[i]).format(arg) }
     end
@@ -302,7 +310,7 @@ module AVR
       "#<#{self.class.name} #{mnemonic} #{arg_types}>"
     end
 
-    sig { params(cpu: CPU, memory: T.nilable(Memory), args: T::Array[T.untyped]).void }
+    sig { params(cpu: CPU, memory: T.nilable(Memory), args: Argument::ArrayType).void }
     def execute(cpu, memory, args)
       opcode_proc.call(cpu, memory, args)
     end
@@ -360,7 +368,7 @@ module AVR
       )
     end
 
-    sig { params(pattern: String, block: T.untyped).void }
+    sig { params(pattern: String, block: OpcodeDecoder::OperandParser::ProcType).void }
     def self.parse_operands(pattern, &block)
       OpcodeDecoder.add_operand_parser(OpcodeDecoder::OperandParser.new(pattern, block.to_proc))
     end

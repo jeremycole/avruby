@@ -109,7 +109,7 @@ module AVR
 
       sig do
         params(
-          filter: T.untyped,
+          filter: T.nilable(T.any(Integer, T::Array[Integer])),
           block: T.proc.params(
             memory_byte: MemoryByte,
             old_value: Integer,

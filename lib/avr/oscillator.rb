@@ -10,7 +10,7 @@ module AVR
       [true].cycle
     end
 
-    sig { params(time: T.any(Float, Integer)).returns(T::Enumerator[T.untyped]) }
+    sig { params(time: T.any(Float, Integer)).returns(T::Enumerator[TrueClass]) }
     def time_limit(time)
       Enumerator.new do |y|
         end_time = Time.now.to_f + time
@@ -18,7 +18,7 @@ module AVR
       end
     end
 
-    sig { params(limit: T::Enumerator[T.untyped]).returns(Integer) }
+    sig { params(limit: T::Enumerator[TrueClass]).returns(Integer) }
     def run(limit = infinite)
       start_ticks = ticks
       limit.each { tick }

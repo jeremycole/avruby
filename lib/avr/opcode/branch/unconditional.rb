@@ -76,7 +76,7 @@ module AVR
     end
 
     opcode(:eijmp) do |cpu, _memory, _args|
-      eind = cpu.io_registers.registers[:EIND]&.value || cpu.registers.registers[:EIND]&.value || 0
+      eind = cpu.io_registers[:EIND]&.value || cpu.registers[:EIND]&.value || 0
       cpu.next_pc.value = (eind << 16) | cpu.Z.value
     end
 
@@ -86,7 +86,7 @@ module AVR
 
     opcode(:eicall) do |cpu, _memory, _args|
       stack_push_word(cpu, cpu.pc.value + 1)
-      eind = cpu.io_registers.registers[:EIND]&.value || cpu.registers.registers[:EIND]&.value || 0
+      eind = cpu.io_registers[:EIND]&.value || cpu.registers[:EIND]&.value || 0
       cpu.next_pc.value = (eind << 16) | cpu.Z.value
     end
   end

@@ -33,14 +33,14 @@ RSpec.describe(AVR::Opcode) do
         it "sets PC to the address specified by EIND:Z" do
           eind_reg = AVR::MemoryByteRegister.new(cpu, :EIND, cpu.data_address_space[0x3c])
           cpu.io_registers.add(eind_reg)
-          cpu.EIND.value = 0x02
+          cpu.io_registers[:EIND].value = 0x02
 
           previous_sp = cpu.sp.value
           cpu.pc.value = 0x1122
           cpu.Z = 0x1234
           cpu.instruction(:eicall).execute
           expect(cpu.pc).to(eq(0x021234))
-          expect(cpu.EIND.value).to(eq(0x02))
+          expect(cpu.io_registers[:EIND].value).to(eq(0x02))
           expect(cpu.Z.value).to(eq(0x1234))
           expect(cpu.sp.value).to(eq(previous_sp - 2))
           expect(cpu.data_address_space[cpu.sp.value + 1].value).to(eq(0x22 + 1))

@@ -15,8 +15,7 @@ module AVR
     end
 
     opcode(:in, [Arg.register, Arg.io_address]) do |cpu, _memory, args|
-      reg = cpu.device.io_registers.fetch(args.fetch(1).value)
-      args.fetch(0).value = cpu.send(T.must(reg)).value
+      args.fetch(0).value = cpu.io_register_memory[args.fetch(1).value].value
     end
 
     parse_operands("____ _AAr rrrr AAAA") do |cpu, operands|
@@ -31,8 +30,7 @@ module AVR
     end
 
     opcode(:out, [Arg.io_address, Arg.register]) do |cpu, _memory, args|
-      reg = cpu.device.io_registers.fetch(args.fetch(0).value)
-      cpu.send(T.must(reg)).value = args.fetch(1).value
+      cpu.io_register_memory[args.fetch(0).value].value = args.fetch(1).value
     end
   end
 end

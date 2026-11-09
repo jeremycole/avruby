@@ -32,7 +32,7 @@ RSpec.describe(AVR::Device::Arduino_Uno_R3) do
 
   it "initializes CLKPR with CKDIV8 unprogrammed (0x00)" do
     expect(fuses.programmed?(:CKDIV8)).to(be(false))
-    expect(cpu.CLKPR.value).to(eq(0x00))
+    expect(cpu.ext_io_registers[:CLKPR].value).to(eq(0x00))
   end
 
   it "inherits memory sizes and register mappings from Atmel_ATmega328p" do
