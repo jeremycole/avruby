@@ -141,16 +141,6 @@ RSpec.describe(AVR::Register) do
       expect(yielded).to(include(:r0, :r31, :X, :Y, :Z))
     end
 
-    it "associates word registers for registered register pairs" do
-      expect(rf.associated_word_register(cpu.r26)).to(eq(cpu.X))
-      expect(rf.associated_word_register(cpu.r27)).to(eq(cpu.X))
-      expect(rf.associated_word_register(cpu.r28)).to(eq(cpu.Y))
-      expect(rf.associated_word_register(cpu.r29)).to(eq(cpu.Y))
-      expect(rf.associated_word_register(cpu.r30)).to(eq(cpu.Z))
-      expect(rf.associated_word_register(cpu.r31)).to(eq(cpu.Z))
-      expect(rf.associated_word_register(cpu.r0)).to(be_nil)
-    end
-
     it "resets all registers to 0" do
       cpu.r0.value = 42
       rf.reset

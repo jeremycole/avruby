@@ -259,10 +259,7 @@ module AVR
     end
 
     sig { returns(RegisterPair) }
-    def r1r0
-      @r1r0 ||= T.let(RegisterPair.new(self, r1, r0, :r1r0), T.nilable(AVR::RegisterPair))
-    end
-
+    def r1r0 = T.cast(T.must(registers.fetch(:r1r0)), RegisterPair)
     sig { params(value: Integer).void }
     def r1r0=(value)
       r1r0.value = value
@@ -344,11 +341,22 @@ module AVR
         registers.add(GeneralPurposeRegister.new(self, n, data_address_space[n]))
       end
 
-      device.word_register_map.each do |name, map|
-        registers.add(RegisterPair.new(self,
-          T.cast(T.must(@registers[T.must(map[:h])]), MemoryByteRegister),
-          T.cast(T.must(@registers[T.must(map[:l])]), MemoryByteRegister),
-          name))
+      {
+        r1r0: [:r1, :r0],
+        X: [:r27, :r26],
+        Y: [:r29, :r28],
+        Z: [:r31, :r30],
+      }.each do |name, (h, l)|
+        next unless @registers[h] && @registers[l]
+
+        registers.add(
+          RegisterPair.new(
+            self,
+            T.cast(T.must(@registers[h]), MemoryByteRegister),
+            T.cast(T.must(@registers[l]), MemoryByteRegister),
+            name
+          )
+        )
       end
 
       @io_register_memory = T.let(

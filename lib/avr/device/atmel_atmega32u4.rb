@@ -13,7 +13,6 @@ module AVR
         # Type annotations for variables used in memoization.
         @register_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
         @fuse_bit_names_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[T.nilable(Symbol)]]))
-        @word_register_map = T.let(nil, T.nilable(T::Hash[Symbol, T::Hash[Symbol, Integer]]))
         @register_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_memory_map = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
         @fuse_default_values = T.let(nil, T.nilable(T::Hash[Symbol, Integer]))
@@ -67,15 +66,6 @@ module AVR
           HIGH:     0x99,
           EXTENDED: 0xf3,
         }.freeze
-      end
-
-      sig { override.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
-      def word_register_map
-        @word_register_map ||= {
-          X: { l: 26, h: 27 },
-          Y: { l: 28, h: 29 },
-          Z: { l: 30, h: 31 },
-        }
       end
 
       sig { override.returns(T::Hash[Symbol, Integer]) }
