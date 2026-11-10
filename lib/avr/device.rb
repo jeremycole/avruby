@@ -68,9 +68,6 @@ module AVR
     sig { abstract.returns(T::Hash[Symbol, Integer]) }
     def fuse_default_values; end
 
-    sig { abstract.returns(T::Hash[Symbol, T::Hash[Symbol, Integer]]) }
-    def word_register_map; end
-
     sig { abstract.returns(Integer) }
     def io_register_start; end
 
