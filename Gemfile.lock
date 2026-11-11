@@ -3,7 +3,7 @@ PATH
   specs:
     avruby (0.5.1)
       benchmark (~> 0.4.0)
-      intel_hex (~> 0.6.2)
+      intel_hex (>= 0.6.2, < 0.8.0)
       irb (~> 1.18.0)
       rdoc (~> 6.13.1)
       sorbet-runtime (~> 0.5.3)
@@ -19,7 +19,8 @@ GEM
     date (3.5.1)
     diff-lcs (1.6.2)
     erubi (1.13.1)
-    intel_hex (0.6.2)
+    intel_hex (0.7.0)
+      sorbet-runtime
     io-console (0.9.4)
     irb (1.18.0)
       pp (>= 0.6.0)
